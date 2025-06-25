@@ -1,5 +1,6 @@
 import { Card } from "./ui/card";
 import { Heading } from "./ui/heading";
+import { ArrowDownIcon } from "./ui/icon";
 import { Progress, ProgressFilledTrack } from "./ui/progress";
 import { Text } from "./ui/text";
 

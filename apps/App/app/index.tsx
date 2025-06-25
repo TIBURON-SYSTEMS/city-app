@@ -1,4 +1,6 @@
-import ChallengeList from "@/components/ChallengeList";
+import ChallengeDetailsCard from "@/components/ChallengeDetailsCard";
+import { SafeAreaView } from "react-native-safe-area-context";
+// import ChallengeList from "@/components/ChallengeList";
 
 const challenges = [
   {
@@ -384,5 +386,10 @@ const challenges = [
 ];
 
 export default function Index() {
-  return <ChallengeList challenges={challenges} />;
+  return (
+    <SafeAreaView className="bg-white">
+      <ChallengeDetailsCard />
+      {/* <ChallengeList challenges={challenges} />; */}
+    </SafeAreaView>
+  );
 }
