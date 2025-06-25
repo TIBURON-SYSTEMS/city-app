@@ -1,0 +1,10 @@
+import ChallengeDetailsCard from "@/components/ChallengeDetailsCard";
+import { SafeAreaView } from "react-native-safe-area-context";
+
+export default function ChallengeDetails() {
+  return (
+    <SafeAreaView className="bg-white">
+      <ChallengeDetailsCard />;
+    </SafeAreaView>
+  );
+}

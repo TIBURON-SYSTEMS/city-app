@@ -1,6 +1,6 @@
+import { Link } from "expo-router";
 import { Card } from "./ui/card";
 import { Heading } from "./ui/heading";
-import { ArrowDownIcon } from "./ui/icon";
 import { Progress, ProgressFilledTrack } from "./ui/progress";
 import { Text } from "./ui/text";
 
@@ -17,15 +17,25 @@ interface ChallengeCardProps {
 }
 export default function ChallengeCard({ challenge }: ChallengeCardProps) {
   return (
-    <Card className="flex flex-col py-[20pt] px-[16pt] w-full mb-4 border border-slate-300">
-      <Heading className="uppercase text-slate-800">{challenge.label}</Heading>
-      <Text className="mb-2">by {challenge.brand}</Text>
-      <Text className="mb-2">
-        {challenge.amount} of {challenge.goal} items sorted
-      </Text>
-      <Progress value={challenge.amount} size="md" orientation="horizontal">
-        <ProgressFilledTrack />
-      </Progress>
-    </Card>
+    <Link
+      className="mb-4"
+      href={{
+        pathname: "/details/[id]",
+        params: { id: "bacon" },
+      }}
+    >
+      <Card className="flex flex-col py-[20pt] px-[16pt] w-full border border-slate-300">
+        <Heading className="uppercase text-slate-800">
+          <Text>{challenge.label}</Text>
+        </Heading>
+        <Text className="mb-2">by {challenge.brand}</Text>
+        <Text className="mb-2">
+          {challenge.amount} of {challenge.goal} items sorted
+        </Text>
+        <Progress value={challenge.amount} size="md" orientation="horizontal">
+          <ProgressFilledTrack />
+        </Progress>
+      </Card>
+    </Link>
   );
 }
