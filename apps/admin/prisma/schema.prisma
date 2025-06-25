@@ -26,3 +26,4 @@ model User {
   password String?
   role     UserRole[]
 }
+
