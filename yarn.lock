@@ -1085,6 +1085,11 @@
     resolve-from "^5.0.0"
     semver "^7.6.0"
 
+"@expo/html-elements@0.4.2":
+  version "0.4.2"
+  resolved "https://registry.yarnpkg.com/@expo/html-elements/-/html-elements-0.4.2.tgz#4e9f6b9250af8d0befe3242fd42704cca2421e0e"
+  integrity sha512-lNioCgdtOrCMMqzHY+PCTdyuWBTU4yMBlOzPSkS4YFIWt9bq0zexM2ZJkpybTXmowNdE3zHO93xxAmiA2yDi2w==
+
 "@expo/image-utils@^0.7.4":
   version "0.7.4"
   resolved "https://registry.npmjs.org/@expo/image-utils/-/image-utils-0.7.4.tgz"
@@ -1302,6 +1307,13 @@
     "@react-native-aria/focus" "^0.2.9"
     "@react-native-aria/interactions" "0.2.16"
     "@react-native-aria/overlays" "^0.3.15"
+
+"@gluestack-ui/progress@^0.1.18":
+  version "0.1.18"
+  resolved "https://registry.yarnpkg.com/@gluestack-ui/progress/-/progress-0.1.18.tgz#9a659115b4579fee057c2d13bbc52e9e080a6958"
+  integrity sha512-WQCLdvqoiIIQnLBXG7+HDTREMbUfEy9rV7FuBMcBBqEFILuVT1W4hyuXLz/CPrUoCWZJ8OUKvLZvaWWzW8pA9Q==
+  dependencies:
+    "@gluestack-ui/utils" "^0.1.14"
 
 "@gluestack-ui/provider@^0.1.19":
   version "0.1.19"
@@ -6554,6 +6566,12 @@ lru-cache@^7.14.1:
   resolved "https://registry.yarnpkg.com/lru-cache/-/lru-cache-7.18.3.tgz#f793896e0fd0e954a59dfdd82f0773808df6aa89"
   integrity sha512-jumlc0BIUrS3qJGgIkWZsyfAM7NCWiBcCDhnd+3NNM5KbBmLTgHVfWBcg6W+rLUsIpzpERPsvwUP7CckAQSOoA==
 
+
+lucide-react-native@^0.523.0:
+  version "0.523.0"
+  resolved "https://registry.yarnpkg.com/lucide-react-native/-/lucide-react-native-0.523.0.tgz#dbdfc703ae49778295efedc4d673394e1743496c"
+  integrity sha512-tqTE9KJ/GMHmawG6B5jUlziObTzw1lCucmdjAIUzXVMfPx00lcKEUKN4Mr1LtyV/f20tR1LAWIs25TiAHqRR7g==
+
 lucide-react@^0.522.0:
   version "0.522.0"
   resolved "https://registry.yarnpkg.com/lucide-react/-/lucide-react-0.522.0.tgz#c0951dd32936b6a7bcc474a829a251fede0bdfbd"
@@ -6565,6 +6583,7 @@ magic-string@^0.30.17:
   integrity sha512-sNPKHvyjVf7gyjwS4xGTaW/mCnF8wnjtifKBEhxfZ7E/S8tQ0rssrwGNn6q8JH/ohItJfSQp9mBtQYuTlH5QnA==
   dependencies:
     "@jridgewell/sourcemap-codec" "^1.5.0"
+
 
 make-dir@^2.0.0, make-dir@^2.1.0:
   version "2.1.0"
