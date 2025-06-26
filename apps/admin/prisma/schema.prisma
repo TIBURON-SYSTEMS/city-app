@@ -4,6 +4,9 @@
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
 generator client {
   provider = "prisma-client-js"
   output   = "../src/generated/prisma"
@@ -21,9 +24,17 @@ enum UserRole {
 }
 
 model User {
-  id       String     @id @default(cuid())
-  email    String
-  password String?
-  role     UserRole[]
+  id                        String                     @id @default(cuid())
+  email                     String                     @unique
+  password                  String?
+  role                      UserRole[]
+  participatingChallenges   Challenge[]                @relation("Participants")
+  wonRewards                UserReward[]
+  product                   Product[]
+  disposal                  Disposal[]
+  bin                       Bin[]
+  brand                     Brand?
+  createdAt                 DateTime                   @default(now())
+  updatedAt                 DateTime                   @updatedAt
 }
 
