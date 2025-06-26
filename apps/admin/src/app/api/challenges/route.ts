@@ -13,6 +13,5 @@ export async function GET() {
     "Access-Control-Allow-Headers",
     "Content-Type, Authorization"
   );
-
   return response;
 }

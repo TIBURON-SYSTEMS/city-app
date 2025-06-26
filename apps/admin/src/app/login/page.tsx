@@ -1,11 +1,5 @@
-import { auth0 } from "@/lib/auth0";
-
 export default async function Home() {
-  // Fetch the user session
-  const session = await auth0.getSession();
-
-  // If no session, show sign-up and login buttons
-  if (!session) {
+  {
     return (
       <main>
         <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
@@ -137,23 +131,3 @@ export default async function Home() {
     );
   }
 }
-// // If session exists, show a welcome message and logout button
-// return (
-//   <main>
-//     <h1>Welcome, {session.user.name}!</h1>
-//     <p>
-//       <a href="/auth/logout">
-//         <button>Log out</button>
-//       </a>
-//     </p>
-//   </main>
-// );
-
-// export default function LoginPage() {
-//   const handleLogin = () => {
-//     window.location.href = "/api/auth/login?returnTo=/dashboard";
-//   };
-
-//   return (
-//   );
-// }

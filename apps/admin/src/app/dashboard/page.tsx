@@ -1,10 +1,4 @@
-import { auth0 } from "@/lib/auth0";
-
 export default async function DashboardPage() {
-  const session = await auth0.getSession();
-
-  const user = session.user;
-
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Navigation Bar */}
@@ -17,9 +11,7 @@ export default async function DashboardPage() {
               </h1>
             </div>
             <div className="flex items-center space-x-4">
-              <span className="text-sm text-gray-700 dark:text-gray-300">
-                {user.email}
-              </span>
+              <span className="text-sm text-gray-700 dark:text-gray-300"></span>
               <a
                 href="/auth/logout"
                 className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors"

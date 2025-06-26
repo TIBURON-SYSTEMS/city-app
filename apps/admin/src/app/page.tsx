@@ -11,7 +11,15 @@ export default function Home() {
   useEffect(() => {
     if (!isLoading) {
       if (user) {
-        router.push("/dashboard");
+        const roles = user["http://localhost:3000/roles"] || [];
+
+        if (roles.includes("admin")) {
+          router.push("/dashboard");
+        } else if (roles.includes("brand")) {
+          router.push("/brandDashboard");
+        } else {
+          router.push("/unauthorized");
+        }
       } else {
         router.push("/login");
       }
