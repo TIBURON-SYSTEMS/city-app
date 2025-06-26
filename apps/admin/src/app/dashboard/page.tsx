@@ -1,12 +1,7 @@
-import { getSession } from "@auth0/nextjs-auth0/edge";
-import { redirect } from "next/navigation";
+import { auth0 } from "@/lib/auth0";
 
 export default async function DashboardPage() {
-  const session = await getSession();
-
-  if (!session) {
-    redirect("/login");
-  }
+  const session = await auth0.getSession();
 
   const user = session.user;
 
@@ -26,7 +21,7 @@ export default async function DashboardPage() {
                 {user.email}
               </span>
               <a
-                href="/api/auth/logout"
+                href="/auth/logout"
                 className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-colors"
               >
                 <svg
