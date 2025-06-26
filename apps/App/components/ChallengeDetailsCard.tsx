@@ -1,4 +1,4 @@
-import { Link, router } from "expo-router";
+import { Link, router, useLocalSearchParams } from "expo-router";
 import { Badge, BadgeText } from "./ui/badge";
 import { Box } from "./ui/box";
 import { Button, ButtonText } from "./ui/button";
@@ -7,26 +7,28 @@ import { Heading } from "./ui/heading";
 import { HStack } from "./ui/hstack";
 import { Text } from "./ui/text";
 import AntDesign from "@expo/vector-icons/AntDesign";
-
-const challenge = {
-  id: "1",
-  label: "Where is my jet",
-  status: "published",
-  goal: 100,
-  brandId: "1",
-  brand: "PepsiCo",
-  description:
-    "Join PepsiCo's recycling challenge and make a difference for our planet! Recycle 100 Pepsi cans to unlock amazing rewards and help create a more sustainable future. Collect empty cans from your daily consumption and bring them to participating recycling centers. Track your progress and watch your environmental impact grow with each recycled container!",
-  rewards: ["A dream jet", "Pepsi tshirt"],
-  product: "Pepsi can",
-  user: {
-    id: "1",
-    email: "arnaud.obri@gmail.com",
-  },
-  amount: 45,
-};
+import { Challenge } from "@/app/types/types";
+import { useQuery } from "@tanstack/react-query";
 
 export default function ChallengeDetailsCard() {
+  const { id } = useLocalSearchParams();
+
+  const { data: challenge } = useQuery({
+    queryKey: ["challenge"],
+    queryFn: getChallengeById,
+  });
+
+  async function getChallengeById(): Promise<Challenge | undefined> {
+    const res = await fetch(`http://localhost:3000/api/challenge/${id}`);
+    const data = await res.json();
+
+    if (!data) return;
+
+    return data.challenge;
+  }
+
+  if (!challenge) return;
+
   return (
     <Box className="px-7 bg-white h-full">
       <Card className="flex flex-col py-5 px-4 mt-4 mb-4 border border-slate-300 h-full items-center">
@@ -43,22 +45,22 @@ export default function ChallengeDetailsCard() {
 
           <Box>
             <Heading className="uppercase text-slate-900">
-              <Text>{challenge.label}</Text>
+              {challenge.label}
             </Heading>
             <Text>by {challenge.brand}</Text>
           </Box>
           <Box>
             <Heading className="text-slate-900 text-base font-semibold">
-              <Text>Description</Text>
+              Description
             </Heading>
             <Text className="text-slate-800">{challenge.description}</Text>
           </Box>
           <Box>
             <Heading className="text-slate-900 text-base font-semibold mb-1">
-              <Text>Rewards</Text>
+              Rewards
             </Heading>
-            <HStack className="gap-2 ">
-              {challenge.rewards.map((reward, index, array) => {
+            <HStack className="gap-2 flex-wrap">
+              {challenge.rewards.map((reward) => {
                 return (
                   <Badge
                     variant="outline"
