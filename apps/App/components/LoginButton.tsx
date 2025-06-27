@@ -1,6 +1,5 @@
-import { Button } from "react-native";
 import { useAuth0 } from "react-native-auth0";
-import * as AuthSession from "expo-auth-session";
+import { Button, ButtonText } from "./ui/button";
 
 export default function LoginButton() {
   const { authorize } = useAuth0();
@@ -21,5 +20,9 @@ export default function LoginButton() {
     }
   };
 
-  return <Button title="Login" onPress={onPress} />;
+  return (
+    <Button onPress={onPress}>
+      <ButtonText>Login</ButtonText>
+    </Button>
+  );
 }

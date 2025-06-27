@@ -2,7 +2,7 @@ import { ScrollView } from "react-native";
 import ChallengeCard from "./ChallengeCard";
 import { Box } from "./ui/box";
 import { Heading } from "./ui/heading";
-import { Challenge } from "@/app/types/types";
+import Challenge from "@/types/types";
 
 interface ChallengeListProps {
   challenges: Challenge[] | undefined;

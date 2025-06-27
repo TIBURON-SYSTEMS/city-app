@@ -1,4 +1,4 @@
-export type Challenge = {
+type Challenge = {
   id: string;
   label: string;
   status: string;
@@ -14,3 +14,5 @@ export type Challenge = {
   };
   amount: number;
 };
+
+export default Challenge;

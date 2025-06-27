@@ -1,7 +1,7 @@
 export const challenges = [
   {
     id: "1",
-    label: "Where is my jet",
+    label: "Pepsi Can challenge",
     status: "published",
     goal: 100,
     brandId: "1",

@@ -3,7 +3,7 @@ import { Card } from "./ui/card";
 import { Heading } from "./ui/heading";
 import { Progress, ProgressFilledTrack } from "./ui/progress";
 import { Text } from "./ui/text";
-import { Challenge } from "@/app/types/types";
+import Challenge from "@/types/types";
 
 interface ChallengeCardProps {
   challenge: Challenge;

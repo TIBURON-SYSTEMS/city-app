@@ -25,7 +25,11 @@
   ],
   "version": "1.0.0",
   "dependencies": {
+    "@types/react": "~19.0.10",
     "react": "19.0.0",
     "react-native": "0.79.4"
+  },
+  "resolutions": {
+    "@types/react": "~19.0.10"
   }
 }

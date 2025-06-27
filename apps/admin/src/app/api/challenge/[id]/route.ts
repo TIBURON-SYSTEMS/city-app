@@ -30,3 +30,23 @@ export async function GET(
     );
   }
 }
+
+export async function POST(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params;
+    const { email } = await request.json();
+
+    console.log(id);
+
+    return NextResponse.json({ message: "werewr" });
+  } catch (error) {
+    console.error("API Error:", error);
+    return NextResponse.json(
+      { error: "Internal Server Error", details: error },
+      { status: 500 }
+    );
+  }
+}

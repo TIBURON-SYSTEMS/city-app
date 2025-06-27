@@ -7,14 +7,17 @@ import { Heading } from "./ui/heading";
 import { HStack } from "./ui/hstack";
 import { Text } from "./ui/text";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import { Challenge } from "@/app/types/types";
+import Challenge from "@/types/types";
 import { useQuery } from "@tanstack/react-query";
+import { useAuth0 } from "react-native-auth0";
 
 export default function ChallengeDetailsCard() {
   const { id } = useLocalSearchParams();
 
+  const { authorize, clearSession, user } = useAuth0();
+
   const { data: challenge } = useQuery({
-    queryKey: ["challenge"],
+    queryKey: ["challenge", id],
     queryFn: getChallengeById,
   });
 
@@ -28,6 +31,16 @@ export default function ChallengeDetailsCard() {
   }
 
   if (!challenge) return;
+
+  async function handlePress() {
+    if (!user) {
+      try {
+        await authorize();
+      } catch (error) {
+        console.error("Login failed", error);
+      }
+    }
+  }
 
   return (
     <Box className="px-7 bg-white h-full">
@@ -75,7 +88,7 @@ export default function ChallengeDetailsCard() {
           </Box>
         </Box>
         <Box className="mt-20">
-          <Button className="rounded-full">
+          <Button onPress={handlePress} className="rounded-full">
             <ButtonText>Participate</ButtonText>
           </Button>
         </Box>

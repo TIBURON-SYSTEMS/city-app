@@ -1,5 +1,6 @@
-import { Button } from "react-native";
 import { useAuth0 } from "react-native-auth0";
+import { Button } from "./ui/button";
+import AntDesign from "@expo/vector-icons/AntDesign";
 
 export default function LogoutButton() {
   const { clearSession } = useAuth0();
@@ -12,5 +13,9 @@ export default function LogoutButton() {
     }
   };
 
-  return <Button onPress={onPress} title="Log out" />;
+  return (
+    <Button onPress={onPress} variant="link">
+      <AntDesign name="logout" size={24} color="black" />
+    </Button>
+  );
 }
