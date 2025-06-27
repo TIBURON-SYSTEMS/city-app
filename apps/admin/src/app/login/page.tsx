@@ -1,133 +1,104 @@
-export default async function Home() {
-  {
+import { auth0 } from "@/lib/auth0";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Lock, LogIn, UserPlus, Info } from "lucide-react";
+
+export default async function LoginPage() {
+  
+  const session = await auth0.getSession();
+
+  
+  if (!session) {
     return (
-      <main>
-        <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
-          <div className="w-full max-w-md space-y-8 px-4">
-            <div className="bg-white dark:bg-gray-800 shadow-2xl rounded-2xl p-8 space-y-6">
-              <div className="text-center space-y-2">
-                <div className="flex justify-center mb-4">
-                  <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center">
-                    <svg
-                      className="w-10 h-10 text-primary-foreground"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
-                      />
-                    </svg>
-                  </div>
+      <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+        <div className="w-full max-w-md px-4">
+          <Card className="shadow-2xl">
+            <CardHeader className="space-y-1 text-center">
+              <div className="flex justify-center mb-4">
+                <div className="w-16 h-16 bg-primary rounded-full flex items-center justify-center">
+                  <Lock className="w-8 h-8 text-primary-foreground" />
                 </div>
-                <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
-                  Welcome Back
-                </h2>
-                <p className="text-gray-600 dark:text-gray-400">
-                  Sign in to access the admin dashboard
-                </p>
               </div>
-
-              <div className="space-y-4">
-                <svg
-                  className="w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h7a3 3 0 013 3v1"
-                  />
-                </svg>
-
-                <div className="flex items-center flex-col gap-3">
-                  <a
-                    href="/auth/login?screen_hint=signup"
-                    className="border rounded-2xl  "
-                  >
-                    <button>Sign in with Auth0</button>
+              <CardTitle className="text-3xl font-bold tracking-tight">
+                Welcome to Admin Dashboard
+              </CardTitle>
+              <CardDescription className="text-base">
+                Sign in or create an account to continue
+              </CardDescription>
+            </CardHeader>
+            
+            <CardContent className="space-y-4">
+              <div className="grid gap-2">
+                <Button asChild className="w-full" size="lg">
+                  <a href="/auth/login">
+                    <LogIn className="mr-2 h-5 w-5" />
+                    Sign in
                   </a>
-                </div>
-                <div className="relative">
-                  <div className="absolute inset-0 flex items-center">
-                    <div className="w-full border-t border-gray-300 dark:border-gray-600"></div>
-                  </div>
-                  <div className="relative flex justify-center text-sm">
-                    <span className="px-2 bg-white dark:bg-gray-800 text-gray-500">
-                      Secure authentication powered by Auth0
-                    </span>
-                  </div>
-                </div>
-                <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
-                  <div className="flex">
-                    <div className="flex-shrink-0">
-                      <svg
-                        className="h-5 w-5 text-blue-400"
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={2}
-                          d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                        />
-                      </svg>
-                    </div>
-                    <div className="ml-3 flex-1">
-                      <p className="text-sm text-blue-700 dark:text-blue-300">
-                        You will be redirected to Auth0 for secure
-                        authentication. After signing in, you&apos;ll be
-                        returned to the dashboard.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="text-center text-sm text-gray-600 dark:text-gray-400">
-                <p>
-                  Having trouble?{" "}
-                  <a
-                    href="#"
-                    className="font-medium text-primary hover:text-primary/80 transition-colors"
-                  >
-                    Contact support
+                </Button>
+                
+                <Button asChild className="w-full" size="lg" variant="outline">
+                  <a href="/auth/login?screen_hint=signup">
+                    <UserPlus className="mr-2 h-5 w-5" />
+                    Create account
                   </a>
-                </p>
+                </Button>
               </div>
-            </div>
-
-            <div className="text-center">
-              <p className="text-xs text-gray-500 dark:text-gray-400">
-                By signing in, you agree to our{" "}
+              
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <span className="w-full border-t" />
+                </div>
+                <div className="relative flex justify-center text-xs uppercase">
+                  <span className="bg-background px-2 text-muted-foreground">
+                    Secure authentication
+                  </span>
+                </div>
+              </div>
+              
+              <Alert>
+                <Info className="h-4 w-4" />
+                <AlertDescription>
+                  You will be redirected to Auth0 for secure authentication. 
+                  After signing in, you&apos;ll be returned to the dashboard.
+                </AlertDescription>
+              </Alert>
+            </CardContent>
+            
+            <CardFooter className="flex flex-col space-y-4 text-center text-sm">
+              <p className="text-muted-foreground">
+                Having trouble?{" "}
                 <a
                   href="#"
-                  className="underline hover:text-gray-700 dark:hover:text-gray-300"
+                  className="font-medium text-primary hover:text-primary/80 transition-colors underline underline-offset-4"
                 >
-                  Terms of Service
-                </a>{" "}
-                and{" "}
-                <a
-                  href="#"
-                  className="underline hover:text-gray-700 dark:hover:text-gray-300"
-                >
-                  Privacy Policy
+                  Contact support
                 </a>
               </p>
-            </div>
-          </div>
+            </CardFooter>
+          </Card>
+          
+          <p className="mt-8 text-center text-xs text-muted-foreground">
+            By signing in, you agree to our{" "}
+            <a
+              href="#"
+              className="underline underline-offset-4 hover:text-primary"
+            >
+              Terms of Service
+            </a>{" "}
+            and{" "}
+            <a
+              href="#"
+              className="underline underline-offset-4 hover:text-primary"
+            >
+              Privacy Policy
+            </a>
+          </p>
         </div>
       </main>
     );
   }
+
+
+  return null;
 }
