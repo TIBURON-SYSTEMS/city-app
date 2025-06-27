@@ -24,17 +24,38 @@ enum UserRole {
 }
 
 model User {
-  id                        String                     @id @default(cuid())
-  email                     String                     @unique
-  password                  String?
-  role                      UserRole[]
-  participatingChallenges   Challenge[]                @relation("Participants")
-  wonRewards                UserReward[]
-  product                   Product[]
-  disposal                  Disposal[]
-  bin                       Bin[]
-  brand                     Brand?
-  createdAt                 DateTime                   @default(now())
-  updatedAt                 DateTime                   @updatedAt
+  id                      String      @id @default(cuid())
+  email                   String      @unique
+  password                String?
+  role                    UserRole[]
+  participatingChallenges Challenge[] @relation("Participants")
+  // wonRewards              UserReward[]
+  // product                 Product[]
+  // disposal                Disposal[]
+  // bin                     Bin[]
+  brand                   Brand?
+  createdAt               DateTime    @default(now())
+  updatedAt               DateTime    @updatedAt
 }
 
+model Challenge {
+  id           String   @id @default(cuid())
+  label        String
+  status       String
+  goal         Int
+  brandId      String
+  brand        Brand    @relation(fields: [brandId], references: [id])
+  description  String
+  reward       String[]
+  product      String
+  participants User[]   @relation("Participants")
+  amount       Int
+}
+
+model Brand {
+  id        String      @id @default(cuid())
+  name      String
+  user      User        @relation(fields: [userId], references: [id])
+  userId    String      @unique
+  challenge Challenge[]
+}
