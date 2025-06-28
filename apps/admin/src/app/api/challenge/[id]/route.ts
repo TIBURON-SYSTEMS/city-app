@@ -11,15 +11,15 @@ export async function GET(
     const challenge = challenges.filter((challenge) => challenge.id === id);
     const response = NextResponse.json({ challenge: challenge[0] });
 
-    response.headers.set("Access-Control-Allow-Origin", "*");
-    response.headers.set(
-      "Access-Control-Allow-Methods",
-      "GET, POST, PUT, DELETE, OPTIONS"
-    );
-    response.headers.set(
-      "Access-Control-Allow-Headers",
-      "Content-Type, Authorization"
-    );
+    // response.headers.set("Access-Control-Allow-Origin", "*");
+    // response.headers.set(
+    //   "Access-Control-Allow-Methods",
+    //   "GET, POST, PUT, DELETE, OPTIONS"
+    // );
+    // response.headers.set(
+    //   "Access-Control-Allow-Headers",
+    //   "Content-Type, Authorization"
+    // );
 
     return response;
   } catch (error) {
@@ -31,7 +31,7 @@ export async function GET(
   }
 }
 
-export async function POST(
+export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
@@ -39,9 +39,15 @@ export async function POST(
     const { id } = await params;
     const { email } = await request.json();
 
-    console.log(id);
+    //add logic
+    challenges.map((challenge) => {
+      if (challenge.id === id) {
+        challenge.users.push({ id: "1", email });
+      }
+      return challenge;
+    });
 
-    return NextResponse.json({ message: "werewr" });
+    return NextResponse.json({ users: challenges[1].users });
   } catch (error) {
     console.error("API Error:", error);
     return NextResponse.json(

@@ -1,3 +1,8 @@
+type User = {
+  id: string;
+  email: string;
+};
+
 type Challenge = {
   id: string;
   label: string;
@@ -8,10 +13,7 @@ type Challenge = {
   description: string;
   rewards: string[];
   product: string;
-  user: {
-    id: string;
-    email: string;
-  };
+  users: User[];
   amount: number;
 };
 
