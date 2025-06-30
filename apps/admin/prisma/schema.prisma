@@ -24,18 +24,18 @@ enum UserRole {
 }
 
 model User {
-  id                      String         @id @default(cuid())
-  email                   String         @unique
+  id                      String       @id @default(cuid())
+  email                   String       @unique
   password                String?
   role                    UserRole[]
-  participatingChallenges Challenge[]    @relation("UserChallenges")
+  participatingChallenges Challenge[]  @relation("UserChallenges")
   wonRewards              UserReward[]
   product                 Product[]
   disposal                Disposal[]
   bin                     Bin[]
-  brands                  Brand[]        // ← note this line changed from `brand?`
-  createdAt               DateTime       @default(now())
-  updatedAt               DateTime       @updatedAt
+  brands                  Brand[] // ← note this line changed from `brand?`
+  createdAt               DateTime     @default(now())
+  updatedAt               DateTime     @updatedAt
 }
 
 model UserReward {
@@ -68,34 +68,38 @@ model DisposedProduct {
 }
 
 model Bin {
-  id       String     @id @default(cuid())
-  label    String
-  type     String
-  location String
-  user     User?      @relation(fields: [userId], references: [id])
-  userId   String?
-  Disposal Disposal[]
+  id        String     @id @default(cuid())
+  label     String
+  type      String
+  longitude Float
+  latitude  Float
+  user      User?      @relation(fields: [userId], references: [id])
+  userId    String?
+  Disposal  Disposal[]
 }
 
 model Brand {
-  id         String   @id @default(cuid())
+  id         String      @id @default(cuid())
   name       String
   challenges Challenge[]
   products   Product[]
   userId     String
-  user       User     @relation(fields: [userId], references: [id])
+  user       User        @relation(fields: [userId], references: [id])
 }
 
 model Challenge {
-  id       String     @id @default(cuid())
-  label    String
-  status   String
-  goal     Int
-  brandId  String
-  brand    Brand      @relation(fields: [brandId], references: [id])
-  rewards  Reward[]
-  users    User[]     @relation("UserChallenges")
-  products Product[]
+  id        String    @id @default(cuid())
+  label     String
+  status    String
+  endDate   DateTime
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt()
+  goal      Int
+  brandId   String
+  brand     Brand     @relation(fields: [brandId], references: [id])
+  rewards   Reward[]
+  users     User[]    @relation("UserChallenges")
+  products  Product[]
 }
 
 model Reward {
@@ -109,6 +113,7 @@ model Product {
   id              String            @id @default(cuid())
   label           String
   type            String
+  material        String
   brandId         String?
   brand           Brand?            @relation(fields: [brandId], references: [id])
   userId          String?
