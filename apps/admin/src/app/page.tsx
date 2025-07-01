@@ -28,24 +28,6 @@ export default async function Home() {
     redirect("/unauthorized");
   }
 
-  // useEffect(() => {
-  //   if (!isLoading) {
-  //     if (user) {
-  //       const roles = user["http://localhost:3000/roles"] || [];
-
-  //       if (roles.includes("admin")) {
-  //         router.push("/dashboard");
-  //       } else if (roles.includes("brand")) {
-  //         router.push("/brandDashboard");
-  //       } else {
-  //         router.push("/unauthorized");
-  //       }
-  //     } else {
-  //       router.push("/login");
-  //     }
-  //   }
-  // }, [user, isLoading, router]);
-
   return (
     <main className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
       <div className="w-full max-w-md px-4">

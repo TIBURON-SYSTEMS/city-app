@@ -24,38 +24,53 @@ enum UserRole {
 }
 
 model User {
-  id                      String       @id @default(cuid())
-  email                   String       @unique
-  password                String?
-  role                    UserRole[]
-  participatingChallenges Challenge[]  @relation("UserChallenges")
-  wonRewards              UserReward[]
-  product                 Product[]
-  disposal                Disposal[]
-  bin                     Bin[]
-  brands                  Brand[] // ← note this line changed from `brand?`
-  createdAt               DateTime     @default(now())
-  updatedAt               DateTime     @updatedAt
+  id          String       @id @default(cuid())
+  email       String       @unique
+  password    String?
+  role        UserRole
+  participant Participant?
+  brand       Brand?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
 }
 
-model UserReward {
-  userId     String
-  user       User     @relation(fields: [userId], references: [id])
-  rewardId   String
-  reward     Reward   @relation(fields: [rewardId], references: [id])
-  assignedAt DateTime
+model Participant {
+  id                      String              @id @default(cuid())
+  userId                  String              @unique
+  user                    User                @relation(fields: [userId], references: [id])
+  participatingChallenges Challenge[]
+  wonRewards              ParticipantReward[]
+  product                 Product[]
+  disposal                Disposal[]
+}
 
-  @@id([userId, rewardId])
+model Brand {
+  id         String      @id @default(cuid())
+  name       String
+  challenges Challenge[]
+  products   Product[]
+  userId     String      @unique
+  user       User        @relation(fields: [userId], references: [id])
+}
+
+model ParticipantReward {
+  rewardId      String
+  reward        Reward       @relation(fields: [rewardId], references: [id])
+  assignedAt    DateTime
+  Participant   Participant? @relation(fields: [participantId], references: [id])
+  participantId String
+
+  @@id([participantId, rewardId])
 }
 
 model Disposal {
   id               String            @id @default(cuid())
   date             DateTime
   bin              Bin               @relation(fields: [binId], references: [id])
-  user             User              @relation(fields: [userId], references: [id])
   disposedProducts DisposedProduct[]
   binId            String
-  userId           String
+  participantId    String
+  Participant      Participant?      @relation(fields: [participantId], references: [id])
 }
 
 model DisposedProduct {
@@ -73,52 +88,42 @@ model Bin {
   type      String
   longitude Float
   latitude  Float
-  user      User?      @relation(fields: [userId], references: [id])
   userId    String?
   Disposal  Disposal[]
 }
 
-model Brand {
-  id         String      @id @default(cuid())
-  name       String
-  challenges Challenge[]
-  products   Product[]
-  userId     String
-  user       User        @relation(fields: [userId], references: [id])
-}
-
 model Challenge {
-  id        String    @id @default(cuid())
-  label     String
-  status    String
-  endDate   DateTime
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt()
-  goal      Int
-  brandId   String
-  brand     Brand     @relation(fields: [brandId], references: [id])
-  rewards   Reward[]
-  users     User[]    @relation("UserChallenges")
-  products  Product[]
+  id           String        @id @default(cuid())
+  label        String
+  status       String
+  endDate      DateTime
+  description  String
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt()
+  goal         Int
+  brandId      String
+  brand        Brand         @relation(fields: [brandId], references: [id])
+  rewards      Reward[]
+  participants Participant[]
+  products     Product[]
 }
 
 model Reward {
-  id           String       @id @default(cuid())
+  id           String              @id @default(cuid())
   label        String
   challenge    Challenge[]
-  participants UserReward[]
+  participants ParticipantReward[]
 }
 
 model Product {
   id              String            @id @default(cuid())
   label           String
-  type            String
   material        String
   brandId         String?
   brand           Brand?            @relation(fields: [brandId], references: [id])
-  userId          String?
-  user            User?             @relation(fields: [userId], references: [id])
   challengeId     String?
   challenge       Challenge?        @relation(fields: [challengeId], references: [id])
   DisposedProduct DisposedProduct[]
+  participant     Participant?      @relation(fields: [participantId], references: [id])
+  participantId   String?
 }
