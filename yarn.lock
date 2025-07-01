@@ -1486,6 +1486,15 @@
     "@gluestack-ui/utils" "^0.1.14"
     "@react-native-aria/focus" "^0.2.9"
 
+"@gluestack-ui/image@^0.1.17":
+  version "0.1.17"
+  resolved "https://registry.yarnpkg.com/@gluestack-ui/image/-/image-0.1.17.tgz#b92c788bea557c5a4e34231c5430398cc1220011"
+  integrity sha512-hcyTVBUw55bSjEpyynIZJVm3Ff6lcjKXFT55f890oy2PNGyFdsKr6V+t/jy5n/2fwbv1eR2KU0uDDiI2vmBh+A==
+  dependencies:
+    "@gluestack-ui/utils" "^0.1.15"
+    "@react-native-aria/focus" "^0.2.9"
+    "@react-native-aria/interactions" "0.2.16"
+
 "@gluestack-ui/nativewind-utils@^1.0.26":
   version "1.0.26"
   resolved "https://registry.yarnpkg.com/@gluestack-ui/nativewind-utils/-/nativewind-utils-1.0.26.tgz#1abb57a6a818da843345808216acc9d4cbc01e92"
@@ -1548,7 +1557,7 @@
     "@gluestack-ui/utils" "^0.1.14"
     "@react-native-aria/focus" "^0.2.9"
 
-"@gluestack-ui/utils@0.1.15", "@gluestack-ui/utils@^0.1.14":
+"@gluestack-ui/utils@0.1.15", "@gluestack-ui/utils@^0.1.14", "@gluestack-ui/utils@^0.1.15":
   version "0.1.15"
   resolved "https://registry.yarnpkg.com/@gluestack-ui/utils/-/utils-0.1.15.tgz#55f318d81d230daca40b498039eb4680600faa90"
   integrity sha512-LRBMv+tr+bV4falMYS2zSt94PxL0vpvUN6F9d6oTqOYKhkiAkU6k2ROfNlT323m0CoTQto1LkJhPxULisQ2oeQ==
