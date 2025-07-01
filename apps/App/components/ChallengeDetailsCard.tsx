@@ -12,7 +12,8 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuth0 } from "react-native-auth0";
 import { useState, useEffect } from "react";
 import { Progress, ProgressFilledTrack } from "./ui/progress";
-import { ScrollView } from "react-native";
+import { ScrollView, View } from "react-native";
+import Octicons from "@expo/vector-icons/Octicons";
 
 export default function ChallengeDetailsCard() {
   const [isParticipated, setIsParticipated] = useState<boolean>(false);
@@ -123,14 +124,26 @@ export default function ChallengeDetailsCard() {
               <Heading className="uppercase text-slate-900">
                 {challenge.label}
               </Heading>
-              <Text>by {challenge.brand}</Text>
+              <Link
+                href={{
+                  pathname: "/brandinfo/[id]",
+                  params: { id: challenge.brandId },
+                }}
+              >
+                <View className="flex flex-row justify-center items-center gap-2">
+                  <Text>by {challenge.brand}</Text>
+                  <Octicons name="link-external" size={16} color="#6B7280" />
+                </View>
+              </Link>
             </Box>
+
             <Box>
               <Heading className="text-slate-900 text-base font-semibold">
                 Description
               </Heading>
               <Text className="text-slate-800">{challenge.description}</Text>
             </Box>
+
             <Box>
               <Heading className="text-slate-900 text-base font-semibold mb-1">
                 Rewards
@@ -149,6 +162,7 @@ export default function ChallengeDetailsCard() {
                 })}
               </HStack>
             </Box>
+
             {!isParticipated && (
               <Box>
                 <Heading className="text-slate-900 text-base font-semibold">
@@ -157,6 +171,7 @@ export default function ChallengeDetailsCard() {
                 <Text>{`Recycle ${challenge.goal} ${challenge.product}s`}</Text>
               </Box>
             )}
+
             {isParticipated && (
               <Box>
                 <Heading className="text-slate-900 text-base font-semibold">
