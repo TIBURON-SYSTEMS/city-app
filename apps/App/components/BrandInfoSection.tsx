@@ -6,12 +6,13 @@ import { Box } from "./ui/box";
 import { Card } from "./ui/card";
 import { useQuery } from "@tanstack/react-query";
 import { Image } from "./ui/image";
+import { BASE_URL } from "@/utils/baseUrl";
 
 export default function BrandInfoSection() {
   const { id } = useLocalSearchParams();
 
   async function getBrandInfo() {
-    const res = await fetch(`http://localhost:3000/api/brand/${id}`);
+    const res = await fetch(`${BASE_URL}/api/brand/${id}`);
     const data = await res.json();
 
     return data.brand;
@@ -50,6 +51,7 @@ export default function BrandInfoSection() {
                 source={{ uri: brand.imgUrl }}
                 className="w-full h-48 rounded-xl"
                 resizeMode="contain"
+                alt={brand.name}
               />
 
               <Text className="text-center text-gray-700">

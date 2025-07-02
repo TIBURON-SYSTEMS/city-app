@@ -5,6 +5,7 @@ import { Heading } from "./ui/heading";
 import Challenge from "@/types/types";
 import { useAuth0 } from "react-native-auth0";
 import { useQuery } from "@tanstack/react-query";
+import { BASE_URL } from "@/utils/baseUrl";
 
 export default function ChallengeList() {
   const { user } = useAuth0();
@@ -12,7 +13,7 @@ export default function ChallengeList() {
   async function getAvailableChallenges(): Promise<Challenge[]> {
     if (!user) return [];
     const res = await fetch(
-      `http://localhost:3000/api/challenges/${user.email}?condition=available`
+      `${BASE_URL}/api/challenges/${user.email}?condition=available`
     );
     const data = await res.json();
 
@@ -24,7 +25,7 @@ export default function ChallengeList() {
   async function getOnGoingChallenges(): Promise<Challenge[]> {
     if (!user) return [];
     const res = await fetch(
-      `http://localhost:3000/api/challenges/${user.email}?condition=ongoing`
+      `${BASE_URL}/api/challenges/${user.email}?condition=ongoing`
     );
     const data = await res.json();
 
@@ -36,7 +37,7 @@ export default function ChallengeList() {
   async function getChallenges(): Promise<Challenge[]> {
     if (user) return [];
 
-    const res = await fetch("http://localhost:3000/api/challenges");
+    const res = await fetch(`${BASE_URL}/api/challenges`);
     const data = await res.json();
 
     if (!data) return [];

@@ -14,6 +14,7 @@ import { useState, useEffect } from "react";
 import { Progress, ProgressFilledTrack } from "./ui/progress";
 import { ScrollView, View } from "react-native";
 import Octicons from "@expo/vector-icons/Octicons";
+import { BASE_URL } from "@/utils/baseUrl";
 
 export default function ChallengeDetailsCard() {
   const [isParticipated, setIsParticipated] = useState<boolean>(false);
@@ -41,7 +42,7 @@ export default function ChallengeDetailsCard() {
   });
 
   async function getChallengeById(): Promise<Challenge | undefined> {
-    const res = await fetch(`http://localhost:3000/api/challenge/${id}`);
+    const res = await fetch(`${BASE_URL}/api/challenge/${id}`);
     const data = await res.json();
 
     if (!data) return;
@@ -67,10 +68,7 @@ export default function ChallengeDetailsCard() {
       body: JSON.stringify({ email }),
     };
 
-    const res = await fetch(
-      `http://localhost:3000/api/challenge/${id}`,
-      options
-    );
+    const res = await fetch(`${BASE_URL}/api/challenge/${id}`, options);
     const data = await res.json();
 
     data.users.forEach((user: { id: string; email: string }) => {

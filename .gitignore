@@ -2,6 +2,7 @@
 
 # Dependencies
 **/android/
+**/ios/
 node_modules
 .pnp
 .pnp.js

@@ -1,12 +1,14 @@
-import { View, Text } from "react-native";
+import ScannerCamera from "@/components/ScannerCamera";
 import { SafeAreaView } from "react-native-safe-area-context";
+// import { View, Text } from "react-native";
 
 export default function Tab() {
   return (
     <SafeAreaView className="bg-white">
-      <View className="h-full">
+      <ScannerCamera />
+      {/* <View className="h-full">
         <Text>Scanner</Text>
-      </View>
+      </View> */}
     </SafeAreaView>
   );
 }
