@@ -7,14 +7,14 @@ import { Heading } from "./ui/heading";
 import { HStack } from "./ui/hstack";
 import { Text } from "./ui/text";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import Challenge from "@/types/types";
+import Challenge from "../types/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuth0 } from "react-native-auth0";
 import { useState, useEffect } from "react";
 import { Progress, ProgressFilledTrack } from "./ui/progress";
 import { ScrollView, View } from "react-native";
 import Octicons from "@expo/vector-icons/Octicons";
-import { BASE_URL } from "@/utils/baseUrl";
+import { BASE_URL } from "../utils/baseUrl";
 
 export default function ChallengeDetailsCard() {
   const [isParticipated, setIsParticipated] = useState<boolean>(false);

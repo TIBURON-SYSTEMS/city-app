@@ -3,7 +3,7 @@ import { Card } from "./ui/card";
 import { Heading } from "./ui/heading";
 import { Progress, ProgressFilledTrack } from "./ui/progress";
 
-import Challenge from "@/types/types";
+import Challenge from "../types/types";
 import { useAuth0 } from "react-native-auth0";
 import { Box } from "./ui/box";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";

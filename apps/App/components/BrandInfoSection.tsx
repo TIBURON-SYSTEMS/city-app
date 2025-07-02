@@ -6,7 +6,7 @@ import { Box } from "./ui/box";
 import { Card } from "./ui/card";
 import { useQuery } from "@tanstack/react-query";
 import { Image } from "./ui/image";
-import { BASE_URL } from "@/utils/baseUrl";
+import { BASE_URL } from "../utils/baseUrl";
 
 export default function BrandInfoSection() {
   const { id } = useLocalSearchParams();

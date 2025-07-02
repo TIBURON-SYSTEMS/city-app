@@ -1,4 +1,4 @@
-import ScannerCamera from "@/components/ScannerCamera";
+import ScannerCamera from "@/components/ScannerCamera/ScannerCamera";
 import { SafeAreaView } from "react-native-safe-area-context";
 // import { View, Text } from "react-native";
 
