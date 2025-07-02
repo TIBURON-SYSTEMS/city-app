@@ -75,7 +75,11 @@ export default function ListAllChallenges({ data }: ListAllChallengesProps) {
 
                   <div className="ml-6">
                     <Button variant="outline">
-                      <Link href="/">View Details</Link>
+                      <Link
+                        href={`/brand-dashboard/challenges/${challenge.id}`}
+                      >
+                        View Details
+                      </Link>
                     </Button>
                   </div>
                 </div>
