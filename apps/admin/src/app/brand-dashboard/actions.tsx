@@ -28,8 +28,6 @@ export async function createChallenge(
         endDate: result.data.endDate,
         goal: result.data.goal,
         description: result.data.description,
-        // product: result.data.product,
-        // type: result.data.material,
         brandId: brand,
         products: {
           create: {

@@ -12,11 +12,71 @@ async function main() {
 
   const testBrand = await prisma.brand.create({
     data: {
-      name: "Demo brand",
+      name: "Demo Brand",
       userId: demoBrand.id,
     },
   });
   console.log({ testBrand });
+
+  const challenge1 = await prisma.challenge.create({
+    data: {
+      label: "Plastic Bottle Blitz",
+      status: "active",
+      endDate: new Date("2025-08-31T23:59:59"),
+      goal: 30,
+      description:
+        "Recycle plastic bottles to earn rewards. Hit 30 bottles and win a 1000 reward points!",
+      brandId: testBrand.id,
+      products: {
+        create: {
+          label: "Plastic bottle",
+          material: "plastic",
+          brandId: testBrand.id,
+        },
+      },
+    },
+  });
+  console.log({ challenge1 });
+
+  const challenge2 = await prisma.challenge.create({
+    data: {
+      label: "Can Crusher Challenge",
+      status: "active",
+      endDate: new Date("2025-09-15T23:59:59"),
+      goal: 50,
+      description:
+        "Collect and recycle aluminum cans Reach 50 and get 400 reward points!!",
+      brandId: testBrand.id,
+      products: {
+        create: {
+          label: "Aluminum Can",
+          material: "aluminium",
+          brandId: testBrand.id,
+        },
+      },
+    },
+  });
+  console.log({ challenge2 });
+
+  const challenge3 = await prisma.challenge.create({
+    data: {
+      label: "Paper Purge",
+      status: "inactive",
+      endDate: new Date("2025-10-01T23:59:59"),
+      goal: 100,
+      description:
+        "Recycle used paper sheets and earn 1 point per sheet. Reach 100 and receive a plantable notebook!",
+      brandId: testBrand.id,
+      products: {
+        create: {
+          label: "A4 Office Paper",
+          material: "paper",
+          brandId: testBrand.id,
+        },
+      },
+    },
+  });
+  console.log({ challenge3 });
 }
 main()
   .then(async () => {

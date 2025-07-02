@@ -19,7 +19,7 @@ export default async function Home() {
     const roles = (session.user.tiburonroles as string[]) || [];
 
     if (roles.includes("brand")) {
-      redirect("/brandDashboard");
+      redirect("/brand-dashboard");
     }
 
     if (roles.includes("admin")) {
