@@ -6,7 +6,7 @@ import {
 } from "expo-camera";
 import { useCallback, useState, useRef } from "react";
 import { Text, View } from "react-native";
-import { BASE_URL } from "../../utils/baseUrl";
+import { AI_SERVER_URL, BASE_URL } from "../../utils/baseUrl";
 import { ScannerCameraStage } from "../../types/enums";
 import { photos } from "../../../admin/src/mocks/photos";
 import { Button, ButtonText } from "../ui/button";
@@ -15,6 +15,8 @@ import ScanCameraButton from "./ScanCameraButton";
 import FinishRestartButton from "./FinishRestartButton";
 import TakenPhotosPreview from "./TakenPhotosPreview";
 import FullScreenPhotoPreview from "./FullScreenPhotoPreview";
+import { useAuth0 } from "react-native-auth0";
+import convertUriToPayload from "../../utils/convertUriToPayload";
 
 const photoConfig = {
   quality: 0.7,
@@ -33,6 +35,7 @@ export default function ScannerCamera() {
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState<0 | 1 | null>(
     null
   );
+  const { user } = useAuth0();
 
   const cameraRef = useRef<any>(null);
 
@@ -88,6 +91,9 @@ export default function ScannerCamera() {
     if (!cameraRef.current) return;
 
     const photo = await cameraRef.current.takePictureAsync(photoConfig);
+    // If photos is a real photo from camera, it will have a `base64` property
+    // that we can use. Otherwise, for mock data photo, we have to fetch and convert to Blob and Base64.
+    // console.log(photo.base64);
     const isSimulatedPhoto = photo.uri;
 
     // photo before
@@ -121,6 +127,33 @@ export default function ScannerCamera() {
     setTimeout(() => {
       setIsPhotoTaken(false);
     }, 3000);
+  }
+
+  async function handleSubmit() {
+    // I don't want to log in, so temporarily comment out for development
+    // if (!user) return;
+
+    const payload = await convertUriToPayload(
+      // "fake-uuid-id" only for development without login
+      user?.sub || "fake-uuid-id",
+      photosUri[0],
+      photosUri[1]
+    );
+
+    const res = await fetch(`${AI_SERVER_URL}/analysis`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!res.ok) {
+      throw new Error(`HTTP error! Status: ${res.status}`);
+    }
+
+    const data = await res.json();
+    console.log("Base64 file transfer successfully", data);
   }
 
   function handleRestart() {
@@ -158,6 +191,7 @@ export default function ScannerCamera() {
 
             <FinishRestartButton
               actionStage={actionStage}
+              handleSubmit={handleSubmit}
               handleRestart={handleRestart}
             />
 
