@@ -3,4 +3,6 @@ export enum ScannerCameraStage {
   Before = "before",
   After = "after",
   Finish = "finish",
+  Submit = "submit",
+  End = "end",
 }

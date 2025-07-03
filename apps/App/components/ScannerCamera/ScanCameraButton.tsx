@@ -15,7 +15,7 @@ export default function ScanCameraButton({
 }: ScanCameraButtonProps) {
   return (
     <TouchableOpacity
-      className="flex justify-center items-center w-18 h-18 bg-purple-800/30 rounded-md p-1"
+      className="flex justify-center items-center w-18 h-18 bg-black/30 rounded-full p-4"
       onPress={
         actionStage === ScannerCameraStage.Scan
           ? handleBarcodeScanned

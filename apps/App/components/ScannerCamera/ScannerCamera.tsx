@@ -17,9 +17,9 @@ import TakenPhotosPreview from "./TakenPhotosPreview";
 import FullScreenPhotoPreview from "./FullScreenPhotoPreview";
 import { useAuth0 } from "react-native-auth0";
 import convertUriToPayload from "../../utils/convertUriToPayload";
-import { Spinner } from "../ui/spinner";
 import { Text } from "../ui/text";
-import { VStack } from "../ui/vstack";
+import ProcessingSpinner from "./ProcessingSpinner";
+import DisposalSuccess from "./DisposalSuccess";
 
 const photoConfig = {
   quality: 0.7,
@@ -28,10 +28,8 @@ const photoConfig = {
 
 export default function ScannerCamera() {
   const [permission, requestPermission] = useCameraPermissions();
-  const [isScanned, setIsScanned] = useState(false);
   const [isFocused, setIsFocused] = useState(true);
   const [isPhotoTaken, setIsPhotoTaken] = useState(false);
-  const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [actionStage, setActionStage] = useState<ScannerCameraStage>(
     ScannerCameraStage.Scan
   );
@@ -39,6 +37,8 @@ export default function ScannerCamera() {
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState<0 | 1 | null>(
     null
   );
+  const [aiResult, setAIResult] = useState<any>(null);
+
   const { user } = useAuth0();
 
   const cameraRef = useRef<any>(null);
@@ -75,24 +75,26 @@ export default function ScannerCamera() {
 
   // function handleBarcodeScanned(result: BarcodeScanningResult) {
   async function handleBarcodeScanned() {
-    if (!isScanned) {
-      setIsScanned(true);
+    if (actionStage !== ScannerCameraStage.Scan) return;
 
-      const mockQRCodeData = { binId: 1 };
-      const res = await fetch(`${BASE_URL}/api/bin/${mockQRCodeData.binId}`);
-      const data = await res.json();
+    const mockQRCodeData = { binId: 1 };
+    const res = await fetch(`${BASE_URL}/api/bin/${mockQRCodeData.binId}`);
+    const data = await res.json();
 
-      if (!data) return;
+    if (!data) return;
 
-      setIsScanned(false);
-      setActionStage(ScannerCameraStage.Before);
-      // console.log(data.bin);
-      // return data.bin;
-    }
+    setActionStage(ScannerCameraStage.Before);
+    // console.log(data.bin);
+    // return data.bin;
   }
 
   async function handleTakePhotos() {
-    if (!cameraRef.current) return;
+    if (
+      !cameraRef.current ||
+      (actionStage !== ScannerCameraStage.Before &&
+        actionStage !== ScannerCameraStage.After)
+    )
+      return;
 
     const photo = await cameraRef.current.takePictureAsync(photoConfig);
     // If photos is a real photo from camera, it will have a `base64` property
@@ -134,14 +136,15 @@ export default function ScannerCamera() {
   }
 
   async function handleSubmit() {
+    if (actionStage !== ScannerCameraStage.Finish) return;
     // I don't want to log in, so temporarily comment out for development
     // if (!user) return;
 
-    setIsProcessing(true);
+    setActionStage(ScannerCameraStage.Submit);
 
     const payload = await convertUriToPayload(
       // "fake-uuid-id" only for development without login
-      user?.sub || "fake-uuid-id",
+      user?.sub || "fake-id-uuid",
       photosUri[0],
       photosUri[1]
     );
@@ -161,13 +164,12 @@ export default function ScannerCamera() {
     const data = await res.json();
     if (data.success) {
       console.log("Base64 file transfer successfully", data.result);
+      setAIResult(data.result);
+      setActionStage(ScannerCameraStage.End);
     }
-
-    setIsProcessing(false);
   }
 
   function handleRestart() {
-    setIsScanned(false);
     setIsPhotoTaken(false);
     setActionStage(ScannerCameraStage.Scan);
     setPhotosUri([]);
@@ -199,22 +201,21 @@ export default function ScannerCamera() {
               handleTakePhotos={handleTakePhotos}
             />
 
-            {!isProcessing && (
-              <FinishRestartButton
-                actionStage={actionStage}
-                handleSubmit={handleSubmit}
-                handleRestart={handleRestart}
-              />
-            )}
+            <FinishRestartButton
+              actionStage={actionStage}
+              handleSubmit={handleSubmit}
+              handleRestart={handleRestart}
+            />
 
-            {isProcessing && (
-              <VStack className="absolute top-1/2 bg-black/50 gap-2 p-4 rounded-md">
-                <Spinner size="large" color="white" />
-                <Text className="text-white">Processing...</Text>
-              </VStack>
-            )}
+            <ProcessingSpinner actionStage={actionStage} />
 
             <TakenPhotosPreview photosUri={photosUri} />
+
+            <DisposalSuccess
+              actionStage={actionStage}
+              aiResult={aiResult}
+              handleRestart={handleRestart}
+            />
           </View>
         </CameraView>
       )}

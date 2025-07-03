@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { mockPhotosPairAnalysis } from "../service/mockPhotosPairAnalysis";
+import { uuid } from "uuidv4";
 
 export async function analysisPhotos(req: Request, res: Response) {
   const { before, after } = req.body;
@@ -8,7 +9,16 @@ export async function analysisPhotos(req: Request, res: Response) {
   const afterBuffer = Buffer.from(after, "base64");
 
   try {
-    const result = mockPhotosPairAnalysis(beforeBuffer, afterBuffer);
+    const { detectedItems, timestamp } = mockPhotosPairAnalysis(
+      beforeBuffer,
+      afterBuffer
+    );
+
+    const detectedItemsWithID = detectedItems.map((item) => {
+      return { ...item, id: uuid() };
+    });
+
+    const result = { detectedItems: detectedItemsWithID, timestamp };
 
     console.log(result, "result");
 

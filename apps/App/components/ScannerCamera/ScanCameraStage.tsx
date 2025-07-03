@@ -14,7 +14,7 @@ export default function ScanCameraStage({
   actionStage,
   stageText,
 }: ScanCameraStageProps) {
-  const isActive = actionStage === stage ? "bg-purple-800/30" : "bg-black/30";
+  const isActive = actionStage === stage ? "bg-white/30" : "bg-black/30";
 
   return (
     <Box className={`border-2 border-white w-1/3 rounded-md ${isActive}`}>
