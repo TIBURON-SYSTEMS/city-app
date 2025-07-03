@@ -5,7 +5,7 @@ import {
   // BarcodeScanningResult,
 } from "expo-camera";
 import { useCallback, useState, useRef } from "react";
-import { Text, View } from "react-native";
+import { View } from "react-native";
 import { AI_SERVER_URL, BASE_URL } from "../../utils/baseUrl";
 import { ScannerCameraStage } from "../../types/enums";
 import { photos } from "../../../admin/src/mocks/photos";
@@ -17,6 +17,9 @@ import TakenPhotosPreview from "./TakenPhotosPreview";
 import FullScreenPhotoPreview from "./FullScreenPhotoPreview";
 import { useAuth0 } from "react-native-auth0";
 import convertUriToPayload from "../../utils/convertUriToPayload";
+import { Spinner } from "../ui/spinner";
+import { Text } from "../ui/text";
+import { VStack } from "../ui/vstack";
 
 const photoConfig = {
   quality: 0.7,
@@ -28,6 +31,7 @@ export default function ScannerCamera() {
   const [isScanned, setIsScanned] = useState(false);
   const [isFocused, setIsFocused] = useState(true);
   const [isPhotoTaken, setIsPhotoTaken] = useState(false);
+  const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [actionStage, setActionStage] = useState<ScannerCameraStage>(
     ScannerCameraStage.Scan
   );
@@ -133,6 +137,8 @@ export default function ScannerCamera() {
     // I don't want to log in, so temporarily comment out for development
     // if (!user) return;
 
+    setIsProcessing(true);
+
     const payload = await convertUriToPayload(
       // "fake-uuid-id" only for development without login
       user?.sub || "fake-uuid-id",
@@ -153,7 +159,11 @@ export default function ScannerCamera() {
     }
 
     const data = await res.json();
-    console.log("Base64 file transfer successfully", data);
+    if (data.success) {
+      console.log("Base64 file transfer successfully", data.result);
+    }
+
+    setIsProcessing(false);
   }
 
   function handleRestart() {
@@ -189,11 +199,20 @@ export default function ScannerCamera() {
               handleTakePhotos={handleTakePhotos}
             />
 
-            <FinishRestartButton
-              actionStage={actionStage}
-              handleSubmit={handleSubmit}
-              handleRestart={handleRestart}
-            />
+            {!isProcessing && (
+              <FinishRestartButton
+                actionStage={actionStage}
+                handleSubmit={handleSubmit}
+                handleRestart={handleRestart}
+              />
+            )}
+
+            {isProcessing && (
+              <VStack className="absolute top-1/2 bg-black/50 gap-2 p-4 rounded-md">
+                <Spinner size="large" color="white" />
+                <Text className="text-white">Processing...</Text>
+              </VStack>
+            )}
 
             <TakenPhotosPreview photosUri={photosUri} />
           </View>

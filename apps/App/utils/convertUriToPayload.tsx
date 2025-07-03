@@ -19,8 +19,8 @@ async function convertUriToPayload(
   return {
     before: base64ImageBefore,
     after: base64ImageAfter,
-    filenameBefore: `photo_before_${userId}_${Date.now()}.png`,
-    filenameAfter: `photo_after_${userId}_${Date.now()}.png`,
+    filenameBefore: `photo_before_${userId}_${new Date().toISOString()}.png`,
+    filenameAfter: `photo_after_${userId}_${new Date().toISOString()}.png`,
     typeBefore: "image/png",
     typeAfter: "image/png",
   };

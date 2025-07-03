@@ -1536,6 +1536,11 @@
   dependencies:
     "@react-native-aria/focus" "^0.2.9"
 
+"@gluestack-ui/spinner@^0.1.15":
+  version "0.1.15"
+  resolved "https://registry.yarnpkg.com/@gluestack-ui/spinner/-/spinner-0.1.15.tgz#712276227568476f55672b7bbe0082478c0c0a65"
+  integrity sha512-jkXOGhna05HM2tcPKbA+t+vqcVRgRowwC6ES0A9kY5fcuURH1V41UFx/YWyHdSsHwmWlIoCCdWycF78UbNVdPg==
+
 "@gluestack-ui/toast@^1.0.9":
   version "1.0.9"
   resolved "https://registry.yarnpkg.com/@gluestack-ui/toast/-/toast-1.0.9.tgz#6ee18051e7af0459fbb3ede4cc4bf1a9ec1719a0"
