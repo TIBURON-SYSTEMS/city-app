@@ -16,6 +16,7 @@ import { Button } from "../ui/button";
 import { ChallengeWithProduct } from "@/app/brand-dashboard/challenges/[id]/page";
 import {
   deleteChallenge,
+  goToRewardForm,
   publishChallenge,
 } from "@/app/brand-dashboard/challenges/[id]/actions";
 import { toast } from "sonner";
@@ -106,18 +107,28 @@ export default function ChallengeDetails({ data }: ChallengeDetailsProps) {
       </div>
 
       <Separator className="bg-slate-200 mb-5 mt-5" />
+      <div className="flex justify-between">
+        <form action={() => goToRewardForm(data.id)}>
+          <Button
+            type="submit"
+            className="bg-green-600 hover:bg-green-700 text-white"
+          >
+            Add Reward
+          </Button>
+        </form>
 
-      <div className="flex justify-end space-x-4 pt-4">
-        <Button onClick={handleDelete} type="button" variant="destructive">
-          Delete
-        </Button>
-        <Button
-          onClick={handlePublish}
-          type="button"
-          disabled={data.status === "active" ? true : false}
-        >
-          Publish
-        </Button>
+        <div className="flex gap-4">
+          <Button onClick={handleDelete} type="button" variant="destructive">
+            Delete
+          </Button>
+          <Button
+            onClick={handlePublish}
+            type="button"
+            disabled={data.status === "active" ? true : false}
+          >
+            Publish
+          </Button>
+        </div>
       </div>
     </BrandCardLayout>
   );

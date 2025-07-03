@@ -13,7 +13,7 @@ export async function createChallenge(
   const result = ChallengeFormSchema.safeParse(data);
   try {
     if (!result.success) {
-      return new Error("Invalide data");
+      return new Error("Invalid data");
     }
 
     if (!brand) {

@@ -1,5 +1,6 @@
 "use server";
 
+import { redirect } from "next/navigation";
 import prisma from "../../../../../prisma/db";
 
 export async function publishChallenge(id: string) {
@@ -41,4 +42,8 @@ export async function deleteChallenge(id: string) {
 
     return new Error(message);
   }
+}
+
+export async function goToRewardForm(id: string) {
+  redirect(`/brand-dashboard/challenges/${id}/reward`);
 }
