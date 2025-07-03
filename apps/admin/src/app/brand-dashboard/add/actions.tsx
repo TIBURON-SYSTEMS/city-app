@@ -2,7 +2,7 @@
 
 import { ChallengeFormSchema } from "@/lib/schemas";
 import { z } from "zod";
-import prisma from "../../../prisma/db";
+import prisma from "../../../../prisma/db";
 
 type CreateChallengeData = z.infer<typeof ChallengeFormSchema>;
 
@@ -11,17 +11,16 @@ export async function createChallenge(
   brand: string
 ) {
   const result = ChallengeFormSchema.safeParse(data);
-
   try {
     if (!result.success) {
-      return { error: "Invalid data" };
+      return new Error("Invalide data");
     }
 
     if (!brand) {
-      return { error: "No brand id" };
+      return new Error("No brand id");
     }
 
-    await prisma.challenge.create({
+    const challenge = await prisma.challenge.create({
       data: {
         label: result.data.label,
         status: result.data.published,
@@ -38,8 +37,14 @@ export async function createChallenge(
         },
       },
     });
+
+    return challenge;
   } catch (error) {
-    return { error };
+    let message;
+
+    if (error instanceof Error) message = error.message;
+    else message = String(error);
+
+    return new Error(message);
   }
-  return;
 }

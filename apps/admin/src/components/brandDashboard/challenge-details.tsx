@@ -28,8 +28,9 @@ interface ChallengeDetailsProps {
 export default function ChallengeDetails({ data }: ChallengeDetailsProps) {
   async function handlePublish() {
     const action = await publishChallenge(data.id);
-    if (action?.error) {
-      toast.error(`An error occurred! Please try again. (${action.error})`);
+
+    if (action instanceof Error) {
+      toast.error(`An error occurred! Please try again. (${action})`);
       return;
     }
     toast.success("Challenge is now available to users");
@@ -37,8 +38,9 @@ export default function ChallengeDetails({ data }: ChallengeDetailsProps) {
 
   async function handleDelete() {
     const action = await deleteChallenge(data.id);
-    if (action?.error) {
-      toast.error(`An error occurred! Please try again. (${action.error})`);
+
+    if (action instanceof Error) {
+      toast.error(`An error occurred! Please try again. (${action})`);
       return;
     }
     toast.warning("Challenge deleted successfully");

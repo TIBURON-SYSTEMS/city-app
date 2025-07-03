@@ -33,7 +33,7 @@ import { cn } from "@/lib/utils";
 import { CalendarIcon, Package, Target } from "lucide-react";
 import { format } from "date-fns";
 
-import { createChallenge } from "@/app/brand-dashboard/actions";
+import { createChallenge } from "@/app/brand-dashboard/add/actions";
 import { ChallengeFormSchema } from "@/lib/schemas";
 import {
   Card,
@@ -55,14 +55,15 @@ export default function ChallengeForm({ brand }: { brand: string }) {
     },
   });
   async function onSubmit(data: z.infer<typeof ChallengeFormSchema>) {
-    const result = await createChallenge(data, brand);
+    const action = await createChallenge(data, brand);
 
-    if (result?.error) {
-      toast.error(`An error occurred! Please try again. (${result.error})`);
+    if (action instanceof Error) {
+      toast.error(`An error occurred! Please try again. (${action})`);
       return;
     }
 
     toast.success("You submitted a new challenge");
+    redirect(`/brand-dashboard/challenges/${action.id}`);
   }
 
   function handleCancel() {
