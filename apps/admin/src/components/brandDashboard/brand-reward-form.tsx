@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { redirect } from "next/navigation";
+import { createReward } from "@/app/brand-dashboard/challenges/[id]/reward/actions";
 
 const formSchema = z.object({
   rewardName: z.string().min(1, {
@@ -41,10 +42,20 @@ export default function BrandRewardForm({ challengeId }: BrandRewardFormProps) {
     },
   });
 
-  function onSubmit(data: z.infer<typeof formSchema>) {
+  async function onSubmit(data: z.infer<typeof formSchema>) {
+    const action = await createReward({
+      label: data.rewardName,
+      amount: data.rewardValue,
+      challengeId: challengeId,
+    });
+
+    if (action instanceof Error) {
+      toast.error(`An error occurred! Please try again. (${action})`);
+      return;
+    }
+
     toast.success("Reward added successfully!");
     redirect(`/brand-dashboard/challenges/${challengeId}`);
-    console.log(data);
   }
 
   return (
@@ -87,7 +98,7 @@ export default function BrandRewardForm({ challengeId }: BrandRewardFormProps) {
             )}
           />
 
-          <Button type="submit">Add Reward</Button>
+          <Button type="submit">Submit</Button>
         </form>
       </Form>
     </BrandCardLayout>

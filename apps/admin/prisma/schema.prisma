@@ -111,7 +111,9 @@ model Challenge {
 model Reward {
   id           String              @id @default(cuid())
   label        String
-  challenge    Challenge[]
+  amount       Int
+  challengeId  String
+  challenge    Challenge           @relation(fields: [challengeId], references: [id], onDelete: Cascade)
   participants ParticipantReward[]
 }
 
