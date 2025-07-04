@@ -2,22 +2,37 @@ import { Link } from "expo-router";
 import { Card } from "./ui/card";
 import { Heading } from "./ui/heading";
 import { Progress, ProgressFilledTrack } from "./ui/progress";
-
 import Challenge from "../types/types";
 import { useAuth0 } from "react-native-auth0";
 import { Box } from "./ui/box";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { Text } from "./ui/text";
+import { useQuery } from "@tanstack/react-query";
+import { BASE_URL } from "@/utils/baseUrl";
 
 interface ChallengeCardProps {
   challenge: Challenge;
-  isOnGoing: boolean;
 }
-export default function ChallengeCard({
-  challenge,
-  isOnGoing,
-}: ChallengeCardProps) {
+
+export default function ChallengeCard({ challenge }: ChallengeCardProps) {
   const { user } = useAuth0();
+
+  async function getChallengeProgress() {
+    const res = await fetch(
+      `${BASE_URL}/api/participation?userId=${user?.sub}&challengeId=${challenge.id}`
+    );
+
+    const data = await res.json();
+
+    if (!data) return;
+
+    return data.participation;
+  }
+
+  const { data: participation } = useQuery({
+    queryKey: ["progress", user?.sub, challenge.id],
+    queryFn: getChallengeProgress,
+  });
 
   return (
     <Link
@@ -37,13 +52,13 @@ export default function ChallengeCard({
 
         <Text className="mb-2">by {challenge.brand}</Text>
 
-        {user && isOnGoing && (
+        {user && participation && (
           <>
             <Text className="mb-2">
-              {challenge.amount} of {challenge.goal} items sorted
+              {participation.progressAmount} of {challenge.goal} items sorted
             </Text>
             <Progress
-              value={challenge.amount}
+              value={participation.progressAmount}
               size="md"
               orientation="horizontal"
             >

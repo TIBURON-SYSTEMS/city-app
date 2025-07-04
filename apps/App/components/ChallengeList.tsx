@@ -13,7 +13,7 @@ export default function ChallengeList() {
   async function getAvailableChallenges(): Promise<Challenge[]> {
     if (!user) return [];
     const res = await fetch(
-      `${BASE_URL}/api/challenges/${user.email}?condition=available`
+      `${BASE_URL}/api/challenges/${user.sub}?condition=available`
     );
     const data = await res.json();
 
@@ -25,7 +25,7 @@ export default function ChallengeList() {
   async function getOnGoingChallenges(): Promise<Challenge[]> {
     if (!user) return [];
     const res = await fetch(
-      `${BASE_URL}/api/challenges/${user.email}?condition=ongoing`
+      `${BASE_URL}/api/challenges/${user.sub}?condition=ongoing`
     );
     const data = await res.json();
 
@@ -71,11 +71,7 @@ export default function ChallengeList() {
               </Heading>
               {onGoingChallenges?.map((challenge) => {
                 return (
-                  <ChallengeCard
-                    key={challenge.id}
-                    challenge={challenge}
-                    isOnGoing={true}
-                  />
+                  <ChallengeCard key={challenge.id} challenge={challenge} />
                 );
               })}
             </Box>
@@ -85,11 +81,7 @@ export default function ChallengeList() {
               </Heading>
               {availableChallenges?.map((challenge) => {
                 return (
-                  <ChallengeCard
-                    key={challenge.id}
-                    challenge={challenge}
-                    isOnGoing={false}
-                  />
+                  <ChallengeCard key={challenge.id} challenge={challenge} />
                 );
               })}
             </Box>
@@ -101,13 +93,7 @@ export default function ChallengeList() {
               All Challenges
             </Heading>
             {challenges?.map((challenge) => {
-              return (
-                <ChallengeCard
-                  key={challenge.id}
-                  challenge={challenge}
-                  isOnGoing={false}
-                />
-              );
+              return <ChallengeCard key={challenge.id} challenge={challenge} />;
             })}
           </Box>
         )}

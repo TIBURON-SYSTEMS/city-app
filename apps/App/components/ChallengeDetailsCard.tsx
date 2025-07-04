@@ -79,6 +79,23 @@ export default function ChallengeDetailsCard() {
     return;
   }
 
+  async function getChallengeProgress() {
+    const res = await fetch(
+      `${BASE_URL}/api/participation?userId=${user?.sub}&challengeId=${challenge?.id}`
+    );
+
+    const data = await res.json();
+
+    if (!data) return;
+
+    return data.participation;
+  }
+
+  const { data: participation } = useQuery({
+    queryKey: ["progress", user?.sub, challenge?.id],
+    queryFn: getChallengeProgress,
+  });
+
   if (!challenge) return;
   //if user is alreary a participant Participate button is still rendered and it should be gone
   async function handlePress() {
@@ -176,10 +193,11 @@ export default function ChallengeDetailsCard() {
                   Current progress
                 </Heading>
                 <Text className="mb-2">
-                  {challenge.amount} of {challenge.goal} items sorted
+                  {participation.progressAmount} of {challenge.goal} items
+                  sorted
                 </Text>
                 <Progress
-                  value={challenge.amount}
+                  value={participation.progressAmount}
                   size="md"
                   orientation="horizontal"
                 >

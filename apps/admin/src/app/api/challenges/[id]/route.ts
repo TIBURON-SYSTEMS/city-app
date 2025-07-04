@@ -4,17 +4,16 @@ import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ email: string }> }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const { email } = await params;
+    const { id } = await params;
+
     const query = request.nextUrl.searchParams.get("condition");
 
     if (query === "ongoing") {
       const onGoingChallenges = challenges.filter((challenge) => {
-        if (
-          challenge.users.filter((user) => user.email === email).length === 1
-        ) {
+        if (challenge.users.filter((user) => user.id === id).length === 1) {
           return challenge;
         }
       });
@@ -25,7 +24,7 @@ export async function GET(
 
     if (query === "available") {
       const availableChallenges = challenges.filter((challenge) => {
-        if (challenge.users.every((user) => user.email !== email)) {
+        if (challenge.users.every((user) => user.id !== id)) {
           return challenge;
         }
       });

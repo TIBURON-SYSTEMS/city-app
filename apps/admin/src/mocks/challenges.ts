@@ -12,8 +12,8 @@ export const challenges = [
     product: "Pepsi can",
     users: [
       {
-        id: "1",
-        email: "arnaud.obri@gmail.com",
+        id: "google-oauth2|100140580002869679331",
+        email: "footworkextreme@gmail.com",
       },
     ],
     amount: 45,
