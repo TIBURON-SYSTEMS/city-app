@@ -184,13 +184,20 @@ export default function ChallengeDetailsCard() {
               <HStack className="gap-2 flex-wrap">
                 {/* temporarily give a interface for reward */}
                 {rewards.map((reward: { id: string; label: string }) => (
-                  <Badge
+                  <Link
                     key={reward.id}
-                    variant="outline"
-                    className="bg-slate-100/80 rounded-xl"
+                    href={{
+                      pathname: "/reward/[id]",
+                      params: { id: reward.id },
+                    }}
                   >
-                    <BadgeText>{reward.label}</BadgeText>
-                  </Badge>
+                    <Badge
+                      variant="outline"
+                      className="bg-slate-100/80 rounded-xl"
+                    >
+                      <BadgeText>{reward.label}</BadgeText>
+                    </Badge>
+                  </Link>
                 ))}
               </HStack>
             </Box>

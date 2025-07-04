@@ -13,8 +13,6 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ participation: false });
     }
 
-    console.log(rewards, "wqqdwdqd");
-
     return NextResponse.json({ rewards });
   } catch (error) {
     console.error("API Error:", error);
