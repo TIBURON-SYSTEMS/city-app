@@ -1,20 +1,20 @@
 import { Link, router, useLocalSearchParams } from "expo-router";
-import { Badge, BadgeText } from "./ui/badge";
-import { Box } from "./ui/box";
-import { Button, ButtonText } from "./ui/button";
-import { Card } from "./ui/card";
-import { Heading } from "./ui/heading";
-import { HStack } from "./ui/hstack";
-import { Text } from "./ui/text";
 import AntDesign from "@expo/vector-icons/AntDesign";
-import Challenge from "../types/types";
+import Challenge from "../../types/types";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuth0 } from "react-native-auth0";
 import { useState, useEffect } from "react";
-import { Progress, ProgressFilledTrack } from "./ui/progress";
 import { ScrollView, View } from "react-native";
 import Octicons from "@expo/vector-icons/Octicons";
-import { BASE_URL } from "../utils/baseUrl";
+import { BASE_URL } from "../../utils/baseUrl";
+import { Box } from "../ui/box";
+import { Card } from "../ui/card";
+import { Button, ButtonText } from "../ui/button";
+import { Heading } from "../ui/heading";
+import { Text } from "../ui/text";
+import { HStack } from "../ui/hstack";
+import { Badge, BadgeText } from "../ui/badge";
+import { Progress, ProgressFilledTrack } from "../ui/progress";
 
 export default function ChallengeDetailsCard() {
   const [isParticipated, setIsParticipated] = useState<boolean>(false);
@@ -28,17 +28,17 @@ export default function ChallengeDetailsCard() {
     getChallengeById();
   }, [isLoading, user]);
 
-  const { data: challenge } = useQuery({
-    queryKey: ["challenge", id],
-    queryFn: getChallengeById,
-  });
-
   const mutation = useMutation({
     mutationFn: () => addUserToChallenge(user?.email),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["ongoing-challenges"] });
       queryClient.invalidateQueries({ queryKey: ["available-challenges"] });
     },
+  });
+
+  const { data: challenge } = useQuery({
+    queryKey: ["challenge", id],
+    queryFn: getChallengeById,
   });
 
   async function getChallengeById(): Promise<Challenge | undefined> {
@@ -94,6 +94,20 @@ export default function ChallengeDetailsCard() {
   const { data: participation } = useQuery({
     queryKey: ["progress", user?.sub, challenge?.id],
     queryFn: getChallengeProgress,
+  });
+
+  async function getRewardsByChallengeId() {
+    const res = await fetch(`${BASE_URL}/api/rewards?challengeId=${id}`);
+    const data = await res.json();
+
+    if (!data) return;
+
+    return data.rewards;
+  }
+
+  const { data: rewards } = useQuery({
+    queryKey: ["rewards"],
+    queryFn: getRewardsByChallengeId,
   });
 
   if (!challenge) return;
@@ -168,17 +182,16 @@ export default function ChallengeDetailsCard() {
                 Rewards
               </Heading>
               <HStack className="gap-2 flex-wrap">
-                {challenge.rewards.map((reward) => {
-                  return (
-                    <Badge
-                      variant="outline"
-                      className="bg-slate-100/80 rounded-xl"
-                      key={reward}
-                    >
-                      <BadgeText>{reward}</BadgeText>
-                    </Badge>
-                  );
-                })}
+                {/* temporarily give a interface for reward */}
+                {rewards.map((reward: { id: string; label: string }) => (
+                  <Badge
+                    key={reward.id}
+                    variant="outline"
+                    className="bg-slate-100/80 rounded-xl"
+                  >
+                    <BadgeText>{reward.label}</BadgeText>
+                  </Badge>
+                ))}
               </HStack>
             </Box>
 
