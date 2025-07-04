@@ -9,6 +9,7 @@ import {
   Milk,
   Package,
   MessageSquareQuote,
+  Gift,
 } from "lucide-react";
 import moment from "moment";
 import { Separator } from "../ui/separator";
@@ -72,6 +73,17 @@ export default function ChallengeDetails({ data }: ChallengeDetailsProps) {
                 Remaining days: {moment(data.endDate).endOf("day").fromNow()}
               </p>
             </div>
+            {data.rewards?.length > 0 && (
+              <div className="flex items-center gap-2">
+                <Gift />
+                <p className="text-base font-medium text-slate-700">
+                  Rewards:{" "}
+                  {data.rewards
+                    .map((r) => `${r.label} (${r.amount})`)
+                    .join(", ")}
+                </p>
+              </div>
+            )}
 
             <div className="flex items-center gap-2">
               <MessageSquareQuote />
