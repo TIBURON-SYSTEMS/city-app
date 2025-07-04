@@ -11,21 +11,31 @@ import {
 import { auth0 } from "@/lib/auth0";
 import { Info, Lock, LogIn, UserPlus } from "lucide-react";
 import { redirect } from "next/navigation";
+import prisma from "../../prisma/db";
+import { addUsertoDb } from "./actions";
 
 export default async function Home() {
   const session = await auth0.getSession();
 
   if (session) {
-    const roles = (session.user.tiburonroles as string[]) || [];
-
-    if (roles.includes("brand")) {
-      redirect("/brand-dashboard");
-    }
-
-    if (roles.includes("admin")) {
+    const auth0Roles = (session.user.tiburonroles as string[]) || [];
+    if (auth0Roles.includes("admin")) {
       redirect("/dashboard");
     }
-    redirect("/unauthorized");
+    const userEmail = session.user.email;
+
+    if (!userEmail) return;
+
+    const dBUser = await prisma.user.findUnique({
+      where: { email: userEmail },
+    });
+    if (!dBUser) {
+      const newUser = await addUsertoDb(userEmail);
+      if (!newUser) return;
+      redirect(`/brand-registration/${newUser.id}`);
+    }
+
+    redirect("/brand-dashboard");
   }
 
   return (

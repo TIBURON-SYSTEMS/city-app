@@ -22,3 +22,16 @@ export const ChallengeFormSchema = z.object({
     })
     .max(300, { message: "Description must be at least 300 characters." }),
 });
+
+export const BrandFormSchema = z.object({
+  name: z
+    .string()
+    .min(1, {
+      message: "Brand name is required.",
+    })
+    .max(100, {
+      message: "Brand name cannot exceed 52 characters.",
+    }),
+});
+
+export type BrandFormData = z.infer<typeof BrandFormSchema>;

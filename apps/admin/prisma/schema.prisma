@@ -23,6 +23,12 @@ enum UserRole {
   ADMIN
 }
 
+enum BrandStatus {
+  PENDING
+  ACTIVE
+  REJECTED
+}
+
 model User {
   id          String       @id @default(cuid())
   email       String       @unique
@@ -51,6 +57,7 @@ model Brand {
   products   Product[]
   userId     String      @unique
   user       User        @relation(fields: [userId], references: [id])
+  status     BrandStatus @default(PENDING)
 }
 
 model ParticipantReward {

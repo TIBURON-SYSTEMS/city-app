@@ -7,11 +7,6 @@ export default async function AddChallengePage() {
   const session = await auth0.getSession();
   if (!session) {
     redirect("/auth/login");
-  } else {
-    const roles = (session.user.tiburonroles as string[]) || [];
-    if (!roles.includes("brand")) {
-      redirect("/unauthorized");
-    }
   }
 
   const userWithBrand = await prisma.user.findUnique({
@@ -19,9 +14,9 @@ export default async function AddChallengePage() {
     include: { brand: true },
   });
 
-  if (!userWithBrand) return;
-
-  if (!userWithBrand.brand) return;
+  if (!userWithBrand || !userWithBrand.brand) {
+    redirect("/brand-registration");
+  }
 
   const id = userWithBrand.brand.id;
   return (

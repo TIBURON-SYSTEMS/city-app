@@ -23,11 +23,6 @@ export default async function ChallengeDetailsPage(props: { params: Params }) {
   const session = await auth0.getSession();
   if (!session) {
     redirect("/auth/login");
-  } else {
-    const roles = (session.user.tiburonroles as string[]) || [];
-    if (!roles.includes("brand")) {
-      redirect("/unauthorized");
-    }
   }
 
   const challenge: ChallengeWithProduct | null =

@@ -1,4 +1,4 @@
-import { UserRole } from "@/generated/prisma";
+import { BrandStatus, UserRole } from "@/generated/prisma";
 import prisma from "./db";
 
 async function main() {
@@ -14,6 +14,7 @@ async function main() {
     data: {
       name: "Demo Brand",
       userId: demoBrand.id,
+      status: BrandStatus.ACTIVE,
     },
   });
   console.log({ testBrand });

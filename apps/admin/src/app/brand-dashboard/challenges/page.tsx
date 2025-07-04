@@ -4,15 +4,16 @@ import prisma from "../../../../prisma/db";
 import ListAllChallenges from "@/components/brandDashboard/card-challenges";
 import { Prisma } from "@/generated/prisma";
 
+type BrandWithChallenges = Prisma.BrandGetPayload<{
+  include: {
+    challenges: true;
+  };
+}>;
+
 export default async function ListChallenges() {
   const session = await auth0.getSession();
   if (!session) {
     redirect("/auth/login");
-  } else {
-    const roles = (session.user.tiburonroles as string[]) || [];
-    if (!roles.includes("brand")) {
-      redirect("/unauthorized");
-    }
   }
 
   const userWithBrand = await prisma.user.findUnique({
@@ -25,12 +26,6 @@ export default async function ListChallenges() {
   if (!userWithBrand.brand) return;
 
   const id = userWithBrand.brand.id;
-
-  type BrandWithChallenges = Prisma.BrandGetPayload<{
-    include: {
-      challenges: true;
-    };
-  }>;
 
   const challengesData: BrandWithChallenges | null =
     await prisma.brand.findUnique({
