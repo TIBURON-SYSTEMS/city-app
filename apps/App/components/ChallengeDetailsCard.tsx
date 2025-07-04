@@ -101,7 +101,11 @@ export default function ChallengeDetailsCard() {
   async function handlePress() {
     if (!user) {
       try {
-        await authorize();
+        await authorize({
+          additionalParameters: {
+            prompt: "select_account",
+          },
+        });
       } catch (error) {
         console.error("Login failed", error);
       }

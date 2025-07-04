@@ -15,6 +15,10 @@ export const challenges = [
         id: "google-oauth2|100140580002869679331",
         email: "footworkextreme@gmail.com",
       },
+      {
+        id: "google-oauth2|116867629082812513957",
+        email: "arnaud.obri@gmail.com",
+      },
     ],
     amount: 45,
   },
@@ -33,6 +37,14 @@ export const challenges = [
       {
         id: "1",
         email: "bob.obri@gmail.com",
+      },
+      {
+        id: "google-oauth2|100140580002869679331",
+        email: "footworkextreme@gmail.com",
+      },
+      {
+        id: "google-oauth2|116867629082812513957",
+        email: "arnaud.obri@gmail.com",
       },
     ],
     amount: 30,
