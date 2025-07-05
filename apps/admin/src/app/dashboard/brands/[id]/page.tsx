@@ -2,7 +2,6 @@ import { auth0 } from "@/lib/auth0";
 import { redirect } from "next/navigation";
 import { BrandDetails } from "@/components/dashboard/brand-details";
 import prisma from "../../../../../prisma/db";
-import { count } from "console";
 
 type Params = Promise<{ id: string }>;
 

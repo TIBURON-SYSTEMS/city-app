@@ -120,13 +120,13 @@ export default function ChallengeDetails({ data }: ChallengeDetailsProps) {
           <div className="flex items-center gap-2">
             <Milk />
             <p className="text-base font-medium text-slate-700 capitalize">
-              Product: {data.ChallengeProduct[0].product.label}
+              Product: {data.challengeProducts[0].product.label}
             </p>
           </div>
           <div className="flex items-center gap-2">
             <Package />
             <p className="text-base font-medium text-slate-700 capitalize">
-              Material: {data.ChallengeProduct[0].product.material}
+              Material: {data.challengeProducts[0].product.material}
             </p>
           </div>
         </div>

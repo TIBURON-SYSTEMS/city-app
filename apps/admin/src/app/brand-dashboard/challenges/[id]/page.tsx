@@ -13,7 +13,7 @@ export async function generateMetadata(props: { params: Params }) {
 }
 export type ChallengeWithProduct = Prisma.ChallengeGetPayload<{
   include: {
-    ChallengeProduct: {
+    challengeProducts: {
       include: {
         product: true;
       };
@@ -41,7 +41,7 @@ export default async function ChallengeDetailsPage(props: { params: Params }) {
         id,
       },
       include: {
-        ChallengeProduct: {
+        challengeProducts: {
           include: {
             product: true,
           },
