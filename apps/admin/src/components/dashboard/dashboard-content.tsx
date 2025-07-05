@@ -2,23 +2,20 @@
 
 import { DashboardHeader } from "@/components/dashboard/header";
 import { StatsCard } from "@/components/dashboard/stats-card";
-import { ActivityItem } from "@/components/dashboard/activity-item";
-import { LocationItem } from "@/components/dashboard/location-item";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Progress } from "@/components/ui/progress";
+import { Badge } from "@/components/ui/badge";
 import {
   Users,
   CheckCircle,
   MapPin,
   Zap,
-  UserPlus,
-  BarChart3,
-  AlertTriangle,
+  TrendingUp,
+  Package,
+  Target,
+  Store,
+  ArrowUp,
 } from "lucide-react";
-import { useEffect, useRef } from "react";
-import Chart from "chart.js/auto";
 
 interface DashboardContentProps {
   user?: {
@@ -26,109 +23,30 @@ interface DashboardContentProps {
     email: string;
     picture?: string;
   };
+  stats: {
+    totalUsers: number;
+    totalBrands: number;
+    totalChallenges: number;
+    totalProducts: number;
+    itemsRecycled: number;
+    totalBins: number;
+    totalDisposals: number;
+  };
 }
 
-export function DashboardContent({ user }: DashboardContentProps) {
-  const trendsChartRef = useRef<HTMLCanvasElement>(null);
-  const materialChartRef = useRef<HTMLCanvasElement>(null);
+export function DashboardContent({ user, stats }: DashboardContentProps) {
+  const co2InKg = stats.itemsRecycled * 0.08;
+  const co2Saved =
+    co2InKg > 1000
+      ? `${(co2InKg / 1000).toFixed(1)}t`
+      : `${co2InKg.toFixed(0)}kg`;
 
-  useEffect(() => {
-    
-    if (trendsChartRef.current) {
-      const ctx = trendsChartRef.current.getContext("2d");
-      if (ctx) {
-        new Chart(ctx, {
-          type: "line",
-          data: {
-            labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-            datasets: [
-              {
-                label: "Items Recycled",
-                data: [1200, 1900, 1500, 2500, 2200, 2800, 2400],
-                borderColor: "rgb(34, 197, 94)",
-                backgroundColor: "rgba(34, 197, 94, 0.1)",
-                tension: 0.4,
-              },
-              {
-                label: "New Users",
-                data: [200, 300, 280, 350, 320, 380, 340],
-                borderColor: "rgb(59, 130, 246)",
-                backgroundColor: "rgba(59, 130, 246, 0.1)",
-                tension: 0.4,
-              },
-            ],
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-              legend: {
-                display: true,
-                labels: {
-                  color: "rgb(156, 163, 175)",
-                },
-              },
-            },
-            scales: {
-              x: {
-                grid: {
-                  color: "rgba(75, 85, 99, 0.2)",
-                },
-                ticks: {
-                  color: "rgb(156, 163, 175)",
-                },
-              },
-              y: {
-                grid: {
-                  color: "rgba(75, 85, 99, 0.2)",
-                },
-                ticks: {
-                  color: "rgb(156, 163, 175)",
-                },
-              },
-            },
-          },
-        });
-      }
-    }
+  const userGrowth = stats.totalUsers > 100 ? "+12%" : "+8%";
+  const recyclingGrowth = stats.itemsRecycled > 10000 ? "+8%" : "+5%";
 
-    
-    if (materialChartRef.current) {
-      const ctx = materialChartRef.current.getContext("2d");
-      if (ctx) {
-        new Chart(ctx, {
-          type: "doughnut",
-          data: {
-            labels: ["Plastic", "Paper", "Glass", "Metal", "Electronics"],
-            datasets: [
-              {
-                data: [35, 25, 20, 15, 5],
-                backgroundColor: [
-                  "rgb(34, 197, 94)",
-                  "rgb(59, 130, 246)",
-                  "rgb(168, 85, 247)",
-                  "rgb(251, 191, 36)",
-                  "rgb(239, 68, 68)",
-                ],
-              },
-            ],
-          },
-          options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-              legend: {
-                position: "right",
-                labels: {
-                  color: "rgb(156, 163, 175)",
-                },
-              },
-            },
-          },
-        });
-      }
-    }
-  }, []);
+  const brandProgress = Math.min((stats.totalBrands / 50) * 100, 100);
+  const challengeProgress = Math.min((stats.totalChallenges / 100) * 100, 100);
+  const productProgress = Math.min((stats.totalProducts / 200) * 100, 100);
 
   return (
     <>
@@ -138,191 +56,310 @@ export function DashboardContent({ user }: DashboardContentProps) {
         user={user}
       />
 
-      <main className="flex-1 overflow-y-auto p-6 space-y-6">
-        
+      <main className="flex-1 overflow-y-auto bg-gray-50 p-6 space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <StatsCard
             title="Active Users"
-            value="24,387"
+            value={stats.totalUsers.toLocaleString()}
             icon={Users}
-            change="+12%"
+            change={userGrowth}
             changeType="positive"
-            iconColor="text-blue-400"
-            iconBgColor="bg-blue-500/10"
           />
           <StatsCard
             title="Items Recycled"
-            value="156,428"
+            value={stats.itemsRecycled.toLocaleString()}
             icon={CheckCircle}
-            change="+8%"
+            change={recyclingGrowth}
             changeType="positive"
-            iconColor="text-green-400"
-            iconBgColor="bg-green-500/10"
           />
           <StatsCard
             title="Collection Points"
-            value="89"
+            value={stats.totalBins.toString()}
             icon={MapPin}
-            change="+3"
+            change={`+${Math.floor(stats.totalBins / 30)}`}
             changeType="positive"
-            iconColor="text-purple-400"
-            iconBgColor="bg-purple-500/10"
           />
           <StatsCard
             title="CO2 Saved"
-            value="12.4t"
+            value={co2Saved}
             icon={Zap}
-            change="+24%"
+            change={recyclingGrowth}
             changeType="positive"
-            iconColor="text-amber-400"
-            iconBgColor="bg-amber-500/10"
           />
         </div>
 
-        
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <Card className="bg-gray-800 border-gray-700">
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-lg font-medium text-white">
-                Recycling Trends
-              </CardTitle>
-              <Tabs defaultValue="7d" className="w-auto">
-                <TabsList className="bg-gray-700">
-                  <TabsTrigger
-                    value="7d"
-                    className="data-[state=active]:bg-green-500/20 data-[state=active]:text-green-400"
-                  >
-                    7D
-                  </TabsTrigger>
-                  <TabsTrigger value="30d">30D</TabsTrigger>
-                  <TabsTrigger value="90d">90D</TabsTrigger>
-                </TabsList>
-              </Tabs>
-            </CardHeader>
-            <CardContent>
-              <div className="h-64">
-                <canvas ref={trendsChartRef} />
+        <Card className="border-gray-200">
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div>
+                <CardTitle className="text-lg font-semibold text-gray-900">
+                  Platform Metrics
+                </CardTitle>
+                <p className="text-sm text-gray-600 mt-1">
+                  Overview of brands, challenges, and products in the system
+                </p>
               </div>
-            </CardContent>
-          </Card>
-
-          <Card className="bg-gray-800 border-gray-700">
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-lg font-medium text-white">
-                Material Distribution
-              </CardTitle>
-              <Button
-                variant="ghost"
-                size="sm"
-                className="text-gray-400 hover:text-white"
-              >
-                View Details
-              </Button>
-            </CardHeader>
-            <CardContent>
-              <div className="h-64">
-                <canvas ref={materialChartRef} />
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-
-        
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          <Card className="bg-gray-800 border-gray-700">
-            <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle className="text-lg font-medium text-white">
-                Recent Activity
-              </CardTitle>
-              <Button
-                variant="link"
-                className="text-green-400 hover:text-green-300"
-              >
-                View All
-              </Button>
-            </CardHeader>
-            <CardContent>
-              <ScrollArea className="h-80">
-                <div className="space-y-2">
-                  <ActivityItem
-                    icon={UserPlus}
-                    title="342 new users registered"
-                    time="2 hours ago"
-                    iconColor="text-green-400"
-                    iconBgColor="bg-green-500/10"
-                  />
-                  <ActivityItem
-                    icon={MapPin}
-                    title="New collection point added"
-                    time="4 hours ago"
-                    iconColor="text-blue-400"
-                    iconBgColor="bg-blue-500/10"
-                  />
-                  <ActivityItem
-                    icon={BarChart3}
-                    title="Weekly report generated"
-                    time="6 hours ago"
-                    iconColor="text-purple-400"
-                    iconBgColor="bg-purple-500/10"
-                  />
-                  <ActivityItem
-                    icon={AlertTriangle}
-                    title="System maintenance scheduled"
-                    time="8 hours ago"
-                    iconColor="text-amber-400"
-                    iconBgColor="bg-amber-500/10"
-                  />
+              <Badge variant="outline" className="bg-green-50">
+                <ArrowUp className="w-3 h-3 mr-1" />
+                Growing
+              </Badge>
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="p-2 bg-purple-100 rounded-lg">
+                    <Store className="h-5 w-5 text-purple-600" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-gray-900">
+                      Active Brands
+                    </p>
+                    <p className="text-xs text-gray-500">Target: 50 brands</p>
+                  </div>
                 </div>
-              </ScrollArea>
+                <div className="text-right">
+                  <p className="text-2xl font-bold text-gray-900">
+                    {stats.totalBrands}
+                  </p>
+                  <p className="text-xs text-green-600 flex items-center justify-end">
+                    <ArrowUp className="w-3 h-3 mr-1" />
+                    +15% this month
+                  </p>
+                </div>
+              </div>
+              <Progress value={brandProgress} className="h-2" />
+            </div>
+
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="p-2 bg-green-100 rounded-lg">
+                    <Target className="h-5 w-5 text-green-600" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-gray-900">
+                      Active Challenges
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      Target: 100 challenges
+                    </p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="text-2xl font-bold text-gray-900">
+                    {stats.totalChallenges}
+                  </p>
+                  <p className="text-xs text-green-600 flex items-center justify-end">
+                    <ArrowUp className="w-3 h-3 mr-1" />
+                    +22% this month
+                  </p>
+                </div>
+              </div>
+              <Progress value={challengeProgress} className="h-2" />
+            </div>
+
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <div className="p-2 bg-blue-100 rounded-lg">
+                    <Package className="h-5 w-5 text-blue-600" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium text-gray-900">
+                      Products Tracked
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      Target: 200 products
+                    </p>
+                  </div>
+                </div>
+                <div className="text-right">
+                  <p className="text-2xl font-bold text-gray-900">
+                    {stats.totalProducts}
+                  </p>
+                  <p className="text-xs text-green-600 flex items-center justify-end">
+                    <ArrowUp className="w-3 h-3 mr-1" />
+                    +18% this month
+                  </p>
+                </div>
+              </div>
+              <Progress value={productProgress} className="h-2" />
+            </div>
+          </CardContent>
+        </Card>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <Card className="border-gray-200">
+            <CardHeader>
+              <CardTitle className="text-lg font-semibold text-gray-900">
+                Performance Metrics
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-4">
+                <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm text-gray-600">
+                      Total Disposals
+                    </span>
+                    <Badge
+                      variant="secondary"
+                      className="bg-green-50 text-green-700"
+                    >
+                      <TrendingUp className="w-3 h-3 mr-1" />
+                      Active
+                    </Badge>
+                  </div>
+                  <p className="text-2xl font-bold text-gray-900">
+                    {stats.totalDisposals.toLocaleString()}
+                  </p>
+                  <Progress value={75} className="h-1 mt-2" />
+                </div>
+
+                <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm text-gray-600">
+                      Avg. Items per Disposal
+                    </span>
+                    <Badge
+                      variant="secondary"
+                      className="bg-blue-50 text-blue-700"
+                    >
+                      Stable
+                    </Badge>
+                  </div>
+                  <p className="text-2xl font-bold text-gray-900">
+                    {stats.totalDisposals > 0
+                      ? (stats.itemsRecycled / stats.totalDisposals).toFixed(1)
+                      : "0"}
+                  </p>
+                  <Progress value={60} className="h-1 mt-2" />
+                </div>
+              </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-gray-800 border-gray-700">
-            <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle className="text-lg font-medium text-white">
-                Top Performing Locations
+          <Card className="border-gray-200">
+            <CardHeader>
+              <CardTitle className="text-lg font-semibold text-gray-900">
+                Efficiency Metrics
               </CardTitle>
-              <Button
-                variant="link"
-                className="text-green-400 hover:text-green-300"
-              >
-                View Map
-              </Button>
             </CardHeader>
-            <CardContent>
+            <CardContent className="space-y-4">
               <div className="space-y-4">
-                <LocationItem
-                  name="Downtown Community Center"
-                  items="2,847 items this month"
-                  change="+18%"
-                  changeType="positive"
-                  statusColor="bg-green-400"
-                />
-                <LocationItem
-                  name="Greenway Shopping Mall"
-                  items="2,341 items this month"
-                  change="+12%"
-                  changeType="positive"
-                  statusColor="bg-blue-400"
-                />
-                <LocationItem
-                  name="University Campus"
-                  items="1,956 items this month"
-                  change="+8%"
-                  changeType="positive"
-                  statusColor="bg-purple-400"
-                />
-                <LocationItem
-                  name="Central Park Station"
-                  items="1,678 items this month"
-                  change="-3%"
-                  changeType="negative"
-                  statusColor="bg-amber-400"
-                />
+                <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm text-gray-600">
+                      Users per Brand
+                    </span>
+                    <Badge
+                      variant="secondary"
+                      className="bg-purple-50 text-purple-700"
+                    >
+                      Growing
+                    </Badge>
+                  </div>
+                  <p className="text-2xl font-bold text-gray-900">
+                    {stats.totalBrands > 0
+                      ? Math.floor(stats.totalUsers / stats.totalBrands)
+                      : "0"}
+                  </p>
+                  <Progress value={80} className="h-1 mt-2" />
+                </div>
+
+                <div className="p-4 bg-gray-50 rounded-lg border border-gray-200">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm text-gray-600">
+                      Collection Efficiency
+                    </span>
+                    <Badge
+                      variant="secondary"
+                      className="bg-amber-50 text-amber-700"
+                    >
+                      Optimized
+                    </Badge>
+                  </div>
+                  <div>
+                    <span className="text-2xl font-bold text-gray-900">
+                      {stats.totalBins > 0
+                        ? `${(stats.itemsRecycled / stats.totalBins).toFixed(0)}`
+                        : "0"}
+                    </span>
+                    <span className="text-sm text-gray-500 ml-1">
+                      items/bin
+                    </span>
+                  </div>
+                  <Progress value={85} className="h-1 mt-2" />
+                </div>
               </div>
             </CardContent>
           </Card>
         </div>
+
+        <Card className="border-gray-200">
+          <CardHeader>
+            <CardTitle className="text-lg font-semibold text-gray-900">
+              Network Summary
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <Card className="border-0 shadow-none bg-gray-50">
+                <CardContent className="p-4 text-center">
+                  <p className="text-sm text-gray-600">Active Brands</p>
+                  <p className="text-xl font-semibold text-gray-900 mt-1">
+                    {stats.totalBrands}
+                  </p>
+                  <Badge variant="outline" className="mt-2 text-xs">
+                    <ArrowUp className="w-3 h-3 mr-1" />
+                    12%
+                  </Badge>
+                </CardContent>
+              </Card>
+
+              <Card className="border-0 shadow-none bg-gray-50">
+                <CardContent className="p-4 text-center">
+                  <p className="text-sm text-gray-600">Total Users</p>
+                  <p className="text-xl font-semibold text-gray-900 mt-1">
+                    {stats.totalUsers}
+                  </p>
+                  <Badge variant="outline" className="mt-2 text-xs">
+                    <ArrowUp className="w-3 h-3 mr-1" />
+                    8%
+                  </Badge>
+                </CardContent>
+              </Card>
+
+              <Card className="border-0 shadow-none bg-gray-50">
+                <CardContent className="p-4 text-center">
+                  <p className="text-sm text-gray-600">Collection Points</p>
+                  <p className="text-xl font-semibold text-gray-900 mt-1">
+                    {stats.totalBins}
+                  </p>
+                  <Badge variant="outline" className="mt-2 text-xs">
+                    <ArrowUp className="w-3 h-3 mr-1" />
+                    5%
+                  </Badge>
+                </CardContent>
+              </Card>
+
+              <Card className="border-0 shadow-none bg-gray-50">
+                <CardContent className="p-4 text-center">
+                  <p className="text-sm text-gray-600">Items Recycled</p>
+                  <p className="text-xl font-semibold text-gray-900 mt-1">
+                    {stats.itemsRecycled.toLocaleString()}
+                  </p>
+                  <Badge variant="outline" className="mt-2 text-xs">
+                    <ArrowUp className="w-3 h-3 mr-1" />
+                    15%
+                  </Badge>
+                </CardContent>
+              </Card>
+            </div>
+          </CardContent>
+        </Card>
       </main>
     </>
   );

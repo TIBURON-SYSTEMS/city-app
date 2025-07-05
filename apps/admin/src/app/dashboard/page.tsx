@@ -12,7 +12,31 @@ export default async function DashboardPage() {
       redirect("/unauthorized");
     }
   }
-  //
-  // return <DashboardContent user={session?.user} />;
-  return <DashboardContent />;
+
+  const response = await fetch(
+    `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/api/users`,
+    {
+      cache: "no-store",
+    }
+  );
+  const data = await response.json();
+
+  const stats = {
+    totalUsers: data.stats?.totalUsers || 0,
+    totalBrands: data.stats?.totalBrands || 0,
+    totalChallenges: data.stats?.totalChallenges || 0,
+    totalProducts: data.stats?.totalProducts || 0,
+    itemsRecycled: data.stats?.itemsRecycled || 0,
+    totalBins: data.stats?.totalBins || 0,
+    totalDisposals: data.stats?.totalDisposals || 0,
+  };
+
+  const user = session?.user
+    ? {
+        ...session.user,
+        email: session.user.email ?? "",
+      }
+    : undefined;
+
+  return <DashboardContent user={user} stats={stats} />;
 }
