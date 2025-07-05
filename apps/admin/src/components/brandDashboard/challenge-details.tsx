@@ -10,6 +10,7 @@ import {
   Package,
   MessageSquareQuote,
   Gift,
+  UserRoundPlus,
 } from "lucide-react";
 import moment from "moment";
 import { Separator } from "../ui/separator";
@@ -76,7 +77,7 @@ export default function ChallengeDetails({ data }: ChallengeDetailsProps) {
             {data.rewards?.length > 0 && (
               <div className="flex items-center gap-2">
                 <Gift />
-                <p className="text-base font-medium text-slate-700">
+                <p className="text-base font-medium text-green-500">
                   Rewards:{" "}
                   {data.rewards
                     .map((r) => `${r.label} (${r.amount})`)
@@ -84,6 +85,19 @@ export default function ChallengeDetails({ data }: ChallengeDetailsProps) {
                 </p>
               </div>
             )}
+            <div className="flex items-center gap-2">
+              <UserRoundPlus />
+              <p className="text-base font-medium text-slate-700">
+                Participants:{" "}
+                <span
+                  className={
+                    data.participations.length > 0 ? "text-green-500" : ""
+                  }
+                >
+                  {data.participations.length}
+                </span>
+              </p>
+            </div>
 
             <div className="flex items-center gap-2">
               <MessageSquareQuote />
@@ -106,13 +120,13 @@ export default function ChallengeDetails({ data }: ChallengeDetailsProps) {
           <div className="flex items-center gap-2">
             <Milk />
             <p className="text-base font-medium text-slate-700 capitalize">
-              Product: {data.products[0].label}
+              Product: {data.ChallengeProduct[0].product.label}
             </p>
           </div>
           <div className="flex items-center gap-2">
             <Package />
             <p className="text-base font-medium text-slate-700 capitalize">
-              Material: {data.products[0].material}
+              Material: {data.ChallengeProduct[0].product.material}
             </p>
           </div>
         </div>

@@ -6080,7 +6080,7 @@ expo-crypto@^14.1.5, expo-crypto@~14.1.5:
   dependencies:
     base64-js "^1.3.0"
 
-expo-dev-client@~5.2.2:
+expo-dev-client@~5.2.4:
   version "5.2.4"
   resolved "https://registry.npmjs.org/expo-dev-client/-/expo-dev-client-5.2.4.tgz"
   integrity sha512-s/N/nK5LPo0QZJpV4aPijxyrzV4O49S3dN8D2fljqrX2WwFZzWwFO6dX1elPbTmddxumdcpczsdUPY+Ms8g43g==

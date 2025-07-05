@@ -40,24 +40,35 @@ model User {
   updatedAt   DateTime     @updatedAt
 }
 
+model Participation {
+  id            String      @id @default(cuid())
+  participantId String
+  participant   Participant @relation(fields: [participantId], references: [id])
+  challengeId   String
+  challenge     Challenge   @relation(fields: [challengeId], references: [id])
+  amount        Int
+}
+
 model Participant {
-  id                      String              @id @default(cuid())
-  userId                  String              @unique
-  user                    User                @relation(fields: [userId], references: [id])
-  participatingChallenges Challenge[]
-  wonRewards              ParticipantReward[]
-  product                 Product[]
-  disposal                Disposal[]
+  id             String              @id @default(cuid())
+  userId         String              @unique
+  user           User                @relation(fields: [userId], references: [id])
+  wonRewards     ParticipantReward[]
+  product        Product[]
+  disposal       Disposal[]
+  participations Participation[]
 }
 
 model Brand {
-  id         String      @id @default(cuid())
-  name       String
-  challenges Challenge[]
-  products   Product[]
-  userId     String      @unique
-  user       User        @relation(fields: [userId], references: [id])
-  status     BrandStatus @default(PENDING)
+  id          String      @id @default(cuid())
+  name        String
+  challenges  Challenge[]
+  products    Product[]
+  userId      String      @unique
+  description String?
+  logoUrl     String?
+  user        User        @relation(fields: [userId], references: [id])
+  status      BrandStatus @default(PENDING)
 }
 
 model ParticipantReward {
@@ -100,19 +111,19 @@ model Bin {
 }
 
 model Challenge {
-  id           String        @id @default(cuid())
-  label        String
-  status       String
-  endDate      DateTime
-  description  String
-  createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt()
-  goal         Int
-  brandId      String
-  brand        Brand         @relation(fields: [brandId], references: [id])
-  rewards      Reward[]
-  participants Participant[]
-  products     Product[]
+  id               String             @id @default(cuid())
+  label            String
+  status           String
+  endDate          DateTime
+  description      String
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt()
+  goal             Int
+  brandId          String
+  brand            Brand              @relation(fields: [brandId], references: [id])
+  rewards          Reward[]
+  participations   Participation[]
+  challengeProducts ChallengeProduct[]
 }
 
 model Reward {
@@ -122,17 +133,25 @@ model Reward {
   challengeId  String
   challenge    Challenge           @relation(fields: [challengeId], references: [id], onDelete: Cascade)
   participants ParticipantReward[]
+  imageUrl     String?
+}
+
+model ChallengeProduct {
+  id          String    @id @default(cuid())
+  challengeId String
+  challenge   Challenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+  productId   String
+  product     Product   @relation(fields: [productId], references: [id])
 }
 
 model Product {
-  id              String            @id @default(cuid())
-  label           String
-  material        String
-  brandId         String?
-  brand           Brand?            @relation(fields: [brandId], references: [id])
-  challengeId     String?
-  challenge       Challenge?        @relation(fields: [challengeId], references: [id])
-  DisposedProduct DisposedProduct[]
-  participant     Participant?      @relation(fields: [participantId], references: [id])
-  participantId   String?
+  id               String             @id @default(cuid())
+  label            String
+  material         String
+  brandId          String?
+  brand            Brand?             @relation(fields: [brandId], references: [id])
+  disposedProducts  DisposedProduct[]
+  participant      Participant?       @relation(fields: [participantId], references: [id])
+  participantId    String?
+  challengeProducts ChallengeProduct[]
 }

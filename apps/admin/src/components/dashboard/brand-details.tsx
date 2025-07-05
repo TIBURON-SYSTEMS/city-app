@@ -36,7 +36,7 @@ interface BrandDetailsProps {
       status: string;
       endDate: Date;
       _count: {
-        participants: number;
+        participations: number;
         rewards: number;
       };
     }>;
@@ -205,7 +205,7 @@ export function BrandDetails({ brand }: BrandDetailsProps) {
                         {challenge.label}
                       </p>
                       <p className="text-xs text-gray-500 mt-1">
-                        {challenge._count.participants} participants •{" "}
+                        {challenge._count.participations} participants •{" "}
                         {challenge._count.rewards} rewards
                       </p>
                     </div>

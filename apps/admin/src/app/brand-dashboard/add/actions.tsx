@@ -28,13 +28,21 @@ export async function createChallenge(
         goal: result.data.goal,
         description: result.data.description,
         brandId: brand,
-        products: {
-          create: {
-            label: result.data.product,
-            material: result.data.material,
-            brandId: brand,
-          },
-        },
+      },
+    });
+
+    const product = await prisma.product.create({
+      data: {
+        label: result.data.product,
+        material: result.data.material,
+        brandId: brand,
+      },
+    });
+
+    await prisma.challengeProduct.create({
+      data: {
+        challengeId: challenge.id,
+        productId: product.id,
       },
     });
 

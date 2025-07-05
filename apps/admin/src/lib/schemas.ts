@@ -29,7 +29,7 @@ export const BrandFormSchema = z.object({
     .min(1, {
       message: "Brand name is required.",
     })
-    .max(100, {
+    .max(52, {
       message: "Brand name cannot exceed 52 characters.",
     }),
 });

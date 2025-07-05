@@ -1,7 +1,10 @@
 import { BrandStatus, UserRole } from "@/generated/prisma";
 import prisma from "./db";
 
+
 async function main() {
+
+  // CREATE BRANDS
   const demoBrand = await prisma.user.create({
     data: {
       email: "brand@brand.com",
@@ -19,6 +22,37 @@ async function main() {
   });
   console.log({ testBrand });
 
+// CREATE PRODUCTS
+
+const plasticBottle = await prisma.product.create({
+  data: {
+    label: 'Plastic bottle',
+    material: 'plastic',
+    brandId: testBrand.id
+  }
+})
+console.log(plasticBottle)
+
+  const can = await prisma.product.create({
+    data: {
+      label: 'Aluminium can',
+      material: 'aluminium',
+      brandId: testBrand.id
+    }
+  })
+console.log(can)
+
+const paper = await prisma.product.create({
+  data: {
+    label: 'A4 paper',
+    material: 'paper',
+    brandId: testBrand.id
+  }
+})
+console.log(paper)
+
+// CREATE CHALLENGES
+
   const challenge1 = await prisma.challenge.create({
     data: {
       label: "Plastic Bottle Blitz",
@@ -28,13 +62,6 @@ async function main() {
       description:
         "Recycle plastic bottles to earn rewards. Hit 30 bottles and win a 1000 reward points!",
       brandId: testBrand.id,
-      products: {
-        create: {
-          label: "Plastic bottle",
-          material: "plastic",
-          brandId: testBrand.id,
-        },
-      },
     },
   });
   console.log({ challenge1 });
@@ -48,13 +75,6 @@ async function main() {
       description:
         "Collect and recycle aluminum cans Reach 50 and get 400 reward points!!",
       brandId: testBrand.id,
-      products: {
-        create: {
-          label: "Aluminum Can",
-          material: "aluminium",
-          brandId: testBrand.id,
-        },
-      },
     },
   });
   console.log({ challenge2 });
@@ -68,16 +88,28 @@ async function main() {
       description:
         "Recycle used paper sheets and earn 1 point per sheet. Reach 100 and receive a plantable notebook!",
       brandId: testBrand.id,
-      products: {
-        create: {
-          label: "A4 Office Paper",
-          material: "paper",
-          brandId: testBrand.id,
-        },
-      },
     },
   });
   console.log({ challenge3 });
+
+  await prisma.challengeProduct.createMany({
+    data: [
+      {
+        challengeId: challenge1.id,
+        productId: plasticBottle.id,
+      },
+      {
+        challengeId: challenge2.id,
+        productId: can.id
+      },
+      {
+        challengeId: challenge3.id,
+        productId: paper.id
+      }
+    ]
+  })
+
+
 }
 main()
   .then(async () => {

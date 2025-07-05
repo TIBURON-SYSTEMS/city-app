@@ -3,13 +3,17 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, Target, ListIcon } from "lucide-react";
+import { Calendar, Target, ListIcon, UserRoundPlus } from "lucide-react";
 import BrandCardLayout from "./brand-card-layout";
-import { Challenge } from "@/generated/prisma";
+import { Prisma } from "@/generated/prisma";
 import Link from "next/link";
 
+type ChallengeWithParticipants = Prisma.ChallengeGetPayload<{
+  include: { participations: true };
+}>;
+
 interface ListAllChallengesProps {
-  data: Challenge[];
+  data: ChallengeWithParticipants[];
 }
 
 export default function ListAllChallenges({ data }: ListAllChallengesProps) {
@@ -68,6 +72,21 @@ export default function ListAllChallenges({ data }: ListAllChallengesProps) {
                           <span>
                             Challenge ends: {formatDate(challenge.endDate)}
                           </span>
+                          <div className="flex items-center gap-2">
+                            <UserRoundPlus className="h-4 w-4 text-green-500" />
+                            <p className="text-base font-medium text-slate-700">
+                              Participants:{" "}
+                              <span
+                                className={
+                                  challenge.participations.length > 0
+                                    ? "text-green-500"
+                                    : ""
+                                }
+                              >
+                                {challenge.participations.length}
+                              </span>
+                            </p>
+                          </div>
                         </div>
                       </div>
                     </div>

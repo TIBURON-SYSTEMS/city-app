@@ -2,6 +2,7 @@ import { auth0 } from "@/lib/auth0";
 import { redirect } from "next/navigation";
 import { BrandDetails } from "@/components/dashboard/brand-details";
 import prisma from "../../../../../prisma/db";
+import { count } from "console";
 
 type Params = Promise<{ id: string }>;
 
@@ -30,10 +31,14 @@ export default async function BrandDetailsPage(props: { params: Params }) {
         },
       },
       challenges: {
-        include: {
+        select: {
+          id: true,
+          label: true,
+          status: true,
+          endDate: true,
           _count: {
             select: {
-              participants: true,
+              participations: true,
               rewards: true,
             },
           },

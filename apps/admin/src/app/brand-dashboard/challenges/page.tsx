@@ -6,7 +6,11 @@ import { Prisma } from "@/generated/prisma";
 
 type BrandWithChallenges = Prisma.BrandGetPayload<{
   include: {
-    challenges: true;
+    challenges: {
+      include: {
+        participations: true;
+      };
+    };
   };
 }>;
 
@@ -33,7 +37,11 @@ export default async function ListChallenges() {
         id,
       },
       include: {
-        challenges: true,
+        challenges: {
+          include: {
+            participations: true,
+          },
+        },
       },
     });
 
