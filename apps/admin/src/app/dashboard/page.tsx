@@ -12,6 +12,7 @@ export default async function DashboardPage() {
       redirect("/unauthorized");
     }
   }
-
-  return <DashboardContent user={session?.user} />;
+  //
+  // return <DashboardContent user={session?.user} />;
+  return <DashboardContent />;
 }

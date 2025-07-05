@@ -8,9 +8,11 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "check-types": "turbo run check-types",
     "android": "expo run:android",
-    "ios": "expo run:ios"
+    "ios": "expo run:ios",
+    "prepare": "husky"
   },
   "devDependencies": {
+    "husky": "^9.1.7",
     "prettier": "^3.5.3",
     "turbo": "^2.5.4",
     "typescript": "5.8.2"
@@ -23,13 +25,5 @@
     "apps/*",
     "packages/*"
   ],
-  "version": "1.0.0",
-  "dependencies": {
-    "@types/react": "~19.0.10",
-    "react": "19.0.0",
-    "react-native": "0.79.4"
-  },
-  "resolutions": {
-    "@types/react": "~19.0.10"
-  }
+  "version": "1.0.0"
 }

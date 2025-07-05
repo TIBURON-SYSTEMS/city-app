@@ -1,0 +1,4 @@
+#!/usr/bin/env sh
+cd apps/admin
+echo "Pushing your changes? How brave of you. Let's make sure it actually builds this time."
+yarn build
