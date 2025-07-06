@@ -17,17 +17,17 @@ interface aiResultInterface {
   timestamp: string;
 }
 
-interface DisposalSuccessProps {
+interface DisposalSuccessModalProps {
   actionStage: ScannerCameraStage;
   aiResult: aiResultInterface;
   handleRestart: () => void;
 }
 
-export default function DisposalSuccess({
+export default function DisposalSuccessModal({
   actionStage,
   aiResult,
   handleRestart,
-}: DisposalSuccessProps) {
+}: DisposalSuccessModalProps) {
   if (actionStage !== ScannerCameraStage.End) return;
 
   return (

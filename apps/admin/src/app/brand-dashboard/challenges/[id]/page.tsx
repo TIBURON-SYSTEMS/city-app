@@ -11,6 +11,7 @@ export async function generateMetadata(props: { params: Params }) {
   const id = params.id;
   return id;
 }
+
 export type ChallengeWithProduct = Prisma.ChallengeGetPayload<{
   include: {
     challengeProducts: {

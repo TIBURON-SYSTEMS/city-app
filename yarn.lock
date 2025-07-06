@@ -9526,6 +9526,13 @@ react-native-is-edge-to-edge@^1.1.6, react-native-is-edge-to-edge@^1.1.7:
   resolved "https://registry.npmjs.org/react-native-is-edge-to-edge/-/react-native-is-edge-to-edge-1.2.1.tgz"
   integrity sha512-FLbPWl/MyYQWz+KwqOZsSyj2JmLKglHatd3xLZWskXOpRaio4LfEDEz8E/A6uD8QoTHW6Aobw1jbEwK7KMgR7Q==
 
+react-native-progress-steps@^2.0.3:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/react-native-progress-steps/-/react-native-progress-steps-2.0.3.tgz#c57fb6e67d9709088ee3c825ab4f60eb2ba990e4"
+  integrity sha512-N3JT9sQ/irEzS7RrYVNC86jHTgAXrQPDk2kHAHaz1JYv3wTCMLfbyQfDykp5y3cYqpbD3D1Ivc+1XOXhXwwvog==
+  dependencies:
+    lodash "^4.17.21"
+
 react-native-reanimated@^3.18.0:
   version "3.18.0"
   resolved "https://registry.npmjs.org/react-native-reanimated/-/react-native-reanimated-3.18.0.tgz"

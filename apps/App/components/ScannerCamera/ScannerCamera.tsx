@@ -10,7 +10,6 @@ import { AI_SERVER_URL, BASE_URL } from "../../utils/baseUrl";
 import { ScannerCameraStage } from "../../types/enums";
 import { photos } from "../../../admin/src/mocks/photos";
 import { Button, ButtonText } from "../ui/button";
-import ScanCameraStageBar from "./ScanCameraStageBar";
 import ScanCameraButton from "./ScanCameraButton";
 import FinishRestartButton from "./FinishRestartButton";
 import TakenPhotosPreview from "./TakenPhotosPreview";
@@ -19,7 +18,8 @@ import { useAuth0 } from "react-native-auth0";
 import convertUriToPayload from "../../utils/convertUriToPayload";
 import { Text } from "../ui/text";
 import ProcessingSpinner from "./ProcessingSpinner";
-import DisposalSuccess from "./DisposalSuccess";
+import DisposalSuccessModal from "./DisposalSuccessModal";
+import CameraActionStepper from "./CameraActionStepper";
 
 const photoConfig = {
   quality: 0.7,
@@ -192,8 +192,8 @@ export default function ScannerCamera() {
             barcodeTypes: ["qr"],
           }}
         >
-          <View className="h-full flex justify-between items-center py-10">
-            <ScanCameraStageBar actionStage={actionStage} />
+          <View className="h-full flex justify-between items-center pb-10">
+            <CameraActionStepper actionStage={actionStage} />
 
             <ScanCameraButton
               actionStage={actionStage}
@@ -211,7 +211,7 @@ export default function ScannerCamera() {
 
             <TakenPhotosPreview photosUri={photosUri} />
 
-            <DisposalSuccess
+            <DisposalSuccessModal
               actionStage={actionStage}
               aiResult={aiResult}
               handleRestart={handleRestart}

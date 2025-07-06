@@ -1,4 +1,4 @@
-import { ScannerCameraStage } from "@/types/enums";
+import { ScannerCameraStage } from "../../types/enums";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { TouchableOpacity } from "react-native";
 
@@ -13,6 +13,13 @@ export default function ScanCameraButton({
   handleBarcodeScanned,
   handleTakePhotos,
 }: ScanCameraButtonProps) {
+  if (
+    actionStage === ScannerCameraStage.Finish ||
+    actionStage === ScannerCameraStage.Submit ||
+    actionStage === ScannerCameraStage.End
+  )
+    return;
+
   return (
     <TouchableOpacity
       className="flex justify-center items-center w-18 h-18 bg-black/30 rounded-full p-4"
