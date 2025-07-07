@@ -9533,6 +9533,11 @@ react-native-is-edge-to-edge@^1.1.6, react-native-is-edge-to-edge@^1.1.7:
   resolved "https://registry.npmjs.org/react-native-is-edge-to-edge/-/react-native-is-edge-to-edge-1.2.1.tgz"
   integrity sha512-FLbPWl/MyYQWz+KwqOZsSyj2JmLKglHatd3xLZWskXOpRaio4LfEDEz8E/A6uD8QoTHW6Aobw1jbEwK7KMgR7Q==
 
+react-native-leaflet-view@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/react-native-leaflet-view/-/react-native-leaflet-view-1.1.2.tgz#636f10b70f12c4d73fd63ff589e517815b9632da"
+  integrity sha512-uZetk1IIUC3UZBiMjHaXFJLXiUSX+9hXCRstJrds0K+gB4SNoJ7T1p+yZgZTX3HoOombSy1Zvz+6JOzE0dhp1Q==
+
 react-native-progress-steps@^2.0.3:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/react-native-progress-steps/-/react-native-progress-steps-2.0.3.tgz#c57fb6e67d9709088ee3c825ab4f60eb2ba990e4"
@@ -9597,7 +9602,7 @@ react-native-web@~0.20.0:
 
 react-native-webview@13.13.5:
   version "13.13.5"
-  resolved "https://registry.npmjs.org/react-native-webview/-/react-native-webview-13.13.5.tgz"
+  resolved "https://registry.yarnpkg.com/react-native-webview/-/react-native-webview-13.13.5.tgz#4ef5f9310ddff5747f884a6655228ec9c7d52c73"
   integrity sha512-MfC2B+woL4Hlj2WCzcb1USySKk+SteXnUKmKktOk/H/AQy5+LuVdkPKm8SknJ0/RxaxhZ48WBoTRGaqgR137hw==
   dependencies:
     escape-string-regexp "^4.0.0"
