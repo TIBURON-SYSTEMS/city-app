@@ -6,6 +6,7 @@ export async function createReward(data: {
   label: string;
   amount: number;
   challengeId: string;
+  imageUrl: string;
 }) {
   try {
     const reward = await prisma.reward.create({
@@ -13,6 +14,7 @@ export async function createReward(data: {
         label: data.label,
         amount: data.amount,
         challengeId: data.challengeId,
+        imageUrl: data.imageUrl,
       },
     });
     return reward;

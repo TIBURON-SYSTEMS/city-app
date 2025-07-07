@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -27,6 +28,7 @@ const formSchema = z.object({
   rewardValue: z.coerce.number().min(1, {
     message: "Reward value must be at least 1.",
   }),
+  image: z.string().url().optional(),
 });
 
 interface BrandRewardFormProps {
@@ -39,6 +41,7 @@ export default function BrandRewardForm({ challengeId }: BrandRewardFormProps) {
     defaultValues: {
       rewardName: "",
       rewardValue: 0,
+      image: "",
     },
   });
 
@@ -47,6 +50,7 @@ export default function BrandRewardForm({ challengeId }: BrandRewardFormProps) {
       label: data.rewardName,
       amount: data.rewardValue,
       challengeId: challengeId,
+      imageUrl: data.image || "",
     });
 
     if (action instanceof Error) {
@@ -94,6 +98,29 @@ export default function BrandRewardForm({ challengeId }: BrandRewardFormProps) {
                   />
                 </FormControl>
                 <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="image"
+            render={({ field }) => (
+              <FormItem className="space-y-2">
+                <FormLabel className="text-sm font-medium text-slate-700">
+                  Reward Image
+                </FormLabel>
+                <FormControl>
+                  <Input
+                    placeholder="Enter the url of your reward image"
+                    className="border-slate-200 bg-white focus:border-slate-400 focus:ring-slate-400"
+                    {...field}
+                  />
+                </FormControl>
+                <FormDescription className="text-xs text-slate-500">
+                  This will be the image of the reward in the
+                  challenge/participant app
+                </FormDescription>
+                <FormMessage className="text-xs" />
               </FormItem>
             )}
           />
