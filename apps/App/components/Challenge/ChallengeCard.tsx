@@ -1,5 +1,5 @@
 import { Link } from "expo-router";
-import Challenge from "../../types/types";
+
 import { useAuth0 } from "react-native-auth0";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useQuery } from "@tanstack/react-query";
@@ -9,6 +9,7 @@ import { Box } from "../ui/box";
 import { Heading } from "../ui/heading";
 import { Text } from "../ui/text";
 import { Progress, ProgressFilledTrack } from "../ui/progress";
+import { Challenge } from "@/types/types";
 
 interface ChallengeCardProps {
   challenge: Challenge;
@@ -17,22 +18,22 @@ interface ChallengeCardProps {
 export default function ChallengeCard({ challenge }: ChallengeCardProps) {
   const { user } = useAuth0();
 
-  async function getChallengeProgress() {
-    const res = await fetch(
-      `${BASE_URL}/api/participation?userId=${user?.sub}&challengeId=${challenge.id}`
-    );
+  // async function getChallengeProgress() {
+  //   const res = await fetch(
+  //     `${BASE_URL}/api/participation?userId=${user?.sub}&challengeId=${challenge.id}`
+  //   );
 
-    const data = await res.json();
+  //   const data = await res.json();
 
-    if (!data) return;
+  //   if (!data) return;
 
-    return data.participation;
-  }
+  //   return data.participation;
+  // }
 
-  const { data: participation } = useQuery({
-    queryKey: ["progress", user?.sub, challenge.id],
-    queryFn: getChallengeProgress,
-  });
+  // const { data: participation } = useQuery({
+  //   queryKey: ["progress", user?.sub, challenge.id],
+  //   queryFn: getChallengeProgress,
+  // });
 
   return (
     <Link
@@ -52,7 +53,7 @@ export default function ChallengeCard({ challenge }: ChallengeCardProps) {
 
         <Text className="mb-2">by {challenge.brand}</Text>
 
-        {user && participation && (
+        {/* {user && participation && (
           <>
             <Text className="mb-2">
               {participation.progressAmount} of {challenge.goal} items sorted
@@ -65,7 +66,7 @@ export default function ChallengeCard({ challenge }: ChallengeCardProps) {
               <ProgressFilledTrack />
             </Progress>
           </>
-        )}
+        )} */}
       </Card>
     </Link>
   );

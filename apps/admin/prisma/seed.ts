@@ -1,57 +1,70 @@
 import { BrandStatus, UserRole } from "@/generated/prisma";
 import prisma from "./db";
 
-
 async function main() {
+  //CREATE PARTICIPANT
+  const userParticipant = await prisma.user.create({
+    data: {
+      email: "arnaud.obri@gmail.com",
+      role: UserRole.PARTICIPANT,
+    },
+  });
+  console.log({ userParticipant });
+  const participant = await prisma.participant.create({
+    data: {
+      userId: userParticipant.id,
+    },
+  });
+  console.log({ participant });
 
   // CREATE BRANDS
-  const demoBrand = await prisma.user.create({
+  const userBrand = await prisma.user.create({
     data: {
       email: "brand@brand.com",
       role: UserRole.BRAND,
     },
   });
-  console.log({ demoBrand });
+  console.log({ userBrand });
 
-  const testBrand = await prisma.brand.create({
+  const brand = await prisma.brand.create({
     data: {
       name: "Demo Brand",
-      userId: demoBrand.id,
+      userId: userBrand.id,
       status: BrandStatus.ACTIVE,
     },
   });
-  console.log({ testBrand });
+  console.log({ brand });
 
-// CREATE PRODUCTS
+  // CREATE PRODUCTS
 
-const plasticBottle = await prisma.product.create({
-  data: {
-    label: 'Plastic bottle',
-    material: 'plastic',
-    brandId: testBrand.id
-  }
-})
-console.log(plasticBottle)
+  const plasticBottle = await prisma.product.create({
+    data: {
+      label: "Plastic bottle",
+      material: "plastic",
+      brandId: brand.id,
+    },
+  });
+  console.log(plasticBottle);
 
   const can = await prisma.product.create({
     data: {
-      label: 'Aluminium can',
-      material: 'aluminium',
-      brandId: testBrand.id
-    }
-  })
-console.log(can)
+      label: "Aluminium can",
+      material: "aluminium",
+      brandId: brand.id,
+    },
+  });
+  console.log(can);
 
-const paper = await prisma.product.create({
-  data: {
-    label: 'A4 paper',
-    material: 'paper',
-    brandId: testBrand.id
-  }
-})
-console.log(paper)
+  const paper = await prisma.product.create({
+    data: {
+      label: "A4 paper",
+      material: "paper",
+      brandId: brand.id,
+    },
+  });
+  console.log(paper);
 
-// CREATE CHALLENGES
+  // CREATE CHALLENGES
 
   const challenge1 = await prisma.challenge.create({
     data: {
@@ -61,7 +74,7 @@ console.log(paper)
       goal: 30,
       description:
         "Recycle plastic bottles to earn rewards. Hit 30 bottles and win a 1000 reward points!",
-      brandId: testBrand.id,
+      brandId: brand.id,
     },
   });
   console.log({ challenge1 });
@@ -74,7 +87,7 @@ console.log(paper)
       goal: 50,
       description:
         "Collect and recycle aluminum cans Reach 50 and get 400 reward points!!",
-      brandId: testBrand.id,
+      brandId: brand.id,
     },
   });
   console.log({ challenge2 });
@@ -87,7 +100,7 @@ console.log(paper)
       goal: 100,
       description:
         "Recycle used paper sheets and earn 1 point per sheet. Reach 100 and receive a plantable notebook!",
-      brandId: testBrand.id,
+      brandId: brand.id,
     },
   });
   console.log({ challenge3 });
@@ -100,16 +113,14 @@ console.log(paper)
       },
       {
         challengeId: challenge2.id,
-        productId: can.id
+        productId: can.id,
       },
       {
         challengeId: challenge3.id,
-        productId: paper.id
-      }
-    ]
-  })
-
-
+        productId: paper.id,
+      },
+    ],
+  });
 }
 main()
   .then(async () => {

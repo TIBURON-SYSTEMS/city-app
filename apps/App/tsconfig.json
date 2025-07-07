@@ -5,7 +5,8 @@
     "paths": {
       "@/*": ["./*"],
       "tailwind.config": ["./tailwind.config.js"]
-    }
+    },
+    "typeRoots": ["./node_modules/@types"]
   },
   "include": [
     "**/*.ts",

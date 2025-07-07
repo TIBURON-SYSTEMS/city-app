@@ -2,10 +2,11 @@ import { ScrollView } from "react-native";
 import ChallengeCard from "./ChallengeCard";
 import { Box } from "../ui/box";
 import { Heading } from "../ui/heading";
-import Challenge from "../../types/types";
+
 import { useAuth0 } from "react-native-auth0";
 import { useQuery } from "@tanstack/react-query";
 import { BASE_URL } from "../../utils/baseUrl";
+import { Challenge } from "@/types/types";
 
 export default function ChallengeList() {
   const { user } = useAuth0();

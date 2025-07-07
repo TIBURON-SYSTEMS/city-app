@@ -1,9 +1,13 @@
-type User = {
+export type User = {
   id: string;
   email: string;
 };
 
-type Challenge = {
+export type Participant = {
+  participantId: string;
+};
+
+export type Challenge = {
   id: string;
   label: string;
   status: string;
@@ -17,4 +21,9 @@ type Challenge = {
   amount: number;
 };
 
-export default Challenge;
+export type Participation = {
+  id: string;
+  participantId: string;
+  challengeId: string;
+  amount: number;
+};
