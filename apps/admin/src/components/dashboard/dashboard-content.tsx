@@ -5,6 +5,7 @@ import { StatsCard } from "@/components/dashboard/stats-card";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Users,
   CheckCircle,
@@ -16,6 +17,7 @@ import {
   Store,
   ArrowUp,
 } from "lucide-react";
+import Link from "next/link";
 
 interface DashboardContentProps {
   user?: {
@@ -32,9 +34,26 @@ interface DashboardContentProps {
     totalBins: number;
     totalDisposals: number;
   };
+  recentChallenges?: Array<{
+    id: string;
+    label: string;
+    status: string;
+    createdAt: Date;
+    brand: {
+      name: string;
+    };
+    _count: {
+      participations: number;
+      rewards: number;
+    };
+  }>;
 }
 
-export function DashboardContent({ user, stats }: DashboardContentProps) {
+export function DashboardContent({
+  user,
+  stats,
+  recentChallenges,
+}: DashboardContentProps) {
   const co2InKg = stats.itemsRecycled * 0.08;
   const co2Saved =
     co2InKg > 1000
@@ -360,6 +379,58 @@ export function DashboardContent({ user, stats }: DashboardContentProps) {
             </div>
           </CardContent>
         </Card>
+
+        {recentChallenges && recentChallenges.length > 0 && (
+          <Card className="border-gray-200">
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-lg font-semibold text-gray-900">
+                  Recent Challenges
+                </CardTitle>
+                {/* <Button variant="outline" size="sm" asChild>
+                  <Link href="/dashboard/challenges">View All</Link>
+                </Button> */}
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {recentChallenges.map((challenge) => (
+                  <div
+                    key={challenge.id}
+                    className="flex items-center justify-between p-3 bg-gray-50 rounded-lg border border-gray-200 hover:bg-gray-100 transition-colors"
+                  >
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2">
+                        <p className="text-sm font-medium text-gray-900">
+                          {challenge.label}
+                        </p>
+                        <Badge
+                          variant="secondary"
+                          className={
+                            challenge.status === "active"
+                              ? "bg-green-50 text-green-700 border-green-200"
+                              : "bg-gray-50 text-gray-700 border-gray-200"
+                          }
+                        >
+                          {challenge.status}
+                        </Badge>
+                      </div>
+                      <p className="text-xs text-gray-500 mt-1">
+                        by {challenge.brand.name} •{" "}
+                        {challenge._count.participations} participants
+                      </p>
+                    </div>
+                    <Button variant="ghost" size="sm" asChild>
+                      <Link href={`/dashboard/challenges/${challenge.id}`}>
+                        Review
+                      </Link>
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
       </main>
     </>
   );

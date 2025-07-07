@@ -185,7 +185,6 @@ export function BrandDetails({ brand }: BrandDetailsProps) {
             </CardContent>
           </Card>
         </div>
-
         {brand.challenges.length > 0 && (
           <Card className="border-gray-200">
             <CardHeader>
@@ -198,7 +197,7 @@ export function BrandDetails({ brand }: BrandDetailsProps) {
                 {brand.challenges.map((challenge) => (
                   <div
                     key={challenge.id}
-                    className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200"
+                    className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200 hover:bg-gray-100 transition-colors"
                   >
                     <div>
                       <p className="text-sm font-medium text-gray-900">
@@ -224,6 +223,11 @@ export function BrandDetails({ brand }: BrandDetailsProps) {
                         Ends:{" "}
                         {format(new Date(challenge.endDate), "MMM dd, yyyy")}
                       </p>
+                      <Button variant="ghost" size="sm" asChild>
+                        <Link href={`/dashboard/challenges/${challenge.id}`}>
+                          View Details
+                        </Link>
+                      </Button>
                     </div>
                   </div>
                 ))}

@@ -1,6 +1,7 @@
 import { auth0 } from "@/lib/auth0";
 import { DashboardContent } from "@/components/dashboard/dashboard-content";
 import { redirect } from "next/navigation";
+import prisma from "../../../prisma/db";
 
 export default async function DashboardPage() {
   const session = await auth0.getSession();
@@ -21,6 +22,22 @@ export default async function DashboardPage() {
   );
   const data = await response.json();
 
+  const recentChallenges = await prisma.challenge.findMany({
+    take: 5,
+    orderBy: {
+      createdAt: "desc",
+    },
+    include: {
+      brand: true,
+      _count: {
+        select: {
+          participations: true,
+          rewards: true,
+        },
+      },
+    },
+  });
+
   const stats = {
     totalUsers: data.stats?.totalUsers || 0,
     totalBrands: data.stats?.totalBrands || 0,
@@ -38,5 +55,11 @@ export default async function DashboardPage() {
       }
     : undefined;
 
-  return <DashboardContent user={user} stats={stats} />;
+  return (
+    <DashboardContent
+      user={user}
+      stats={stats}
+      recentChallenges={recentChallenges}
+    />
+  );
 }
