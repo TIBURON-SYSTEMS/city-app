@@ -49,7 +49,7 @@ export default async function Home() {
               </div>
             </div>
             <CardTitle className="text-3xl font-bold tracking-tight">
-              Welcome to Admin Dashboard
+              Welcome to Tiburon Systems
             </CardTitle>
             <CardDescription className="text-base">
               Sign in or create an account to continue
@@ -87,8 +87,7 @@ export default async function Home() {
             <Alert>
               <Info className="h-4 w-4" />
               <AlertDescription>
-                You will be redirected to Auth0 for secure authentication. After
-                signing in, you&apos;ll be returned to the dashboard.
+                You will be redirected to Auth0 for secure authentication. Then returned to the dashboard.
               </AlertDescription>
             </Alert>
           </CardContent>
