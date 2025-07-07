@@ -14,8 +14,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Admin Dashboard",
-  description: "Admin dashboard for managing users, brands, and products",
+  title: "Tiburon",
 };
 
 export default function RootLayout({

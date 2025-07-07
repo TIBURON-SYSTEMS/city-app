@@ -54,59 +54,56 @@ export default function ChallengeDetails({ data }: ChallengeDetailsProps) {
   return (
     <BrandCardLayout title={data.label} icon={Swords} status={data.status}>
       <div>
-        <div>
-          <div className="flex flex-col gap-4 text-sm">
-            <div className="flex items-center gap-2">
-              <h3 className="text-lg font-medium text-slate-900">
-                Basic Information
-              </h3>
-            </div>
+        <div className="flex flex-col gap-4 text-sm">
+          <div className="flex items-center gap-2">
+            <h3 className="text-lg font-medium text-slate-900">
+              Basic Information
+            </h3>
+          </div>
 
+          <div className="flex items-center gap-2">
+            <CalendarDays />
+            <p className="text-base font-medium text-slate-700">
+              Created: {moment(data.createdAt).format("MMMM-Do-YY")}
+            </p>
+          </div>
+          <div className="flex items-center gap-2">
+            <CalendarX2 />
+            <p className="text-base font-medium text-slate-700">
+              Remaining days: {moment(data.endDate).endOf("day").fromNow()}
+            </p>
+          </div>
+          {data.rewards?.length > 0 && (
             <div className="flex items-center gap-2">
-              <CalendarDays />
-              <p className="text-base font-medium text-slate-700">
-                Created: {moment(data.createdAt).format("MMMM-Do-YY")}
+              <Gift />
+              <p className="text-base font-medium text-green-500">
+                Rewards:{" "}
+                {data.rewards.map((r) => `${r.label} (${r.amount})`).join(", ")}
               </p>
             </div>
-            <div className="flex items-center gap-2">
-              <CalendarX2 />
-              <p className="text-base font-medium text-slate-700">
-                Remaining days: {moment(data.endDate).endOf("day").fromNow()}
-              </p>
-            </div>
-            {data.rewards?.length > 0 && (
-              <div className="flex items-center gap-2">
-                <Gift />
-                <p className="text-base font-medium text-green-500">
-                  Rewards:{" "}
-                  {data.rewards
-                    .map((r) => `${r.label} (${r.amount})`)
-                    .join(", ")}
-                </p>
-              </div>
-            )}
-            <div className="flex items-center gap-2">
-              <UserRoundPlus />
-              <p className="text-base font-medium text-slate-700">
-                Participants:{" "}
-                <span
-                  className={
-                    data.participations.length > 0 ? "text-green-500" : ""
-                  }
-                >
-                  {data.participations.length}
-                </span>
-              </p>
-            </div>
+          )}
+          <div className="flex items-center gap-2">
+            <UserRoundPlus />
+            <p className="text-base font-medium text-slate-700">
+              Participants:{" "}
+              <span
+                className={
+                  data.participations.length > 0 ? "text-green-500" : ""
+                }
+              >
+                {data.participations.length}
+              </span>
+            </p>
+          </div>
 
-            <div className="flex items-center gap-2">
-              <MessageSquareQuote />
-              <p className="text-base font-medium text-slate-700 max-w-3xl">
-                Description: {data.description}
-              </p>
-            </div>
+          <div className="flex items-center gap-2">
+            <MessageSquareQuote />
+            <p className="text-base font-medium text-slate-700 max-w-3xl">
+              Description: {data.description}
+            </p>
           </div>
         </div>
+
         <Separator className="bg-slate-200 mb-5 mt-5" />
 
         <h3 className="text-lg font-medium text-slate-900">Condition</h3>

@@ -37,9 +37,13 @@ export default function BrandCardLayout({
               {status && (
                 <div className="ml-5">
                   <Badge
-                    variant={status === "active" ? "default" : "secondary"}
+                    variant={
+                      status.toLowerCase() === "active"
+                        ? "default"
+                        : "secondary"
+                    }
                     className={
-                      status === "active"
+                      status.toLowerCase() === "active"
                         ? "bg-green-100 text-green-800 hover:bg-green-200"
                         : ""
                     }
