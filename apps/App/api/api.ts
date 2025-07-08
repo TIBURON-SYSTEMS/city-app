@@ -3,6 +3,7 @@ import {
   Challenge,
   Participant,
   ParticipationData,
+  Bin
 } from "@/types/types";
 import { BASE_URL } from "@/utils/baseUrl";
 
@@ -85,6 +86,14 @@ const api = {
     const data = await res.json();
     return data;
   },
+
+  async fetchAllBins():Promise<Bin[]> {
+    const res = await fetch(`${BASE_URL}/api/bins`)
+  const data = await res.json()
+  return data
+  }
 };
 
+
 export default api;
+

@@ -10,17 +10,31 @@ import {
 import { Asset } from "expo-asset";
 import * as FileSystem from "expo-file-system";
 import { LeafletView, LatLng } from "react-native-leaflet-view";
+import { BASE_URL } from "@/utils/baseUrl";
+import { useQuery } from "@tanstack/react-query";
+import api from "@/api/api";
+import { Bin } from "@/types/types";
 
 const DEFAULT_LOCATION = {
-  latitude: -23.5489,
-  longitude: -46.6388,
+  latitude: 41.3851,
+  longitude: 2.1734,
+};
+
+type Marker = {
+  id: string;
+  position: { lat: number; lng: number };
+  icon: string;
+  size: number[];
+  label?: string;
+  type?: string;
 };
 
 export default function MapWithSearch() {
   const [webViewContent, setWebViewContent] = useState<string | null>(null);
   const [center, setCenter] = useState<LatLng>(DEFAULT_LOCATION);
   const [query, setQuery] = useState("");
-  const leafletRef = useRef<any>(null);
+  const [markers, setMarkers] = useState<Marker[]>([]);
+  // const leafletRef = useRef<any>(null);
 
   useEffect(() => {
     const loadHtml = async () => {
@@ -36,6 +50,26 @@ export default function MapWithSearch() {
     };
     loadHtml();
   }, []);
+
+  const { data: bins } = useQuery({
+    queryKey: ["bins"],
+    queryFn: () => api.fetchAllBins(),
+  });
+  useEffect(() => {
+    if (!bins) return;
+
+    const transformed = bins.map((bin: Bin, index: number) => ({
+      id: bin.id ?? `bin-${index}`,
+      position: {
+        lat: bin.latitude,
+        lng: bin.longitude,
+      },
+      icon: "🗑️",
+      size: [32, 32],
+    }));
+
+    setMarkers(transformed);
+  }, [bins]);
 
   const handleSearch = async () => {
     if (!query) return;
@@ -84,6 +118,7 @@ export default function MapWithSearch() {
           lng: center.longitude,
         }}
         zoom={12}
+        mapMarkers={markers}
       />
     </View>
   );

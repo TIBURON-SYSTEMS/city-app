@@ -1,3 +1,5 @@
+import { Float } from "react-native/Libraries/Types/CodegenTypes";
+
 export type User = {
   id: string;
   email: string;
@@ -47,3 +49,10 @@ export type Brand = {
   description: string;
   logoUrl: string;
 };
+export type Bin = {
+  id: string;
+  label: string;
+  type: string;
+  latitude: number;
+  longitude: number;
+}

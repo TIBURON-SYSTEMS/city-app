@@ -215,6 +215,34 @@ async function main() {
       { challengeId: challenge2.id, participantId: participant.id, amount: 30 },
     ],
   });
+
+  // CREATE BINS
+
+const bins = await prisma.bin.createMany({
+  data: [
+    { label: "Contenidor 1",  type: "rest",  latitude: 41.3865, longitude: 2.1732 },
+    { label: "Contenidor 2",  type: "paper", latitude: 41.3859, longitude: 2.1748 },
+    { label: "Contenidor 3",  type: "glass", latitude: 41.3871, longitude: 2.1720 },
+    { label: "Contenidor 4",  type: "rest",  latitude: 41.3843, longitude: 2.1755 },
+    { label: "Contenidor 5",  type: "rest",  latitude: 41.3850, longitude: 2.1764 },
+    { label: "Contenidor 6",  type: "paper", latitude: 41.3862, longitude: 2.1791 },
+    { label: "Contenidor 7",  type: "rest",  latitude: 41.3837, longitude: 2.1746 },
+    { label: "Contenidor 8",  type: "glass", latitude: 41.3875, longitude: 2.1713 },
+    { label: "Contenidor 9",  type: "rest",  latitude: 41.3849, longitude: 2.1788 },
+    { label: "Contenidor 10", type: "paper", latitude: 41.3868, longitude: 2.1699 },
+    { label: "Contenidor 11", type: "glass", latitude: 41.3841, longitude: 2.1723 },
+    { label: "Contenidor 12", type: "rest",  latitude: 41.3872, longitude: 2.1767 },
+    { label: "Contenidor 13", type: "glass", latitude: 41.3835, longitude: 2.1780 },
+    { label: "Contenidor 14", type: "paper", latitude: 41.3857, longitude: 2.1706 },
+    { label: "Contenidor 15", type: "rest",  latitude: 41.3870, longitude: 2.1743 },
+    { label: "Contenidor 16", type: "glass", latitude: 41.3845, longitude: 2.1718 },
+    { label: "Contenidor 17", type: "rest",  latitude: 41.3860, longitude: 2.1782 },
+    { label: "Contenidor 18", type: "paper", latitude: 41.3839, longitude: 2.1761 },
+    { label: "Contenidor 19", type: "rest",  latitude: 41.3854, longitude: 2.1729 },
+    { label: "Contenidor 20", type: "glass", latitude: 41.3873, longitude: 2.1695 }
+  ]
+})
+console.log(bins)
 }
 main()
   .then(async () => {
