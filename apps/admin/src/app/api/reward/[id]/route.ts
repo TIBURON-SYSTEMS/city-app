@@ -1,5 +1,5 @@
-import { MOCK_REWARDS } from "@/mocks/rewards";
 import { NextResponse, NextRequest } from "next/server";
+import prisma from "../../../../../prisma/db";
 
 export async function GET(
   request: NextRequest,
@@ -7,20 +7,17 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
-    const reward = MOCK_REWARDS.filter((reward) => reward.id === id);
-    const response = NextResponse.json({ reward: reward[0] });
+    const reward = await prisma.reward.findUnique({
+      where: {
+        id,
+      },
+    });
 
-    // response.headers.set("Access-Control-Allow-Origin", "*");
-    // response.headers.set(
-    //   "Access-Control-Allow-Methods",
-    //   "GET, POST, PUT, DELETE, OPTIONS"
-    // );
-    // response.headers.set(
-    //   "Access-Control-Allow-Headers",
-    //   "Content-Type, Authorization"
-    // );
+    if (!reward) {
+      return NextResponse.json({ error: "No rewards found" }, { status: 404 });
+    }
 
-    return response;
+    return NextResponse.json({ reward });
   } catch (error) {
     console.error("API Error:", error);
     return NextResponse.json(

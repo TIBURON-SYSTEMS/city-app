@@ -1,5 +1,5 @@
 import { NextResponse, NextRequest } from "next/server";
-import { brands } from "@/mocks/brands";
+import prisma from "../../../../../prisma/db";
 
 export async function GET(
   request: NextRequest,
@@ -7,20 +7,21 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
-    const brand = brands.filter((brand) => brand.id === id);
-    const response = NextResponse.json({ brand: brand[0] });
+    const brand = await prisma.brand.findUnique({
+      where: {
+        id,
+      },
+    });
 
-    // response.headers.set("Access-Control-Allow-Origin", "*");
-    // response.headers.set(
-    //   "Access-Control-Allow-Methods",
-    //   "GET, POST, PUT, DELETE, OPTIONS"
-    // );
-    // response.headers.set(
-    //   "Access-Control-Allow-Headers",
-    //   "Content-Type, Authorization"
-    // );
-
-    return response;
+    if (!brand) {
+      return NextResponse.json(
+        { error: "No brand found" },
+        {
+          status: 404,
+        }
+      );
+    }
+    return NextResponse.json({ brand });
   } catch (error) {
     console.error("API Error:", error);
     return NextResponse.json(

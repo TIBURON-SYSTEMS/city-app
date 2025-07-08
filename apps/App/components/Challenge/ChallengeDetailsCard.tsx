@@ -2,10 +2,10 @@ import { Link, router, useLocalSearchParams } from "expo-router";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuth0 } from "react-native-auth0";
-import { useState } from "react";
+
 import { ScrollView, View } from "react-native";
 import Octicons from "@expo/vector-icons/Octicons";
-import { BASE_URL } from "../../utils/baseUrl";
+
 import { Box } from "../ui/box";
 import { Card } from "../ui/card";
 import { Button, ButtonText } from "../ui/button";
@@ -14,151 +14,40 @@ import { Text } from "../ui/text";
 import { HStack } from "../ui/hstack";
 import { Badge, BadgeText } from "../ui/badge";
 import { Progress, ProgressFilledTrack } from "../ui/progress";
-import { Challenge, Participant, Participation } from "@/types/types";
+
+import api from "@/api/api";
 
 export default function ChallengeDetailsCard() {
-  // const [isParticipated, setIsParticipated] = useState<boolean>(false);
-  const { authorize, user, isLoading } = useAuth0();
-  const queryClient = useQueryClient();
   const { id } = useLocalSearchParams();
+  const { authorize, user } = useAuth0();
+  const queryClient = useQueryClient();
 
-  async function getRewardsByChallengeId() {
-    const res = await fetch(`${BASE_URL}/api/rewards?challengeId=${id}`);
-    const data = await res.json();
-
-    if (!data) return;
-
-    return data.rewards;
-  }
-
-  const { data: rewards } = useQuery({
-    queryKey: ["rewards"],
-    queryFn: getRewardsByChallengeId,
+  const { data: participant } = useQuery({
+    queryKey: ["user"],
+    queryFn: () => api.getUserByEmail(user?.email),
+    enabled: !!user,
   });
 
   const { data: challenge } = useQuery({
     queryKey: ["challenge", id],
-    queryFn: getChallengeById,
+    queryFn: () => api.getChallengeById(id as string),
   });
 
-  async function getChallengeById(): Promise<Challenge | undefined> {
-    const res = await fetch(`${BASE_URL}/api/challenge/${id}`);
-    const data = await res.json();
-
-    if (!data) return;
-
-    if (
-      data.challenge.users.some(
-        (participatedUser: { id: string; email: string }) =>
-          participatedUser.email === user?.email
-      )
-    ) {
-      // setIsParticipated(true);
-    }
-
-    return data.challenge;
-  }
-
-  const { data: participant } = useQuery({
-    queryKey: ["user"],
-    queryFn: () => getUserByEmail(user?.email),
-    enabled: !!user,
+  const { data: participationData } = useQuery({
+    queryKey: ["progress", participant?.participantId, id as string],
+    queryFn: () =>
+      api.getChallengeProgress(participant?.participantId, id as string),
   });
 
-  async function getUserByEmail(
-    email: string | undefined
-  ): Promise<Participant | undefined> {
-    const res = await fetch(`${BASE_URL}/api/participant/${email}`);
-    const data = await res.json();
-
-    return data;
-  }
-
-  // useEffect(() => {
-  //   // getParticipant();
-  //   getChallengeById();
-  // }, [isLoading, user]);
-
-  // const challengeMutation = useMutation({
-  //   mutationFn: () => addUserToChallenge(user?.email),
-  //   onSuccess: () => {
-  //     queryClient.invalidateQueries({ queryKey: ["ongoing-challenges"] });
-  //     queryClient.invalidateQueries({ queryKey: ["available-challenges"] });
-  //   },
-  // });
-
-  const { data: participation } = useQuery({
-    queryKey: ["participation"],
-    queryFn: () => getParticipation(participant?.participantId, challenge?.id),
-    enabled: !!participant,
+  const participationMutation = useMutation({
+    mutationFn: () =>
+      api.createParticipation(participant?.participantId, id as string),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["OnGoingAvailableChallenges", participant?.participantId],
+      });
+    },
   });
-
-  async function getParticipation(
-    participantId: string | undefined,
-    challengeId: string | undefined
-  ): Promise<Participation[] | undefined> {
-    const res = await fetch(
-      `${BASE_URL}/api/participation?participantId=${participantId}&challengeId=${challengeId}`
-    );
-    const data = await res.json();
-    return data.participation;
-  }
-
-  // async function addUserToChallenge(email: string | undefined) {
-  //   const options = {
-  //     method: "PUT",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify({ email }),
-  //   };
-
-  //   const res = await fetch(`${BASE_URL}/api/challenge/${id}`, options);
-  //   const data = await res.json();
-
-  //   data.users.forEach((user: { id: string; email: string }) => {
-  //     if (user.email === email) {
-  //       setIsParticipated(true);
-  //     }
-  //   });
-  //   return;
-  // }
-
-  // async function getChallengeProgress() {
-  //   const res = await fetch(
-  //     `${BASE_URL}/api/participation?userId=${user?.sub}&challengeId=${challenge?.id}`
-  //   );
-
-  //   const data = await res.json();
-
-  //   if (!data) return;
-
-  //   return data.participation;
-  // }
-
-  // const { data: participation } = useQuery({
-  //   queryKey: ["progress", user?.sub, challenge?.id],
-  //   queryFn: getChallengeProgress,
-  // });
-
-  // async function handlePress() {
-  //   if (!user) {
-  //     try {
-  //       await authorize({
-  //         additionalParameters: {
-  //           prompt: "select_account",
-  //         },
-  //       });
-  //     } catch (error) {
-  //       console.error("Login failed", error);
-  //     }
-  //   } else {
-  //     const { email } = user;
-  //     console.log(email);
-  //     userMutation.mutate();
-  //     challengeMutation.mutate();
-  //   }
-  // }
 
   async function handleLoginPress() {
     if (!user) {
@@ -172,6 +61,10 @@ export default function ChallengeDetailsCard() {
         console.error("Login failed", error);
       }
     }
+  }
+
+  async function handleParticipatePress() {
+    participationMutation.mutate();
   }
 
   if (!challenge) return;
@@ -197,14 +90,16 @@ export default function ChallengeDetailsCard() {
                     <ButtonText>Login</ButtonText>
                   </Button>
                 )}
-                {user && participant && participation?.length === 0 && (
-                  <Button className="rounded-full">
+                {user && participant && !participationData?.isParticipating && (
+                  <Button
+                    onPress={handleParticipatePress}
+                    className="rounded-full"
+                  >
                     <ButtonText>Participate</ButtonText>
                   </Button>
                 )}
               </Box>
             </Box>
-
             <Box>
               <Heading className="uppercase text-slate-900">
                 {challenge.label}
@@ -216,26 +111,23 @@ export default function ChallengeDetailsCard() {
                 }}
               >
                 <View className="flex flex-row justify-center items-center gap-2">
-                  <Text>by {challenge.brand}</Text>
+                  <Text>by {challenge.brandName}</Text>
                   <Octicons name="link-external" size={16} color="#6B7280" />
                 </View>
               </Link>
             </Box>
-
             <Box>
               <Heading className="text-slate-900 text-base font-semibold">
                 Description
               </Heading>
               <Text className="text-slate-800">{challenge.description}</Text>
             </Box>
-
             <Box>
               <Heading className="text-slate-900 text-base font-semibold mb-1">
                 Rewards
               </Heading>
               <HStack className="gap-2 flex-wrap">
-                {/* temporarily give a interface for reward */}
-                {rewards.map((reward: { id: string; label: string }) => (
+                {challenge.rewards.map((reward) => (
                   <Link
                     key={reward.id}
                     href={{
@@ -247,40 +139,38 @@ export default function ChallengeDetailsCard() {
                       variant="outline"
                       className="bg-slate-100/80 rounded-xl"
                     >
+                      <BadgeText className="mr-1">{reward.amount}</BadgeText>
                       <BadgeText>{reward.label}</BadgeText>
                     </Badge>
                   </Link>
                 ))}
               </HStack>
             </Box>
+            <Box>
+              <Heading className="text-slate-900 text-base font-semibold">
+                Completion Goal
+              </Heading>
+              <Text>{`Recycle ${challenge.goal} ${challenge.product}s`}</Text>
+            </Box>
 
-            {/* {!isParticipated && (
-              <Box>
-                <Heading className="text-slate-900 text-base font-semibold">
-                  Goal
-                </Heading>
-                <Text>{`Recycle ${challenge.goal} ${challenge.product}s`}</Text>
-              </Box>
-            )} */}
-
-            {/* {isParticipated && (
+            {participationData?.isParticipating && (
               <Box>
                 <Heading className="text-slate-900 text-base font-semibold">
                   Current progress
                 </Heading>
                 <Text className="mb-2">
-                  {participation.progressAmount} of {challenge.goal} items
-                  sorted
+                  {participationData.participation?.amount} of {challenge.goal}{" "}
+                  items sorted
                 </Text>
                 <Progress
-                  value={participation.progressAmount}
+                  value={participationData.participation?.amount}
                   size="md"
                   orientation="horizontal"
                 >
                   <ProgressFilledTrack />
                 </Progress>
               </Box>
-            )} */}
+            )}
           </Box>
         </Card>
       </Box>

@@ -13,12 +13,25 @@ export type Challenge = {
   status: string;
   goal: number;
   brandId: string;
-  brand: string;
+  brandName: string;
   description: string;
-  rewards: string[];
+  rewards: Reward[];
   product: string;
-  users: User[];
+  // users: User[];
   amount: number;
+};
+
+export type Reward = {
+  id: string;
+  label: string;
+  amount: number;
+  challengeId: string;
+  imageUrl: string;
+};
+
+export type ParticipationData = {
+  isParticipating: boolean;
+  participation: Participation | null;
 };
 
 export type Participation = {
@@ -26,4 +39,11 @@ export type Participation = {
   participantId: string;
   challengeId: string;
   amount: number;
+};
+
+export type Brand = {
+  id: string;
+  name: string;
+  description: string;
+  logoUrl: string;
 };

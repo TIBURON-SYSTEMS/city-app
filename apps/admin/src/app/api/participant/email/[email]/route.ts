@@ -1,12 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
-import prisma from "../../../../../prisma/db";
+import prisma from "../../../../../../prisma/db";
 
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ email: string }> }
 ) {
   const { email } = await params;
-  console.log(email, "🟩");
 
   const user = await prisma.user.findUnique({
     where: {
@@ -32,13 +31,6 @@ export async function GET(
     });
     return NextResponse.json({ participantId: participant.id });
   }
-
-  // const participation = await prisma.participation.create({
-  //   data: {
-  //     participantId: user!.participant!.id,
-  //     challengeId: challengeId!,
-  //   },
-  // });
 
   return NextResponse.json({ participantId: user.participant.id });
 }

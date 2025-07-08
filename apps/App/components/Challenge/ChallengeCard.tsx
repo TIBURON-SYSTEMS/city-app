@@ -1,39 +1,40 @@
 import { Link } from "expo-router";
-
 import { useAuth0 } from "react-native-auth0";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useQuery } from "@tanstack/react-query";
-import { BASE_URL } from "@/utils/baseUrl";
 import { Card } from "../ui/card";
 import { Box } from "../ui/box";
 import { Heading } from "../ui/heading";
 import { Text } from "../ui/text";
 import { Progress, ProgressFilledTrack } from "../ui/progress";
 import { Challenge } from "@/types/types";
+import api from "@/api/api";
 
 interface ChallengeCardProps {
   challenge: Challenge;
+  ongoing: boolean;
 }
 
-export default function ChallengeCard({ challenge }: ChallengeCardProps) {
+export default function ChallengeCard({
+  challenge,
+  ongoing = false,
+}: ChallengeCardProps) {
   const { user } = useAuth0();
 
-  // async function getChallengeProgress() {
-  //   const res = await fetch(
-  //     `${BASE_URL}/api/participation?userId=${user?.sub}&challengeId=${challenge.id}`
-  //   );
+  //get participant id
+  const { data: participant } = useQuery({
+    queryKey: ["user"],
+    queryFn: () => api.getUserByEmail(user?.email),
+    enabled: !!user,
+  });
 
-  //   const data = await res.json();
-
-  //   if (!data) return;
-
-  //   return data.participation;
-  // }
-
-  // const { data: participation } = useQuery({
-  //   queryKey: ["progress", user?.sub, challenge.id],
-  //   queryFn: getChallengeProgress,
-  // });
+  //get participation
+  const { data: participationData } = useQuery({
+    queryKey: ["progress", participant?.participantId, challenge.id],
+    queryFn: () =>
+      api.getChallengeProgress(participant?.participantId, challenge.id),
+    enabled: !!ongoing,
+  });
 
   return (
     <Link
@@ -51,22 +52,23 @@ export default function ChallengeCard({ challenge }: ChallengeCardProps) {
           <MaterialIcons name="arrow-forward-ios" size={20} color="black" />
         </Box>
 
-        <Text className="mb-2">by {challenge.brand}</Text>
+        <Text className="mb-2">by {challenge.brandName}</Text>
 
-        {/* {user && participation && (
+        {user && participationData?.isParticipating && (
           <>
             <Text className="mb-2">
-              {participation.progressAmount} of {challenge.goal} items sorted
+              {participationData?.participation?.amount} of {challenge.goal}{" "}
+              items sorted
             </Text>
             <Progress
-              value={participation.progressAmount}
+              value={participationData?.participation?.amount}
               size="md"
               orientation="horizontal"
             >
               <ProgressFilledTrack />
             </Progress>
           </>
-        )} */}
+        )}
       </Card>
     </Link>
   );

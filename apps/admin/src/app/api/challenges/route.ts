@@ -1,17 +1,53 @@
 import { NextResponse } from "next/server";
-import { challenges } from "@/mocks/challenges";
+
+import prisma from "../../../../prisma/db";
+import { Prisma } from "@/generated/prisma";
+
+type ChallengeWithBrandRewardsProduct = Prisma.ChallengeGetPayload<{
+  include: {
+    brand: true;
+    rewards: true;
+    challengeProducts: {
+      include: {
+        product: true;
+      };
+    };
+  };
+}>;
 
 export async function GET() {
-  const response = NextResponse.json({ challenges });
+  const allChallenges: ChallengeWithBrandRewardsProduct[] =
+    await prisma.challenge.findMany({
+      where: {
+        status: "active",
+      },
+      include: {
+        brand: true,
+        rewards: true,
+        challengeProducts: {
+          include: {
+            product: true,
+          },
+        },
+      },
+    });
 
-  // response.headers.set("Access-Control-Allow-Origin", "*");
-  // response.headers.set(
-  //   "Access-Control-Allow-Methods",
-  //   "GET, POST, PUT, DELETE, OPTIONS"
-  // );
-  // response.headers.set(
-  //   "Access-Control-Allow-Headers",
-  //   "Content-Type, Authorization"
-  // );
-  return response;
+  const challenges = allChallenges.map((challenge) => {
+    return {
+      id: challenge.id,
+      label: challenge.label,
+      status: challenge.status,
+      goal: challenge.goal,
+      brandId: challenge.brandId,
+      brandName: challenge.brand.name,
+      description: challenge.description,
+      rewards: challenge.rewards,
+      product: challenge.challengeProducts.map(
+        (challengeProduct) => challengeProduct.product.label
+      )[0],
+      amount: 0,
+    };
+  });
+
+  return NextResponse.json({ challenges });
 }

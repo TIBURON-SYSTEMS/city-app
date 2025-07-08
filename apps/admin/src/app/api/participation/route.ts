@@ -1,55 +1,48 @@
-// import { MOCK_PARTICIPATIONS } from "@/mocks/participations";
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "../../../../prisma/db";
+import { Participation } from "@/generated/prisma";
 
 export async function GET(request: NextRequest) {
   try {
     const participantId = request.nextUrl.searchParams.get("participantId");
     const challengeId = request.nextUrl.searchParams.get("challengeId");
+
     if (!participantId || !challengeId)
       return NextResponse.json(
         {
-          error: "No challengeId or participantId proivded",
+          error: "No challengeId or participantId provided",
         },
         { status: 400 }
       );
 
-    console.log(participantId, challengeId);
-
-    const participation = await prisma.participation.findMany({
+    const participation: Participation[] = await prisma.participation.findMany({
       where: {
         participantId,
         challengeId,
       },
     });
-    return NextResponse.json({ participation });
 
-    // const participation = MOCK_PARTICIPATIONS.filter(
-    //   (participation) =>
-    //     participation.userId === userId &&
-    //     participation.challengeId === challengeId
-    // );
-    // response.headers.set("Access-Control-Allow-Origin", "*");
-    // response.headers.set(
-    //   "Access-Control-Allow-Methods",
-    //   "GET, POST, PUT, DELETE, OPTIONS"
-    // );
-    // response.headers.set(
-    //   "Access-Control-Allow-Headers",
-    //   "Content-Type, Authorization"
-    // );
+    if (participation.length === 0) {
+      return NextResponse.json({ isParticipating: false, participation: null });
+    }
 
-    // if (participation.length === 0) {
-    //   return NextResponse.json({ participation: false });
-    // }
-
-    // return NextResponse.json({ participation: participation[0] });
-    return NextResponse.json({ message: "erwerwer" });
+    return NextResponse.json({
+      isParticipating: true,
+      participation: participation[0],
+    });
   } catch (error) {
-    console.error("API Error:", error);
     return NextResponse.json(
       { error: "Internal Server Error", details: error },
       { status: 500 }
     );
   }
+}
+export async function POST(request: NextRequest) {
+  const { participantId, challengeId } = await request.json();
+
+  const newParticipation = await prisma.participation.create({
+    data: { participantId, challengeId },
+  });
+
+  return NextResponse.json({ newParticipation });
 }

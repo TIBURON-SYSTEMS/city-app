@@ -2,63 +2,33 @@ import { ScrollView } from "react-native";
 import ChallengeCard from "./ChallengeCard";
 import { Box } from "../ui/box";
 import { Heading } from "../ui/heading";
-
 import { useAuth0 } from "react-native-auth0";
 import { useQuery } from "@tanstack/react-query";
-import { BASE_URL } from "../../utils/baseUrl";
-import { Challenge } from "@/types/types";
+import api from "@/api/api";
+import { Text } from "../ui/text";
 
 export default function ChallengeList() {
   const { user } = useAuth0();
 
-  async function getAvailableChallenges(): Promise<Challenge[]> {
-    if (!user) return [];
-    const res = await fetch(
-      `${BASE_URL}/api/challenges/${user.sub}?condition=available`
-    );
-    const data = await res.json();
-
-    if (!data) return [];
-
-    return data.availableChallenges;
-  }
-
-  async function getOnGoingChallenges(): Promise<Challenge[]> {
-    if (!user) return [];
-    const res = await fetch(
-      `${BASE_URL}/api/challenges/${user.sub}?condition=ongoing`
-    );
-    const data = await res.json();
-
-    if (!data) return [];
-
-    return data.onGoingChallenges;
-  }
-
-  async function getChallenges(): Promise<Challenge[]> {
-    if (user) return [];
-
-    const res = await fetch(`${BASE_URL}/api/challenges`);
-    const data = await res.json();
-
-    if (!data) return [];
-
-    return data.challenges;
-  }
-
-  const { data: onGoingChallenges } = useQuery({
-    queryKey: ["ongoing-challenges", user],
-    queryFn: getOnGoingChallenges,
+  //get participant id
+  const { data: participant } = useQuery({
+    queryKey: ["user"],
+    queryFn: () => api.getUserByEmail(user?.email),
+    enabled: !!user,
   });
 
-  const { data: availableChallenges } = useQuery({
-    queryKey: ["available-challenges", user],
-    queryFn: getAvailableChallenges,
+  //get ongoing and available challenges
+  const { data } = useQuery({
+    queryKey: ["OnGoingAvailableChallenges", participant?.participantId],
+    queryFn: () =>
+      api.getOnGoingAvailableChallenges(participant?.participantId),
+    enabled: !!participant,
   });
 
+  //get all challenges
   const { data: challenges } = useQuery({
     queryKey: ["challenges"],
-    queryFn: getChallenges,
+    queryFn: api.getChallenges,
   });
 
   return (
@@ -70,21 +40,39 @@ export default function ChallengeList() {
               <Heading className="text-2xl mb-4 mt-4 text-slate-900">
                 On Going Challenges
               </Heading>
-              {onGoingChallenges?.map((challenge) => {
+              {data?.ongoingChallengesRes.map((challenge) => {
                 return (
-                  <ChallengeCard key={challenge.id} challenge={challenge} />
+                  <ChallengeCard
+                    ongoing={true}
+                    key={challenge.id}
+                    challenge={challenge}
+                  />
                 );
               })}
+              {data?.ongoingChallengesRes.length === 0 && (
+                <Box>
+                  <Text>No on going challenges</Text>
+                </Box>
+              )}
             </Box>
             <Box>
               <Heading className="text-2xl mb-4 mt-4 text-slate-900">
                 Available Challenges
               </Heading>
-              {availableChallenges?.map((challenge) => {
+              {data?.availableChallengesRes.map((challenge) => {
                 return (
-                  <ChallengeCard key={challenge.id} challenge={challenge} />
+                  <ChallengeCard
+                    ongoing={false}
+                    key={challenge.id}
+                    challenge={challenge}
+                  />
                 );
               })}
+              {data?.availableChallengesRes.length === 0 && (
+                <Box>
+                  <Text>No challenges available for the moment</Text>
+                </Box>
+              )}
             </Box>
           </>
         )}
@@ -94,8 +82,19 @@ export default function ChallengeList() {
               All Challenges
             </Heading>
             {challenges?.map((challenge) => {
-              return <ChallengeCard key={challenge.id} challenge={challenge} />;
+              return (
+                <ChallengeCard
+                  ongoing={false}
+                  key={challenge.id}
+                  challenge={challenge}
+                />
+              );
             })}
+            {challenges?.length === 0 && (
+              <Box>
+                <Text>No challenges available for the moment</Text>
+              </Box>
+            )}
           </Box>
         )}
       </ScrollView>
