@@ -27,6 +27,8 @@ import { format } from "date-fns";
 import { BrandStatus } from "@/generated/prisma";
 import { toast } from "sonner";
 
+import { updateBrandStatus } from "@/app/dashboard/actions";
+
 interface Brand {
   id: string;
   name: string;
@@ -35,36 +37,29 @@ interface Brand {
   user: {
     email: string;
   };
-  challenges?: {
-    id: string;
-  }[];
-  _count?: {
+  _count: {
     challenges: number;
     products: number;
   };
 }
 
-export function BrandsContent() {
-  const [brands, setBrands] = useState<Brand[]>([]);
-  const [filteredBrands, setFilteredBrands] = useState<Brand[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+interface BrandsContentProps {
+  user:
+    | {
+        name?: string;
+        email?: string;
+      }
+    | undefined;
+  initialBrands: Brand[];
+}
+
+export function BrandsContent({ initialBrands }: BrandsContentProps) {
+  const [brands, setBrands] = useState<Brand[]>(initialBrands);
+  const [filteredBrands, setFilteredBrands] = useState<Brand[]>(initialBrands);
+  const [isLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<BrandStatus | "ALL">("ALL");
-  const [approvingBrandId, setApprovingBrandId] = useState<string | null>(null);
-
-  const fetchBrands = async () => {
-    try {
-      const response = await fetch("/api/brands");
-      const data = await response.json();
-      if (data.brands) {
-        setBrands(data.brands);
-      }
-    } catch (error) {
-      console.error("Error fetching brands:", error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const [updatingBrandId, setUpdatingBrandId] = useState<string | null>(null);
 
   const filterBrands = useCallback(() => {
     let filtered = brands;
@@ -73,7 +68,8 @@ export function BrandsContent() {
       filtered = filtered.filter(
         (brand) =>
           brand.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          brand.user.email.toLowerCase().includes(searchTerm.toLowerCase())
+          (brand.user?.email &&
+            brand.user.email.toLowerCase().includes(searchTerm.toLowerCase()))
       );
     }
 
@@ -85,36 +81,57 @@ export function BrandsContent() {
   }, [brands, searchTerm, statusFilter]);
 
   useEffect(() => {
-    fetchBrands();
-  }, []);
-
-  useEffect(() => {
     filterBrands();
   }, [filterBrands]);
 
-  const handleApproveBrand = async (brandId: string) => {
-    setApprovingBrandId(brandId);
+  const handleStatusChange = async (
+    brandId: string,
+    newStatusValue: string
+  ) => {
+    setUpdatingBrandId(brandId);
+    const currentBrand = brands.find((b) => b.id === brandId);
+    if (!currentBrand) {
+      toast.error("Brand not found for update.");
+      setUpdatingBrandId(null);
+      return;
+    }
+
+    const newStatus = newStatusValue as BrandStatus;
+    if (!Object.values(BrandStatus).includes(newStatus)) {
+      toast.error("Invalid status selected.");
+      setUpdatingBrandId(null);
+      return;
+    }
+
+    const rejectionReason: string | undefined = undefined;
+
     try {
-      const response = await fetch(`/api/brands/${brandId}/approve`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+      const result = await updateBrandStatus({
+        brandId: brandId,
+        newStatus: newStatus,
+        rejectionReason: rejectionReason,
       });
 
-      const data = await response.json();
+      if (result.success) {
+        toast.success(
+          result.message || `Brand status updated to ${newStatus}.`
+        );
 
-      if (response.ok && data.success) {
-        toast.success("Brand approved successfully");
-        await fetchBrands();
+        setBrands((prevBrands) =>
+          prevBrands.map((brand) =>
+            brand.id === brandId ? { ...brand, status: newStatus } : brand
+          )
+        );
       } else {
-        toast.error(data.error || "Failed to approve brand");
+        toast.error(result.error || "Failed to update brand status.");
       }
     } catch (error) {
-      console.error("Error approving brand:", error);
-      toast.error("An error occurred while approving the brand");
+      console.error("Error updating brand status:", error);
+      toast.error(
+        "An unexpected error occurred while updating the brand status."
+      );
     } finally {
-      setApprovingBrandId(null);
+      setUpdatingBrandId(null);
     }
   };
 
@@ -150,7 +167,7 @@ export function BrandsContent() {
       ...filteredBrands.map((brand) => [
         brand.id,
         brand.name,
-        brand.user.email,
+        brand.user?.email || "N/A",
         brand.status,
         brand._count?.challenges || 0,
         brand._count?.products || 0,
@@ -256,9 +273,12 @@ export function BrandsContent() {
                   }
                 >
                   <option value="ALL">All Status</option>
-                  <option value={BrandStatus.ACTIVE}>Active</option>
-                  <option value={BrandStatus.PENDING}>Pending</option>
-                  <option value={BrandStatus.REJECTED}>Rejected</option>
+                  {Object.values(BrandStatus).map((statusOption) => (
+                    <option key={statusOption} value={statusOption}>
+                      {statusOption.charAt(0) +
+                        statusOption.slice(1).toLowerCase()}
+                    </option>
+                  ))}
                 </select>
                 <Button variant="outline" size="sm" onClick={exportBrands}>
                   <Download className="w-4 h-4 mr-2" />
@@ -303,7 +323,7 @@ export function BrandsContent() {
                                 {brand.name}
                               </p>
                               <p className="text-xs text-gray-500">
-                                {brand.user.email}
+                                {brand.user?.email || "N/A"}{" "}
                               </p>
                             </div>
                           </div>
@@ -327,23 +347,36 @@ export function BrandsContent() {
                         </TableCell>
                         <TableCell className="text-right">
                           <div className="flex items-center justify-end gap-2">
-                            {brand.status === BrandStatus.PENDING && (
-                              <Button
-                                size="sm"
-                                variant="default"
-                                onClick={() => handleApproveBrand(brand.id)}
-                                disabled={approvingBrandId === brand.id}
-                              >
-                                {approvingBrandId === brand.id
-                                  ? "Approving..."
-                                  : "Approve"}
-                              </Button>
-                            )}
                             <Button variant="ghost" size="sm" asChild>
                               <a href={`/dashboard/brands/${brand.id}`}>
                                 View Details
                               </a>
                             </Button>
+                            <select
+                              value={brand.status}
+                              onChange={(e) =>
+                                handleStatusChange(brand.id, e.target.value)
+                              }
+                              disabled={updatingBrandId === brand.id}
+                              className="p-2 border rounded-md shadow-sm text-sm focus:ring-blue-500 focus:border-blue-500"
+                            >
+                              {Object.values(BrandStatus).map(
+                                (statusOption) => (
+                                  <option
+                                    key={statusOption}
+                                    value={statusOption}
+                                  >
+                                    {statusOption.charAt(0) +
+                                      statusOption.slice(1).toLowerCase()}
+                                  </option>
+                                )
+                              )}
+                            </select>
+                            {updatingBrandId === brand.id && (
+                              <span className="ml-2 text-blue-600 text-sm">
+                                Updating...
+                              </span>
+                            )}
                           </div>
                         </TableCell>
                       </TableRow>

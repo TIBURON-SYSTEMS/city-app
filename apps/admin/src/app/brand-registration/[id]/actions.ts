@@ -25,6 +25,13 @@ export async function createBrand(data: CreateBrandData, id: string) {
         userId: id,
       },
     });
+
+    const brandOwnerUser = await prisma.user.findUnique({
+      where: { id: id },
+      select: { email: true },
+    });
+    const brandOwnerEmail = brandOwnerUser?.email || "N/A";
+
     try {
       console.log("sending courrier");
 
@@ -34,11 +41,11 @@ export async function createBrand(data: CreateBrandData, id: string) {
             email: process.env.ADMIN_EMAIL,
           },
 
-          template: process.env.COURIER_NOTIFICATION_ID!,
+          template: process.env.COURIER_ADMIN_BRAND_REGISTERED_TEMPLATE_ID!,
 
           data: {
             brandName: newBrand.name,
-            userId: id,
+            registeredEmail: brandOwnerEmail,
           },
         },
       });
