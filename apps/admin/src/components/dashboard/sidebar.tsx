@@ -14,6 +14,7 @@ import {
   Shield,
   HelpCircle,
   MoreVertical,
+  Target,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -37,6 +38,11 @@ const sidebarItems = [
     label: "Users",
     href: "/dashboard/users",
     icon: Users,
+  },
+  {
+    label: "Challenges",
+    href: "/dashboard/challenges",
+    icon: Target,
   },
   {
     label: "Brands",
