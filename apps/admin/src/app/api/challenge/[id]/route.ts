@@ -41,7 +41,7 @@ export async function GET(
       brandName: challenge.brand.name,
       description: challenge.description,
       rewards: challenge.rewards,
-      product: challenge.challengeProducts[0].product.label,
+      productName: challenge.challengeProducts[0].product.label,
     };
 
     return NextResponse.json({ challengeRes });

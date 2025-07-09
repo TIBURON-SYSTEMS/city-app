@@ -6,7 +6,6 @@ import {
 } from "expo-camera";
 import { useCallback, useState, useRef } from "react";
 import { View } from "react-native";
-import { AI_SERVER_URL, BASE_URL } from "../../utils/baseUrl";
 import { ScannerCameraStage } from "../../types/enums";
 import { photos } from "../../../admin/src/mocks/photos";
 import { Button, ButtonText } from "../ui/button";
@@ -20,6 +19,8 @@ import { Text } from "../ui/text";
 import ProcessingSpinner from "./ProcessingSpinner";
 import DisposalSuccessModal from "./DisposalSuccessModal";
 import CameraActionStepper from "./CameraActionStepper";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import api from "@/api/api";
 
 const photoConfig = {
   quality: 0.7,
@@ -27,6 +28,8 @@ const photoConfig = {
 };
 
 export default function ScannerCamera() {
+  const [brandNames, setBrandNames] = useState<string>("");
+  const [productNames, setProductNames] = useState<string>("");
   const [permission, requestPermission] = useCameraPermissions();
   const [isFocused, setIsFocused] = useState(true);
   const [isPhotoTaken, setIsPhotoTaken] = useState(false);
@@ -37,9 +40,7 @@ export default function ScannerCamera() {
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState<0 | 1 | null>(
     null
   );
-  const [aiResult, setAIResult] = useState<any>(null);
-
-  const { user } = useAuth0();
+  const { user, authorize } = useAuth0();
 
   const cameraRef = useRef<any>(null);
 
@@ -52,6 +53,58 @@ export default function ScannerCamera() {
       };
     }, [])
   );
+
+  const { data: participant } = useQuery({
+    queryKey: ["user"],
+    queryFn: () => api.getUserByEmail(user?.email),
+    enabled: !!user,
+  });
+
+  const { data: bin, refetch: fetchBin } = useQuery({
+    queryKey: ["bin"],
+    queryFn: () => api.getBinByPositionType(),
+    enabled: false,
+  });
+
+  const { data: affectedChallenges } = useQuery({
+    queryKey: [
+      "affectedChallenges",
+      brandNames,
+      productNames,
+      participant?.participantId,
+    ],
+    queryFn: () =>
+      api.getAffectedChallenges(
+        brandNames,
+        productNames,
+        participant?.participantId
+      ),
+    enabled: brandNames.length > 0 && productNames.length > 0,
+  });
+
+  const startAnalysisMutation = useMutation({
+    mutationFn: (payload: {
+      before: string;
+      after: string;
+      filenameBefore: string;
+      filenameAfter: string;
+      typeBefore: string;
+      typeAfter: string;
+    }) => api.startAnalysis(payload),
+    onSuccess: (data) => {
+      const newBrandNames = data.result.detectedItems
+        .map((item) => item.disposedProduct.brandName)
+        .join(",");
+      setBrandNames(newBrandNames);
+
+      const newProductNames = data.result.detectedItems
+        .map((item) => item.disposedProduct.label)
+        .join(",");
+      setProductNames(newProductNames);
+
+      setActionStage(ScannerCameraStage.End);
+    },
+  });
 
   if (!permission) {
     return (
@@ -77,11 +130,7 @@ export default function ScannerCamera() {
   async function handleBarcodeScanned() {
     if (actionStage !== ScannerCameraStage.Scan) return;
 
-    const mockQRCodeData = { binId: 1 };
-    const res = await fetch(`${BASE_URL}/api/bin/${mockQRCodeData.binId}`);
-    const data = await res.json();
-
-    if (!data) return;
+    const { data: binData, isSuccess } = await fetchBin();
 
     setActionStage(ScannerCameraStage.Before);
     // console.log(data.bin);
@@ -129,13 +178,22 @@ export default function ScannerCamera() {
 
       setActionStage(ScannerCameraStage.Finish);
     }
+    //invert
+    // setTimeout(() => {
+    //   setIsPhotoTaken(false);
+    // }, 3000);
 
-    setTimeout(() => {
-      setIsPhotoTaken(false);
-    }, 3000);
+    setIsPhotoTaken(false);
   }
 
   async function handleSubmit() {
+    if (!user) {
+      await authorize({
+        additionalParameters: {
+          prompt: "select_account",
+        },
+      });
+    }
     if (actionStage !== ScannerCameraStage.Finish) return;
     // I don't want to log in, so temporarily comment out for development
     // if (!user) return;
@@ -149,24 +207,7 @@ export default function ScannerCamera() {
       photosUri[1]
     );
 
-    const res = await fetch(`${AI_SERVER_URL}/analysis`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
-    });
-
-    if (!res.ok) {
-      throw new Error(`HTTP error! Status: ${res.status}`);
-    }
-
-    const data = await res.json();
-    if (data.success) {
-      console.log("Base64 file transfer successfully", data.result);
-      setAIResult(data.result);
-      setActionStage(ScannerCameraStage.End);
-    }
+    startAnalysisMutation.mutate(payload);
   }
 
   function handleRestart() {
@@ -213,7 +254,8 @@ export default function ScannerCamera() {
 
             <DisposalSuccessModal
               actionStage={actionStage}
-              aiResult={aiResult}
+              aiResult={startAnalysisMutation.data?.result}
+              affectedChallenges={affectedChallenges}
               handleRestart={handleRestart}
             />
           </View>

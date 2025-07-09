@@ -42,7 +42,7 @@ export async function GET() {
       brandName: challenge.brand.name,
       description: challenge.description,
       rewards: challenge.rewards,
-      product: challenge.challengeProducts.map(
+      productName: challenge.challengeProducts.map(
         (challengeProduct) => challengeProduct.product.label
       )[0],
       amount: 0,

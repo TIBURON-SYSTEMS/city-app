@@ -86,7 +86,7 @@ export async function GET(
         brandName: participation.challenge.brand.name,
         description: participation.challenge.description,
         rewards: participation.challenge.rewards,
-        product: participation.challenge.challengeProducts.map(
+        productName: participation.challenge.challengeProducts.map(
           (challengeProduct) => challengeProduct.product.label
         )[0],
         amount: participation.amount,
@@ -124,7 +124,7 @@ export async function GET(
     brandName: challenge.brand.name,
     description: challenge.description,
     rewards: challenge.rewards,
-    product: challenge.challengeProducts.map((p) => p.product.label)[0],
+    productName: challenge.challengeProducts.map((p) => p.product.label)[0],
     amount: 0,
   }));
 

@@ -4,56 +4,129 @@ import { Button, ButtonText } from "../ui/button";
 import { Heading } from "../ui/heading";
 import { Text } from "../ui/text";
 import AntDesign from "@expo/vector-icons/AntDesign";
-
-type disposalResult = {
-  id: string;
-  label: string;
-  amount: string;
-  confidence: string;
-};
-
-interface aiResultInterface {
-  detectedItems: disposalResult[];
-  timestamp: string;
-}
+import { VStack } from "../ui/vstack";
+import { HStack } from "../ui/hstack";
+import { ScrollView } from "react-native";
+import { AffectedChallenge, aiResultInterface } from "@/types/types";
 
 interface DisposalSuccessModalProps {
   actionStage: ScannerCameraStage;
-  aiResult: aiResultInterface;
+  aiResult: aiResultInterface | undefined;
   handleRestart: () => void;
+  affectedChallenges: AffectedChallenge[] | undefined;
 }
 
 export default function DisposalSuccessModal({
   actionStage,
   aiResult,
   handleRestart,
+  affectedChallenges,
 }: DisposalSuccessModalProps) {
-  if (actionStage !== ScannerCameraStage.End) return;
+  if (!affectedChallenges) return;
+
+  if (
+    actionStage !== ScannerCameraStage.End ||
+    !aiResult ||
+    affectedChallenges.length === 0
+  )
+    return;
 
   return (
-    <Box className="absolute w-full h-screen bg-white flex justify-around items-center gap-4">
-      <Box className="flex gap-4">
-        <Box className="flex flex-row justify-center items-center gap-2">
-          <Heading className="text-3xl">Success</Heading>
-          <AntDesign name="checkcircle" size={24} color="green" />
-        </Box>
-        <Heading className="self-center">Disposal Results</Heading>
-        <Box className="mx-8 border-2 border-black rounded-md p-2 bg-black">
-          {aiResult.detectedItems.map((item) => (
-            <Box className="flex flex-row" key={item.id}>
-              <Box className="w-7/12">
-                <Text className="text-white">{`${item.label} * ${item.amount}`}</Text>
-              </Box>
-              <Box className="w-5/12">
-                <Text className="text-white">{`AI Confidence: ${+item.confidence * 100}%`}</Text>
-              </Box>
+    <>
+      <Box className="absolute w-full h-screen bg-white flex p-4">
+        <VStack space="lg" className="w-full max-w-4xl">
+          <HStack className="justify-center items-center gap-3 mb-4">
+            <Heading className="text-3xl">Success</Heading>
+            <AntDesign name="checkcircle" size={24} color="green" />
+          </HStack>
+
+          <Heading className="text-2xl text-center mb-4">
+            Disposal Results
+          </Heading>
+
+          <Box className="border-2 border-black rounded-lg overflow-hidden">
+            <Box className="bg-black p-3">
+              <HStack className="justify-between">
+                <Box className="flex-1">
+                  <Text className="text-white font-bold">Disposed Product</Text>
+                </Box>
+                <Box className="flex-1 ml-4">
+                  <Text className="text-white font-bold">Brand</Text>
+                </Box>
+                <Box className="w-20">
+                  <Text className="text-white font-bold text-right">
+                    Quantity
+                  </Text>
+                </Box>
+              </HStack>
             </Box>
-          ))}
-        </Box>
+
+            <ScrollView className="h-36">
+              <VStack>
+                {aiResult.detectedItems.map((item, index) => (
+                  <Box
+                    key={item.id}
+                    className={`p-3 border-b border-gray-200 ${index % 2 === 0 ? "bg-gray-50" : "bg-white"}`}
+                  >
+                    <HStack className="justify-between items-center">
+                      <Box className="flex-1">
+                        <Text className="font-medium">
+                          {item.disposedProduct.label}
+                        </Text>
+                      </Box>
+                      <Box className="flex-1 ml-4">
+                        <Text className="text-gray-600">
+                          {item.disposedProduct.brandName}
+                        </Text>
+                      </Box>
+                      <Box className="w-20">
+                        <Text className="text-right font-semibold">
+                          {item.amount}
+                        </Text>
+                      </Box>
+                    </HStack>
+                  </Box>
+                ))}
+              </VStack>
+            </ScrollView>
+          </Box>
+          <Box>
+            <Heading className="text-2xl text-center mb-4">
+              Affected Challenges
+            </Heading>
+            <Box className="border-2 border-black rounded-lg overflow-hidden">
+              <Box className="bg-black p-3">
+                <HStack className="justify-between">
+                  <Box className="flex-1">
+                    <Text className="text-white font-bold">Challenge Name</Text>
+                  </Box>
+                </HStack>
+              </Box>
+              <ScrollView className="h-36">
+                <VStack>
+                  {affectedChallenges.map((affectedChallenge, index) => (
+                    <Box
+                      key={affectedChallenge.id}
+                      className={`p-3 border-b border-gray-200 ${index % 2 === 0 ? "bg-gray-50" : "bg-white"}`}
+                    >
+                      <HStack className="justify-between items-center">
+                        <Box className="flex-1">
+                          <Text className="font-medium">
+                            {affectedChallenge.label}
+                          </Text>
+                        </Box>
+                      </HStack>
+                    </Box>
+                  ))}
+                </VStack>
+              </ScrollView>
+            </Box>
+          </Box>
+        </VStack>
       </Box>
       <Button onPress={handleRestart}>
         <ButtonText>OK</ButtonText>
       </Button>
-    </Box>
+    </>
   );
 }

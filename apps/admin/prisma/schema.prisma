@@ -65,7 +65,7 @@ model Participant {
 
 model Brand {
   id          String      @id @default(cuid())
-  name        String
+  name        String      @unique
   challenges  Challenge[]
   products    Product[]
   userId      String      @unique
@@ -91,12 +91,11 @@ model ParticipantReward {
 
 model Disposal {
   id               String            @id @default(cuid())
-  date             DateTime
-  bin              Bin               @relation(fields: [binId], references: [id])
   disposedProducts DisposedProduct[]
+  bin              Bin               @relation(fields: [binId], references: [id])
   binId            String
   participantId    String
-  Participant      Participant?      @relation(fields: [participantId], references: [id])
+  participant      Participant?      @relation(fields: [participantId], references: [id])
   createdAt        DateTime          @default(now())
   updatedAt        DateTime          @updatedAt
 }
@@ -118,8 +117,7 @@ model Bin {
   type      String
   longitude Float
   latitude  Float
-  userId    String?
-  Disposal  Disposal[]
+  disposals Disposal[]
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
 }

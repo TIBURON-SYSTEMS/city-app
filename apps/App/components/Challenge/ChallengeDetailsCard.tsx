@@ -13,9 +13,9 @@ import { Heading } from "../ui/heading";
 import { Text } from "../ui/text";
 import { HStack } from "../ui/hstack";
 import { Badge, BadgeText } from "../ui/badge";
-import { Progress, ProgressFilledTrack } from "../ui/progress";
 
 import api from "@/api/api";
+import ChallengeProgress from "./ChallengeProgress";
 
 export default function ChallengeDetailsCard() {
   const { id } = useLocalSearchParams();
@@ -150,26 +150,16 @@ export default function ChallengeDetailsCard() {
               <Heading className="text-slate-900 text-base font-semibold">
                 Completion Goal
               </Heading>
-              <Text>{`Recycle ${challenge.goal} ${challenge.product}s`}</Text>
+              <Text>{`Recycle ${challenge.goal} ${challenge.productName}s`}</Text>
             </Box>
 
             {participationData?.isParticipating && (
-              <Box>
-                <Heading className="text-slate-900 text-base font-semibold">
-                  Current progress
-                </Heading>
-                <Text className="mb-2">
-                  {participationData.participation?.amount} of {challenge.goal}{" "}
-                  items sorted
-                </Text>
-                <Progress
-                  value={participationData.participation?.amount}
-                  size="md"
-                  orientation="horizontal"
-                >
-                  <ProgressFilledTrack />
-                </Progress>
-              </Box>
+              <ChallengeProgress
+                heading={true}
+                amount={participationData.participation?.amount}
+                goal={challenge.goal}
+                productName={challenge.productName}
+              />
             )}
           </Box>
         </Card>

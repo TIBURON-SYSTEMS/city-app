@@ -6,9 +6,9 @@ import { Card } from "../ui/card";
 import { Box } from "../ui/box";
 import { Heading } from "../ui/heading";
 import { Text } from "../ui/text";
-import { Progress, ProgressFilledTrack } from "../ui/progress";
 import { Challenge } from "@/types/types";
 import api from "@/api/api";
+import ChallengeProgress from "./ChallengeProgress";
 
 interface ChallengeCardProps {
   challenge: Challenge;
@@ -55,19 +55,25 @@ export default function ChallengeCard({
         <Text className="mb-2">by {challenge.brandName}</Text>
 
         {user && participationData?.isParticipating && (
-          <>
-            <Text className="mb-2">
-              {participationData?.participation?.amount} of {challenge.goal}{" "}
-              items sorted
-            </Text>
-            <Progress
-              value={participationData?.participation?.amount}
-              size="md"
-              orientation="horizontal"
-            >
-              <ProgressFilledTrack />
-            </Progress>
-          </>
+          <ChallengeProgress
+            heading={false}
+            amount={participationData.participation?.amount}
+            goal={challenge.goal}
+            productName={challenge.productName}
+          />
+          // <>
+          //   <Text className="mb-2">
+          //     {participationData?.participation?.amount} of {challenge.goal}{" "}
+          //     items sorted
+          //   </Text>
+          //   <Progress
+          //     value={participationData?.participation?.amount}
+          //     size="md"
+          //     orientation="horizontal"
+          //   >
+          //     <ProgressFilledTrack />
+          //   </Progress>
+          // </>
         )}
       </Card>
     </Link>

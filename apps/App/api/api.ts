@@ -1,11 +1,13 @@
 import {
+  AffectedChallenge,
+  AiResultResponse,
+  Bin,
   Brand,
   Challenge,
   Participant,
   ParticipationData,
-  Bin
 } from "@/types/types";
-import { BASE_URL } from "@/utils/baseUrl";
+import { AI_SERVER_URL, BASE_URL } from "@/utils/baseUrl";
 
 const api = {
   async getUserByEmail(
@@ -86,14 +88,70 @@ const api = {
     const data = await res.json();
     return data;
   },
+  async getBinByPositionType(): Promise<Bin | undefined> {
+    const res = await fetch(
+      `${BASE_URL}/api/bin?lat=41.3865&lon=2.1732&type=yellow`
+    );
+    const data = await res.json();
 
-  async fetchAllBins():Promise<Bin[]> {
-    const res = await fetch(`${BASE_URL}/api/bins`)
-  const data = await res.json()
-  return data
-  }
+    return data;
+  },
+
+  async startAnalysis(payload: {
+    before: string;
+    after: string;
+    filenameBefore: string;
+    filenameAfter: string;
+    typeBefore: string;
+    typeAfter: string;
+  }): Promise<AiResultResponse> {
+    const res = await fetch(`${AI_SERVER_URL}/analysis`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(payload),
+    });
+
+    if (!res.ok) {
+      throw new Error(`HTTP error! Status: ${res.status}`);
+    }
+
+    const data = await res.json();
+    return data;
+  },
+  async createDisposal(
+    participantId: string | undefined,
+    binId: string | undefined
+  ) {
+    const options = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ participantId, binId }),
+    };
+    const res = await fetch(`${BASE_URL}/api/disposal`, options);
+  },
+
+  async fetchAllBins(): Promise<Bin[]> {
+    const res = await fetch(`${BASE_URL}/api/bins`);
+    const data = await res.json();
+    return data;
+  },
+
+  async getAffectedChallenges(
+    brandNames: string,
+    productNames: string,
+    participantId: string | undefined
+  ): Promise<AffectedChallenge[]> {
+    const res = await fetch(
+      `${BASE_URL}/api/affectedchallenges?brandNames=${brandNames}&productNames=${productNames}&participantId=${participantId}`
+    );
+    const data = await res.json();
+
+    return data;
+  },
 };
 
-
 export default api;
-

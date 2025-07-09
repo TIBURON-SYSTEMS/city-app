@@ -18,7 +18,7 @@ export type Challenge = {
   brandName: string;
   description: string;
   rewards: Reward[];
-  product: string;
+  productName: string;
   // users: User[];
   amount: number;
 };
@@ -49,10 +49,63 @@ export type Brand = {
   description: string;
   logoUrl: string;
 };
+
 export type Bin = {
   id: string;
   label: string;
   type: string;
-  latitude: number;
-  longitude: number;
+  latitude: string;
+  longitude: string;
+};
+
+export type AiResultResponse = {
+  message: string;
+  result: aiResultInterface;
+  success: boolean;
+};
+
+export type DisposedProduct = {
+  label: string;
+  material: string;
+  brandName: string;
+};
+
+export type disposalResult = {
+  id: string;
+  disposedProduct: DisposedProduct;
+  amount: number;
+  confidence: string;
+};
+
+export interface aiResultInterface {
+  detectedItems: disposalResult[];
+  timestamp: string;
 }
+export type ChallengeProduct = {
+  id: string;
+  challengeId: string;
+  productId: string;
+  createdAt: Date;
+  updatedAt: Date;
+  challenge: {
+    id: string;
+    label: string;
+    status: string;
+    endDate: Date;
+    description: string;
+    goal: number;
+    brandId: string;
+    createdAt: Date;
+    updatedAt: Date;
+  };
+};
+
+export type AffectedChallenge = {
+  id: string;
+  label: string;
+  status: string;
+  endDate: Date;
+  description: string;
+  goal: number;
+  brandId: string;
+};
