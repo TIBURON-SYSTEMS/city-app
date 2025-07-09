@@ -14,6 +14,8 @@ export default function ChallengeProgress({
   goal,
   productName,
 }: ChallengeProgressProps) {
+  if (!amount) return;
+
   return (
     <Box>
       {heading && (
@@ -24,7 +26,11 @@ export default function ChallengeProgress({
       <Text className="mb-2 lowercase">
         {amount} of {goal} {productName}s recycled
       </Text>
-      <Progress value={amount} size="md" orientation="horizontal">
+      <Progress
+        value={(amount / goal) * 100}
+        size="md"
+        orientation="horizontal"
+      >
         <ProgressFilledTrack />
       </Progress>
     </Box>

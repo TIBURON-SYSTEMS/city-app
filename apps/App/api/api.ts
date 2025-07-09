@@ -1,5 +1,5 @@
 import {
-  AffectedChallenge,
+  AffectedChallengeWithAmount,
   AiResultResponse,
   Bin,
   Brand,
@@ -122,34 +122,25 @@ const api = {
   },
   async createDisposal(
     participantId: string | undefined,
-    binId: string | undefined
-  ) {
+    binId: string | undefined,
+    aiResult: AiResultResponse
+  ): Promise<AffectedChallengeWithAmount[]> {
     const options = {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ participantId, binId }),
+      body: JSON.stringify({ participantId, binId, aiResult }),
     };
     const res = await fetch(`${BASE_URL}/api/disposal`, options);
+    const data = res.json();
+
+    return data;
   },
 
   async fetchAllBins(): Promise<Bin[]> {
     const res = await fetch(`${BASE_URL}/api/bins`);
     const data = await res.json();
-    return data;
-  },
-
-  async getAffectedChallenges(
-    brandNames: string,
-    productNames: string,
-    participantId: string | undefined
-  ): Promise<AffectedChallenge[]> {
-    const res = await fetch(
-      `${BASE_URL}/api/affectedchallenges?brandNames=${brandNames}&productNames=${productNames}&participantId=${participantId}`
-    );
-    const data = await res.json();
-
     return data;
   },
 };

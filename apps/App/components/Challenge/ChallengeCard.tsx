@@ -61,19 +61,6 @@ export default function ChallengeCard({
             goal={challenge.goal}
             productName={challenge.productName}
           />
-          // <>
-          //   <Text className="mb-2">
-          //     {participationData?.participation?.amount} of {challenge.goal}{" "}
-          //     items sorted
-          //   </Text>
-          //   <Progress
-          //     value={participationData?.participation?.amount}
-          //     size="md"
-          //     orientation="horizontal"
-          //   >
-          //     <ProgressFilledTrack />
-          //   </Progress>
-          // </>
         )}
       </Card>
     </Link>

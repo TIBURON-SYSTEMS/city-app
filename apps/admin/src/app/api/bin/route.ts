@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Bin not found" }, { status: 404 });
     }
 
-    return NextResponse.json({ bin: bin[0] });
+    return NextResponse.json(bin[0]);
   } catch (error) {
     return NextResponse.json(
       { error: "Internal Server Error", details: error },

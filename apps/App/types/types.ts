@@ -1,5 +1,3 @@
-import { Float } from "react-native/Libraries/Types/CodegenTypes";
-
 export type User = {
   id: string;
   email: string;
@@ -81,6 +79,7 @@ export interface aiResultInterface {
   detectedItems: disposalResult[];
   timestamp: string;
 }
+
 export type ChallengeProduct = {
   id: string;
   challengeId: string;
@@ -100,12 +99,24 @@ export type ChallengeProduct = {
   };
 };
 
-export type AffectedChallenge = {
-  id: string;
-  label: string;
-  status: string;
-  endDate: Date;
-  description: string;
-  goal: number;
-  brandId: string;
+// export type AffectedChallengeWithProductAndParticipation = {
+//   product: string;
+//   challenge: AffectedChallenge;
+//   participationAmount: number;
+// };
+
+// export type AffectedChallenge = {
+//   id: string;
+//   label: string;
+//   status: string;
+//   endDate: Date;
+//   description: string;
+//   goal: number;
+//   brandId: string;
+// };
+
+export type AffectedChallengeWithAmount = {
+  challengeTitle: string;
+  amount: number;
+  challengeId: string;
 };

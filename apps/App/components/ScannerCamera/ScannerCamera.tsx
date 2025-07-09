@@ -19,8 +19,9 @@ import { Text } from "../ui/text";
 import ProcessingSpinner from "./ProcessingSpinner";
 import DisposalSuccessModal from "./DisposalSuccessModal";
 import CameraActionStepper from "./CameraActionStepper";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import api from "@/api/api";
+import { AiResultResponse } from "@/types/types";
 
 const photoConfig = {
   quality: 0.7,
@@ -28,8 +29,6 @@ const photoConfig = {
 };
 
 export default function ScannerCamera() {
-  const [brandNames, setBrandNames] = useState<string>("");
-  const [productNames, setProductNames] = useState<string>("");
   const [permission, requestPermission] = useCameraPermissions();
   const [isFocused, setIsFocused] = useState(true);
   const [isPhotoTaken, setIsPhotoTaken] = useState(false);
@@ -43,6 +42,8 @@ export default function ScannerCamera() {
   const { user, authorize } = useAuth0();
 
   const cameraRef = useRef<any>(null);
+
+  const queryClient = useQueryClient();
 
   // unmount the camera if we navigate to another page
   useFocusEffect(
@@ -63,23 +64,30 @@ export default function ScannerCamera() {
   const { data: bin, refetch: fetchBin } = useQuery({
     queryKey: ["bin"],
     queryFn: () => api.getBinByPositionType(),
-    enabled: false,
   });
 
-  const { data: affectedChallenges } = useQuery({
-    queryKey: [
-      "affectedChallenges",
-      brandNames,
-      productNames,
-      participant?.participantId,
-    ],
-    queryFn: () =>
-      api.getAffectedChallenges(
-        brandNames,
-        productNames,
-        participant?.participantId
-      ),
-    enabled: brandNames.length > 0 && productNames.length > 0,
+  type DisposalMutationVariables = {
+    participantId: string | undefined;
+    binId: string | undefined;
+    aiResult: AiResultResponse;
+  };
+
+  const disposalMutation = useMutation({
+    mutationFn: ({
+      participantId,
+      binId,
+      aiResult,
+    }: DisposalMutationVariables) =>
+      api.createDisposal(participantId, binId, aiResult),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["progress"],
+      });
+      //get affected challenge
+      //get progression point advancement
+      //update participation
+      //invalidate progression and maybe THE WHOLE WORLD
+    },
   });
 
   const startAnalysisMutation = useMutation({
@@ -92,15 +100,21 @@ export default function ScannerCamera() {
       typeAfter: string;
     }) => api.startAnalysis(payload),
     onSuccess: (data) => {
-      const newBrandNames = data.result.detectedItems
-        .map((item) => item.disposedProduct.brandName)
-        .join(",");
-      setBrandNames(newBrandNames);
+      // const newBrandNames = data.result.detectedItems
+      //   .map((item) => item.disposedProduct.brandName)
+      //   .join(",");
+      // setBrandNames(newBrandNames);
 
-      const newProductNames = data.result.detectedItems
-        .map((item) => item.disposedProduct.label)
-        .join(",");
-      setProductNames(newProductNames);
+      // const newProductNames = data.result.detectedItems
+      //   .map((item) => item.disposedProduct.label)
+      //   .join(",");
+      // setProductNames(newProductNames);
+
+      disposalMutation.mutate({
+        participantId: participant?.participantId,
+        binId: bin?.id,
+        aiResult: data,
+      });
 
       setActionStage(ScannerCameraStage.End);
     },
@@ -130,7 +144,7 @@ export default function ScannerCamera() {
   async function handleBarcodeScanned() {
     if (actionStage !== ScannerCameraStage.Scan) return;
 
-    const { data: binData, isSuccess } = await fetchBin();
+    await fetchBin();
 
     setActionStage(ScannerCameraStage.Before);
     // console.log(data.bin);
@@ -255,7 +269,7 @@ export default function ScannerCamera() {
             <DisposalSuccessModal
               actionStage={actionStage}
               aiResult={startAnalysisMutation.data?.result}
-              affectedChallenges={affectedChallenges}
+              affectedChallenges={disposalMutation.data}
               handleRestart={handleRestart}
             />
           </View>

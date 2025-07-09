@@ -3,4 +3,5 @@ export const MOCK_PRODUCTS = [
   { label: "aluminium can", material: "aluminium", brandName: "Demo Brand" },
   { label: "a4 paper", material: "paper", brandName: "Demo Brand" },
   { label: "newspaper", material: "paper", brandName: "Demo Brand" },
+  { label: "plastic bottle2", material: "paper", brandName: "Demo Brand2" },
 ];

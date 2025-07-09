@@ -25,6 +25,13 @@ async function main() {
     },
   });
   console.log({ userBrand });
+  const userBrand2 = await prisma.user.create({
+    data: {
+      email: "brand2@brand.com",
+      role: UserRole.BRAND,
+    },
+  });
+  console.log({ userBrand2 });
 
   const brand = await prisma.brand.create({
     data: {
@@ -38,6 +45,18 @@ async function main() {
   });
   console.log({ brand });
 
+  const brand2 = await prisma.brand.create({
+    data: {
+      name: "Demo Brand2",
+      description: "Description of the brand",
+      logoUrl:
+        "https://static.tildacdn.net/tild6231-3164-4435-b331-396333613165/LOGO_BLACK.png",
+      userId: userBrand2.id,
+      status: BrandStatus.ACTIVE,
+    },
+  });
+  console.log({ brand2 });
+
   // CREATE PRODUCTS
 
   const plasticBottle = await prisma.product.create({
@@ -48,6 +67,15 @@ async function main() {
     },
   });
   console.log(plasticBottle);
+
+  const plasticBottle2 = await prisma.product.create({
+    data: {
+      label: "plastic bottle2",
+      material: "plastic",
+      brandId: brand2.id,
+    },
+  });
+  console.log(plasticBottle2);
 
   const can = await prisma.product.create({
     data: {
@@ -90,6 +118,19 @@ async function main() {
     },
   });
   console.log({ challenge1 });
+
+  const challenge12 = await prisma.challenge.create({
+    data: {
+      label: "Plastic Bottle Blitz2",
+      status: "active",
+      endDate: new Date("2025-08-31T23:59:59"),
+      goal: 30,
+      description:
+        "Recycle plastic bottles to earn rewards. Hit 30 bottles and win a 1000 reward points!",
+      brandId: brand2.id,
+    },
+  });
+  console.log({ challenge12 });
 
   const challenge2 = await prisma.challenge.create({
     data: {
@@ -148,6 +189,10 @@ async function main() {
         challengeId: challenge4.id,
         productId: newspaper.id,
       },
+      {
+        challengeId: challenge12.id,
+        productId: plasticBottle2.id,
+      },
     ],
   });
   //add reward
@@ -158,6 +203,13 @@ async function main() {
         label: "tshirt",
         amount: 1,
         challengeId: challenge1.id,
+        imageUrl:
+          "https://static.vecteezy.com/system/resources/previews/012/628/220/original/plain-black-t-shirt-on-transparent-background-free-png.png",
+      },
+      {
+        label: "tshirt2",
+        amount: 1,
+        challengeId: challenge12.id,
         imageUrl:
           "https://static.vecteezy.com/system/resources/previews/012/628/220/original/plain-black-t-shirt-on-transparent-background-free-png.png",
       },
@@ -213,6 +265,7 @@ async function main() {
     data: [
       { challengeId: challenge1.id, participantId: participant.id, amount: 10 },
       { challengeId: challenge2.id, participantId: participant.id, amount: 30 },
+      { challengeId: challenge12.id, participantId: participant.id, amount: 2 },
     ],
   });
 
