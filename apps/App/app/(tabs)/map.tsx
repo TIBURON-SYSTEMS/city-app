@@ -63,17 +63,34 @@ export default function MapWithSearch() {
   useEffect(() => {
     if (!bins) return;
 
-    const transformed = bins.map((bin: Bin, index: number) => ({
-      id: bin.id ?? `bin-${index}`,
-      label: bin.label,
-      type: bin.type,
-      position: {
-        lat: Number(bin.latitude),
-        lng: Number(bin.longitude),
-      },
-      icon: "♻️",
-      size: [32, 32],
-    }));
+    const transformed = bins.map((bin: Bin, index: number) => {
+      const iconHtml = `
+              <div style="
+      background-color: #FFFF;
+      border-radius: 50%;
+      width: 44px;
+      height: 44px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border: 1px solid #616161;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+    ">
+♻️
+    </div>
+      `;
+      return {
+        id: bin.id ?? `bin-${index}`,
+        label: bin.label,
+        type: bin.type,
+        position: {
+          lat: Number(bin.latitude),
+          lng: Number(bin.longitude),
+        },
+        icon: iconHtml,
+        size: [32, 32],
+      };
+    });
 
     setMarkers(transformed);
   }, [bins]);

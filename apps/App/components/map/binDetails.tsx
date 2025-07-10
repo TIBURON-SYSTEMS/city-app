@@ -1,4 +1,3 @@
-import { Center } from "@/components/ui/center";
 import { Text } from "@/components/ui/text";
 import { Bin } from "@/types/types";
 import { Linking, Pressable, View } from "react-native";
@@ -50,7 +49,7 @@ export function BinCardDetails({ bin, onClose }: BinCardDetailsProps) {
             className="text-gray-900 font-mono text-xs ml-2 flex-1"
             numberOfLines={1}
           >
-            {bin.latitude.toFixed(4)}, {bin.longitude.toFixed(4)}
+            {Number(bin.latitude).toFixed(4)},{Number(bin.longitude).toFixed(4)}
           </Text>
         </View>
 
