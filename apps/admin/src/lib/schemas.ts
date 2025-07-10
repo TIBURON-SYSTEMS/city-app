@@ -4,7 +4,7 @@ export const ChallengeFormSchema = z.object({
   label: z.string().min(1, {
     message: "Please add a label.",
   }),
-  published: z.string({ required_error: "Please select an option" }),
+  published: z.string().optional(),
   endDate: z.date({ required_error: "Challenge end date is required!" }),
   goal: z.coerce.number().min(1, {
     message: "Please add a goal number",

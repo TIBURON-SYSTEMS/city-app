@@ -23,11 +23,11 @@ export async function createChallenge(
     const challenge = await prisma.challenge.create({
       data: {
         label: result.data.label,
-        status: result.data.published,
         endDate: result.data.endDate,
         goal: result.data.goal,
         description: result.data.description,
         brandId: brand,
+        status: 'inactive'
       },
     });
 

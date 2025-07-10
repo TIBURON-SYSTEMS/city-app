@@ -110,7 +110,7 @@ export default function ChallengeForm({ brand }: { brand: string }) {
                       control={form.control}
                       name="label"
                       render={({ field }) => (
-                        <FormItem className="space-y-2">
+                        <FormItem className="space-y-2 col-span-full">
                           <FormLabel className="text-sm font-medium text-slate-700">
                             Challenge Label
                           </FormLabel>
@@ -123,51 +123,6 @@ export default function ChallengeForm({ brand }: { brand: string }) {
                           </FormControl>
                           <FormDescription className="text-xs text-slate-500">
                             This will be the main title visible to all users
-                          </FormDescription>
-                          <FormMessage className="text-xs" />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="published"
-                      render={({ field }) => (
-                        <FormItem className="space-y-2">
-                          <FormLabel className="text-sm font-medium text-slate-700">
-                            Status
-                          </FormLabel>
-                          <Select
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                          >
-                            <FormControl className="w-full">
-                              <SelectTrigger className="border-slate-200 bg-white focus:border-slate-400 focus:ring-slate-400">
-                                <SelectValue placeholder="Select status" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent className="bg-white border-slate-200">
-                              <SelectItem
-                                value="active"
-                                className="focus:bg-slate-100"
-                              >
-                                <div className="flex items-center gap-2">
-                                  <div className="h-2 w-2 rounded-full bg-green-500" />
-                                  Active
-                                </div>
-                              </SelectItem>
-                              <SelectItem
-                                value="inactive"
-                                className="focus:bg-slate-100"
-                              >
-                                <div className="flex items-center gap-2">
-                                  <div className="h-2 w-2 rounded-full bg-slate-400" />
-                                  Inactive
-                                </div>
-                              </SelectItem>
-                            </SelectContent>
-                          </Select>
-                          <FormDescription className="text-xs text-slate-500">
-                            Choose whether this challenge is active or inactive
                           </FormDescription>
                           <FormMessage className="text-xs" />
                         </FormItem>
@@ -267,7 +222,7 @@ export default function ChallengeForm({ brand }: { brand: string }) {
                       control={form.control}
                       name="product"
                       render={({ field }) => (
-                        <FormItem className="space-y-2">
+                        <FormItem className="space-y-2 ">
                           <FormLabel className="text-sm font-medium text-slate-700">
                             Product Name
                           </FormLabel>
@@ -279,7 +234,7 @@ export default function ChallengeForm({ brand }: { brand: string }) {
                             />
                           </FormControl>
                           <FormDescription className="text-xs text-slate-500">
-                            The product associated with this challenge
+                            Product is associated with this challenge
                           </FormDescription>
                           <FormMessage className="text-xs" />
                         </FormItem>
