@@ -36,7 +36,7 @@ export default function DisposalSuccessModal({
       <Box className="absolute w-full h-screen bg-white flex p-4">
         <VStack space="lg" className="w-full max-w-4xl">
           <HStack className="justify-center items-center gap-3 mb-4">
-            <Heading className="text-3xl">Success</Heading>
+            <Heading className="text-3xl">Great Job!</Heading>
             <AntDesign name="checkcircle" size={24} color="green" />
           </HStack>
 
@@ -134,8 +134,8 @@ export default function DisposalSuccessModal({
           </Box>
         </VStack>
       </Box>
-      <Button onPress={handleRestart}>
-        <ButtonText>OK</ButtonText>
+      <Button className="rounded-full" onPress={handleRestart}>
+        <ButtonText>Scan More</ButtonText>
       </Button>
     </>
   );

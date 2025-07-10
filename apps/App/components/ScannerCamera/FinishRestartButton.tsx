@@ -15,19 +15,19 @@ export default function FinishRestartButton({
 }: FinishRestartButtonProps) {
   return (
     actionStage === ScannerCameraStage.Finish && (
-      <View className="absolute top-1/2 left-1/2 -translate-x-1/2 flex flex-col gap-2">
+      <View className="absolute top-1/2 left-1/2 -translate-x-1/2 flex flex-col gap-6">
         <Button
-          className="bg-black border-2 border-zinc-400"
+          className="bg-black rounded-full border border-white"
           onPress={handleSubmit}
         >
-          <ButtonText>SUBMIT</ButtonText>
+          <ButtonText>Start Analysis</ButtonText>
         </Button>
 
         <Button
-          className="bg-black border-2 border-zinc-400"
+          className="bg-black rounded-full border border-white"
           onPress={handleRestart}
         >
-          <ButtonText>RESTART</ButtonText>
+          <ButtonText>Restart</ButtonText>
         </Button>
       </View>
     )
