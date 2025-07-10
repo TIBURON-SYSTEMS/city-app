@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -9,11 +9,15 @@ import {
 } from "react-native";
 import { Asset } from "expo-asset";
 import * as FileSystem from "expo-file-system";
-import { LeafletView, LatLng } from "react-native-leaflet-view";
-import { BASE_URL } from "@/utils/baseUrl";
+import {
+  LeafletView,
+  WebviewLeafletMessage,
+  LatLng,
+} from "react-native-leaflet-view";
 import { useQuery } from "@tanstack/react-query";
 import api from "@/api/api";
 import { Bin } from "@/types/types";
+import { BinCardDetails } from "@/components/map/binDetails";
 
 const DEFAULT_LOCATION = {
   latitude: 41.3851,
@@ -34,7 +38,12 @@ export default function MapWithSearch() {
   const [center, setCenter] = useState<LatLng>(DEFAULT_LOCATION);
   const [query, setQuery] = useState("");
   const [markers, setMarkers] = useState<Marker[]>([]);
-  // const leafletRef = useRef<any>(null);
+  const [selectedBin, setSelectedBin] = useState<Bin | null>(null);
+
+  const { data: bins } = useQuery({
+    queryKey: ["bins"],
+    queryFn: () => api.fetchAllBins(),
+  });
 
   useEffect(() => {
     const loadHtml = async () => {
@@ -51,20 +60,18 @@ export default function MapWithSearch() {
     loadHtml();
   }, []);
 
-  const { data: bins } = useQuery({
-    queryKey: ["bins"],
-    queryFn: () => api.fetchAllBins(),
-  });
   useEffect(() => {
     if (!bins) return;
 
     const transformed = bins.map((bin: Bin, index: number) => ({
       id: bin.id ?? `bin-${index}`,
+      label: bin.label,
+      type: bin.type,
       position: {
-        lat: bin.latitude,
-        lng: bin.longitude,
+        lat: Number(bin.latitude),
+        lng: Number(bin.longitude),
       },
-      icon: "🗑️",
+      icon: "♻️",
       size: [32, 32],
     }));
 
@@ -84,16 +91,26 @@ export default function MapWithSearch() {
 
       if (results?.length) {
         const { lat, lon } = results[0];
-        const newPos = {
-          latitude: parseFloat(lat),
-          longitude: parseFloat(lon),
-        };
-        setCenter(newPos);
+        setCenter({ latitude: parseFloat(lat), longitude: parseFloat(lon) });
       } else {
         Alert.alert("Location not found", "Try another city or address.");
       }
-    } catch (error) {
+    } catch {
       Alert.alert("Error", "Failed to search for location.");
+    }
+  };
+
+  const handleMessage = (msg: WebviewLeafletMessage) => {
+    if (
+      msg.event === "onMapMarkerClicked" &&
+      msg.payload &&
+      typeof msg.payload === "object"
+    ) {
+      const markerId = (msg.payload as any).mapMarkerID;
+      const bin = bins?.find((b) => b.id === markerId);
+      if (bin) {
+        setSelectedBin(bin);
+      }
     }
   };
 
@@ -117,9 +134,19 @@ export default function MapWithSearch() {
           lat: center.latitude,
           lng: center.longitude,
         }}
-        zoom={12}
+        zoom={13}
         mapMarkers={markers}
+        onMessageReceived={handleMessage}
       />
+
+      {selectedBin && (
+        <View style={styles.overlayCenter}>
+          <BinCardDetails
+            bin={selectedBin}
+            onClose={() => setSelectedBin(null)}
+          />
+        </View>
+      )}
     </View>
   );
 }
@@ -136,5 +163,11 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 8,
     elevation: 4,
+  },
+  overlayCenter: {
+    ...StyleSheet.absoluteFillObject,
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 100,
   },
 });

@@ -22,6 +22,16 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="map"
+        options={{
+          title: "Map",
+          headerShown: false,
+          tabBarIcon: () => (
+            <FontAwesome name="map-marker" size={24} color="black" />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="scanner"
         options={{
           title: "Scanner",
@@ -37,16 +47,6 @@ export default function TabLayout() {
           title: "Profile",
           headerShown: false,
           tabBarIcon: () => <Feather name="user" size={28} color="black" />,
-        }}
-      />
-      <Tabs.Screen
-        name="map"
-        options={{
-          title: "Map",
-          headerShown: false,
-          tabBarIcon: () => (
-            <FontAwesome name="map-marker" size={24} color="black" />
-          ),
         }}
       />
     </Tabs>
