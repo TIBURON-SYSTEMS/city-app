@@ -1,4 +1,4 @@
-import { Prisma } from "@/generated/prisma";
+import { Participation, Prisma } from "@/generated/prisma";
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "../../../../prisma/db";
 
@@ -69,6 +69,7 @@ export async function POST(request: NextRequest) {
             challenge: {
               participations: {
                 some: {
+                  completed: false,
                   participantId: participantId,
                 },
               },
@@ -100,10 +101,10 @@ export async function POST(request: NextRequest) {
   );
 
   if (affectedChallenges.length === 0) {
-    return NextResponse.json(
-      { error: "No disposed products" },
-      { status: 404 }
-    );
+    console.log(aiResult, "🟥");
+    console.log(affectedChallenges, "🟥");
+
+    return NextResponse.json([]);
   }
 
   const productsIdArray = affectedChallenges.map((item) => item.id);
@@ -126,6 +127,10 @@ export async function POST(request: NextRequest) {
       return matched?.amount || 0;
     })
     .filter((item) => item !== 0);
+
+  const affectedChallengeGoalArray = affectedChallenges.map(
+    (item) => item.challengeProducts[0].challenge.goal
+  );
 
   await prisma.disposal.create({
     data: {
@@ -165,17 +170,52 @@ export async function POST(request: NextRequest) {
 
   if (updatedParticipations.length === 0) {
     return NextResponse.json(
-      { error: "Nothing to update participatios" },
+      { error: "Nothing to update participation" },
       { status: 400 }
     );
   }
 
+  const affectedChallengeUpdatedParticip = updatedParticipations.map(
+    (item) => item.amount
+  );
+
+  let completedParticipation: Participation;
+  for (
+    let index = 0;
+    index < affectedChallengeUpdatedParticip.length;
+    index++
+  ) {
+    if (
+      affectedChallengeUpdatedParticip[index] >=
+      affectedChallengeGoalArray[index]
+    ) {
+      completedParticipation = await prisma.participation.update({
+        where: {
+          participantId_challengeId: {
+            participantId: participantId,
+            challengeId: affectedChallengesIdArray[index],
+          },
+        },
+        data: {
+          completed: true,
+        },
+      });
+    }
+  }
+
+  //return object
   const affectedChallengesWithAmounts = affectedChallengesTitleArray.map(
     (item, index) => {
       return {
         challengeTitle: item,
         amount: amountArray[index],
         challengeId: affectedChallengesIdArray[index],
+        completed:
+          completedParticipation &&
+          completedParticipation.challengeId ===
+            affectedChallengesIdArray[index]
+            ? true
+            : false,
       };
     }
   );

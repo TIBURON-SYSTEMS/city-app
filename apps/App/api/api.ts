@@ -24,16 +24,26 @@ const api = {
   ): Promise<{
     ongoingChallengesRes: Challenge[];
     availableChallengesRes: Challenge[];
+    completedChallengesRes: Challenge[];
   }> {
     if (!pariticipantId)
-      return { ongoingChallengesRes: [], availableChallengesRes: [] };
+      return {
+        ongoingChallengesRes: [],
+        availableChallengesRes: [],
+        completedChallengesRes: [],
+      };
 
     const res = await fetch(
       `${BASE_URL}/api/participant/challenges/${pariticipantId}`
     );
     const data = await res.json();
 
-    if (!data) return { ongoingChallengesRes: [], availableChallengesRes: [] };
+    if (!data)
+      return {
+        ongoingChallengesRes: [],
+        availableChallengesRes: [],
+        completedChallengesRes: [],
+      };
 
     return data;
   },

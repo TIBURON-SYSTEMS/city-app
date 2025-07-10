@@ -37,6 +37,7 @@ export async function GET(
       label: challenge.label,
       status: challenge.status,
       goal: challenge.goal,
+      endDate: challenge.endDate,
       brandId: challenge.brandId,
       brandName: challenge.brand.name,
       description: challenge.description,

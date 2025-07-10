@@ -73,6 +73,7 @@ export default function ScannerCamera() {
   };
 
   const disposalMutation = useMutation({
+    mutationKey: ["dispoal"],
     mutationFn: ({
       participantId,
       binId,
@@ -82,6 +83,9 @@ export default function ScannerCamera() {
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["progress"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["OnGoingAvailableChallenges", participant?.participantId],
       });
       //get affected challenge
       //get progression point advancement
@@ -100,16 +104,6 @@ export default function ScannerCamera() {
       typeAfter: string;
     }) => api.startAnalysis(payload),
     onSuccess: (data) => {
-      // const newBrandNames = data.result.detectedItems
-      //   .map((item) => item.disposedProduct.brandName)
-      //   .join(",");
-      // setBrandNames(newBrandNames);
-
-      // const newProductNames = data.result.detectedItems
-      //   .map((item) => item.disposedProduct.label)
-      //   .join(",");
-      // setProductNames(newProductNames);
-
       disposalMutation.mutate({
         participantId: participant?.participantId,
         binId: bin?.id,

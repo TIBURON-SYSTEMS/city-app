@@ -14,7 +14,7 @@ export default function ChallengeProgress({
   goal,
   productName,
 }: ChallengeProgressProps) {
-  if (!amount) return;
+  if (typeof amount !== "number") return;
 
   return (
     <Box>

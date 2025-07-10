@@ -38,7 +38,7 @@ export default function ChallengeList() {
           <>
             <Box>
               <Heading className="text-2xl mb-4 mt-4 text-slate-900">
-                On Going Challenges
+                🚀 On Going Challenges
               </Heading>
               {data?.ongoingChallengesRes.map((challenge) => {
                 return (
@@ -55,9 +55,28 @@ export default function ChallengeList() {
                 </Box>
               )}
             </Box>
+
+            {data?.completedChallengesRes &&
+              data?.completedChallengesRes.length > 0 && (
+                <Box>
+                  <Heading className="text-2xl mb-4 mt-4 text-slate-900">
+                    ✅ Completed Challenges
+                  </Heading>
+                  {data?.completedChallengesRes.map((challenge) => {
+                    return (
+                      <ChallengeCard
+                        ongoing={false}
+                        key={challenge.id}
+                        challenge={challenge}
+                      />
+                    );
+                  })}
+                </Box>
+              )}
+
             <Box>
               <Heading className="text-2xl mb-4 mt-4 text-slate-900">
-                Available Challenges
+                🔥 Available Challenges
               </Heading>
               {data?.availableChallengesRes.map((challenge) => {
                 return (

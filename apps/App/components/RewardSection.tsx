@@ -46,6 +46,7 @@ export default function RewardSection() {
             <Text className="text-2xl font-semibold text-gray-900">
               {reward.label}
             </Text>
+            <Text>Amount: {reward.amount}</Text>
 
             <Image
               source={{ uri: reward.imageUrl }}

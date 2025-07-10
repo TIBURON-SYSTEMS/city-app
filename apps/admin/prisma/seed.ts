@@ -137,7 +137,7 @@ async function main() {
       label: "Can Crusher Challenge",
       status: "active",
       endDate: new Date("2025-09-15T23:59:59"),
-      goal: 50,
+      goal: 31,
       description:
         "Collect and recycle aluminum cans Reach 50 and get 400 reward points!!",
       brandId: brand.id,

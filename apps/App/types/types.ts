@@ -15,6 +15,7 @@ export type Challenge = {
   brandId: string;
   brandName: string;
   description: string;
+  endDate: Date;
   rewards: Reward[];
   productName: string;
   // users: User[];
@@ -39,6 +40,8 @@ export type Participation = {
   participantId: string;
   challengeId: string;
   amount: number;
+  completed: boolean;
+  updatedAt: Date;
 };
 
 export type Brand = {
@@ -99,24 +102,9 @@ export type ChallengeProduct = {
   };
 };
 
-// export type AffectedChallengeWithProductAndParticipation = {
-//   product: string;
-//   challenge: AffectedChallenge;
-//   participationAmount: number;
-// };
-
-// export type AffectedChallenge = {
-//   id: string;
-//   label: string;
-//   status: string;
-//   endDate: Date;
-//   description: string;
-//   goal: number;
-//   brandId: string;
-// };
-
 export type AffectedChallengeWithAmount = {
   challengeTitle: string;
   amount: number;
   challengeId: string;
+  completed: boolean;
 };

@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import prisma from "../../../../../../prisma/db";
 import { Prisma } from "@/generated/prisma";
 
-type OngoingChallenges = Prisma.ParticipantGetPayload<{
+type OngoingorCompletedChallenges = Prisma.ParticipantGetPayload<{
   include: {
     participations: {
       include: {
@@ -40,7 +40,7 @@ export async function GET(
 ) {
   const { participantId } = await params;
 
-  const ongoingChallenges: OngoingChallenges | null =
+  const ongoingChallenges: OngoingorCompletedChallenges | null =
     await prisma.participant.findUnique({
       where: {
         id: participantId,
@@ -48,6 +48,7 @@ export async function GET(
       include: {
         participations: {
           where: {
+            completed: false,
             challenge: {
               status: "active",
             },
@@ -76,6 +77,55 @@ export async function GET(
   }
 
   const ongoingChallengesRes = ongoingChallenges.participations.map(
+    (participation) => {
+      return {
+        id: participation.challengeId,
+        label: participation.challenge.label,
+        status: participation.challenge.status,
+        goal: participation.challenge.goal,
+        brandId: participation.challenge.brandId,
+        brandName: participation.challenge.brand.name,
+        description: participation.challenge.description,
+        rewards: participation.challenge.rewards,
+        productName: participation.challenge.challengeProducts.map(
+          (challengeProduct) => challengeProduct.product.label
+        )[0],
+        amount: participation.amount,
+      };
+    }
+  );
+
+  const completedChallenges: OngoingorCompletedChallenges | null =
+    await prisma.participant.findUnique({
+      where: {
+        id: participantId,
+      },
+      include: {
+        participations: {
+          where: {
+            completed: true,
+            challenge: {
+              status: "active",
+            },
+          },
+          include: {
+            challenge: {
+              include: {
+                brand: true,
+                rewards: true,
+                challengeProducts: {
+                  include: {
+                    product: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+  const completedChallengesRes = completedChallenges?.participations.map(
     (participation) => {
       return {
         id: participation.challengeId,
@@ -128,5 +178,9 @@ export async function GET(
     amount: 0,
   }));
 
-  return NextResponse.json({ ongoingChallengesRes, availableChallengesRes });
+  return NextResponse.json({
+    ongoingChallengesRes,
+    availableChallengesRes,
+    completedChallengesRes,
+  });
 }

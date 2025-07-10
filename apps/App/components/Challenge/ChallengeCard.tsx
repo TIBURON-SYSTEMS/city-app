@@ -33,7 +33,6 @@ export default function ChallengeCard({
     queryKey: ["progress", participant?.participantId, challenge.id],
     queryFn: () =>
       api.getChallengeProgress(participant?.participantId, challenge.id),
-    enabled: !!ongoing,
   });
 
   return (
@@ -54,7 +53,7 @@ export default function ChallengeCard({
 
         <Text className="mb-2">by {challenge.brandName}</Text>
 
-        {user && participationData?.isParticipating && (
+        {user && participationData?.isParticipating && ongoing && (
           <ChallengeProgress
             heading={false}
             amount={participationData.participation?.amount}

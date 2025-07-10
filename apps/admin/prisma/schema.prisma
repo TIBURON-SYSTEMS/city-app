@@ -42,6 +42,7 @@ model User {
 
 model Participation {
   id            String      @id @default(cuid())
+  completed     Boolean     @default(false)
   participantId String
   participant   Participant @relation(fields: [participantId], references: [id])
   challengeId   String

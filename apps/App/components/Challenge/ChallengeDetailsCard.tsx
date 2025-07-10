@@ -16,6 +16,7 @@ import { Badge, BadgeText } from "../ui/badge";
 
 import api from "@/api/api";
 import ChallengeProgress from "./ChallengeProgress";
+import moment from "moment";
 
 export default function ChallengeDetailsCard() {
   const { id } = useLocalSearchParams();
@@ -45,6 +46,9 @@ export default function ChallengeDetailsCard() {
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["OnGoingAvailableChallenges", participant?.participantId],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["progress", participant?.participantId, id as string],
       });
     },
   });
@@ -104,17 +108,22 @@ export default function ChallengeDetailsCard() {
               <Heading className="uppercase text-slate-900">
                 {challenge.label}
               </Heading>
-              <Link
-                href={{
-                  pathname: "/brandinfo/[id]",
-                  params: { id: challenge.brandId },
-                }}
-              >
-                <View className="flex flex-row justify-center items-center gap-2">
-                  <Text>by {challenge.brandName}</Text>
-                  <Octicons name="link-external" size={16} color="#6B7280" />
-                </View>
-              </Link>
+              <HStack className="gap-2">
+                <Link
+                  href={{
+                    pathname: "/brandinfo/[id]",
+                    params: { id: challenge.brandId },
+                  }}
+                >
+                  <View className="flex flex-row justify-center items-center gap-2">
+                    <Text>by {challenge.brandName}</Text>
+                    <Octicons name="link-external" size={16} color="#6B7280" />
+                  </View>
+                </Link>
+                <Text>
+                  - Ends {moment(challenge.endDate).endOf("day").fromNow()}
+                </Text>
+              </HStack>
             </Box>
             <Box>
               <Heading className="text-slate-900 text-base font-semibold">
@@ -139,8 +148,8 @@ export default function ChallengeDetailsCard() {
                       variant="outline"
                       className="bg-slate-100/80 rounded-xl"
                     >
-                      <BadgeText className="mr-1">{reward.amount}</BadgeText>
                       <BadgeText>{reward.label}</BadgeText>
+                      {/* <BadgeText className="mr-1">{reward.amount}</BadgeText> */}
                     </Badge>
                   </Link>
                 ))}
@@ -153,14 +162,25 @@ export default function ChallengeDetailsCard() {
               <Text>{`Recycle ${challenge.goal} ${challenge.productName}s`}</Text>
             </Box>
 
-            {participationData?.isParticipating && (
-              <ChallengeProgress
-                heading={true}
-                amount={participationData.participation?.amount}
-                goal={challenge.goal}
-                productName={challenge.productName}
-              />
-            )}
+            {participationData &&
+              participationData?.participation?.completed && (
+                <Text>
+                  Completed on{" "}
+                  {moment(participationData.participation.updatedAt).format(
+                    "MMMM Do YY"
+                  )}
+                </Text>
+              )}
+
+            {participationData &&
+              !participationData?.participation?.completed && (
+                <ChallengeProgress
+                  heading={true}
+                  amount={participationData.participation?.amount}
+                  goal={challenge.goal}
+                  productName={challenge.productName}
+                />
+              )}
           </Box>
         </Card>
       </Box>

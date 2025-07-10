@@ -8,6 +8,8 @@ import { VStack } from "../ui/vstack";
 import { HStack } from "../ui/hstack";
 import { ScrollView } from "react-native";
 import { AffectedChallengeWithAmount, aiResultInterface } from "@/types/types";
+import DisposalResultsTable from "./DisposalResultsTable";
+import AffectedChallengesList from "./AffectedChallengesList";
 
 interface DisposalSuccessModalProps {
   actionStage: ScannerCameraStage;
@@ -24,12 +26,7 @@ export default function DisposalSuccessModal({
 }: DisposalSuccessModalProps) {
   if (!affectedChallenges) return;
 
-  if (
-    actionStage !== ScannerCameraStage.End ||
-    !aiResult ||
-    affectedChallenges.length === 0
-  )
-    return;
+  if (actionStage !== ScannerCameraStage.End || !aiResult) return;
 
   return (
     <>
@@ -40,103 +37,30 @@ export default function DisposalSuccessModal({
             <AntDesign name="checkcircle" size={24} color="green" />
           </HStack>
 
-          <Heading className="text-2xl text-center mb-4">
-            Disposal Results
-          </Heading>
+          <DisposalResultsTable items={aiResult.detectedItems} />
 
-          <Box className="border-2 border-black rounded-lg overflow-hidden mb-4">
-            <Box className="bg-black p-3">
-              <HStack className="justify-between">
-                <Box className="flex-1">
-                  <Text className="text-white font-bold">Disposed Product</Text>
-                </Box>
-                <Box className="flex-1 ml-4">
-                  <Text className="text-white font-bold">Brand</Text>
-                </Box>
-                <Box className="w-20">
-                  <Text className="text-white font-bold text-right">
-                    Quantity
-                  </Text>
-                </Box>
-              </HStack>
-            </Box>
+          {affectedChallenges.length === 0 && (
+            <VStack className="items-center gap-6">
+              <Text className="text-center">
+                ⚠️ Products that were discared did not match any ongoing
+                challenges
+              </Text>
+              {/* <Button className="rounded-full" onPress={handleRestart}>
+            <ButtonText>Scan More</ButtonText>
+          </Button> */}
+            </VStack>
+          )}
 
-            <ScrollView className="h-44">
-              <VStack>
-                {aiResult.detectedItems.map((item, index) => (
-                  <Box
-                    key={item.id}
-                    className={`p-3 border-b border-gray-200 ${index % 2 === 0 ? "bg-gray-50" : "bg-white"}`}
-                  >
-                    <HStack className="justify-between items-center">
-                      <Box className="flex-1">
-                        <Text className="font-medium">
-                          {item.disposedProduct.label}
-                        </Text>
-                      </Box>
-                      <Box className="flex-1 ml-4">
-                        <Text className="text-gray-600">
-                          {item.disposedProduct.brandName}
-                        </Text>
-                      </Box>
-                      <Box className="w-20">
-                        <Text className="text-right font-semibold">
-                          {item.amount}
-                        </Text>
-                      </Box>
-                    </HStack>
-                  </Box>
-                ))}
-              </VStack>
-            </ScrollView>
-          </Box>
-          <Box>
-            <Heading className="text-2xl text-center mb-4">
-              Affected Challenges
-            </Heading>
-            <Box className="border-2 border-black rounded-lg overflow-hidden">
-              <Box className="bg-black p-3">
-                <HStack className="justify-between">
-                  <Box className="flex-1">
-                    <Text className="text-white font-bold">Challenge Name</Text>
-                  </Box>
-                  <Box className="flex-1">
-                    <Text className="text-white font-bold text-right">
-                      Progression
-                    </Text>
-                  </Box>
-                </HStack>
-              </Box>
-              <ScrollView className="h-44">
-                <VStack>
-                  {affectedChallenges.map((affectedChallenge, index) => (
-                    <Box
-                      key={affectedChallenge.challengeId}
-                      className={`p-3 border-b border-gray-200 ${index % 2 === 0 ? "bg-gray-50" : "bg-white"}`}
-                    >
-                      <HStack className="justify-between items-center">
-                        <Box className="flex-1">
-                          <Text className="font-medium">
-                            {affectedChallenge.challengeTitle}
-                          </Text>
-                        </Box>
-                        <Box className="flex-1">
-                          <Text className="font-medium text-right text-green-700">
-                            +{affectedChallenge.amount}
-                          </Text>
-                        </Box>
-                      </HStack>
-                    </Box>
-                  ))}
-                </VStack>
-              </ScrollView>
-            </Box>
+          {affectedChallenges.length > 0 && (
+            <AffectedChallengesList challenges={affectedChallenges} />
+          )}
+          <Box className="flex items-center mt-6">
+            <Button className="rounded-full" onPress={handleRestart}>
+              <ButtonText>Scan More</ButtonText>
+            </Button>
           </Box>
         </VStack>
       </Box>
-      <Button className="rounded-full" onPress={handleRestart}>
-        <ButtonText>Scan More</ButtonText>
-      </Button>
     </>
   );
 }
