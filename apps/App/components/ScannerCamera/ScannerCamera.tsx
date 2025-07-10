@@ -87,10 +87,6 @@ export default function ScannerCamera() {
       queryClient.invalidateQueries({
         queryKey: ["OnGoingAvailableChallenges", participant?.participantId],
       });
-      //get affected challenge
-      //get progression point advancement
-      //update participation
-      //invalidate progression and maybe THE WHOLE WORLD
     },
   });
 

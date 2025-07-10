@@ -100,7 +100,7 @@ const api = {
   },
   async getBinByPositionType(): Promise<Bin | undefined> {
     const res = await fetch(
-      `${BASE_URL}/api/bin?lat=41.3865&lon=2.1732&type=yellow`
+      `${BASE_URL}/api/bin?lat=41.376409&lon=2.152514&type=plastic`
     );
     const data = await res.json();
 

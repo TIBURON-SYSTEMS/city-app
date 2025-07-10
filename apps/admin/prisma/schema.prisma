@@ -83,11 +83,9 @@ model Brand {
 model ParticipantReward {
   rewardId      String
   reward        Reward       @relation(fields: [rewardId], references: [id])
-  assignedAt    DateTime
+  assignedAt    DateTime     @default(now())
   Participant   Participant? @relation(fields: [participantId], references: [id])
   participantId String
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
 
   @@id([participantId, rewardId])
 }

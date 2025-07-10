@@ -1,4 +1,6 @@
-import { Participation, Prisma } from "@/generated/prisma";
+
+import { Participation, Prisma, Reward } from "@/generated/prisma";
+
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "../../../../prisma/db";
 
@@ -25,13 +27,13 @@ type DisposedProduct = {
 
 type AffectedChallenge = Prisma.ProductGetPayload<{
   include: {
-    // also include brand
     brand: true;
     challengeProducts: {
       include: {
         challenge: {
           include: {
             participations: true;
+            rewards: true;
           };
         };
       };
@@ -92,6 +94,7 @@ export async function POST(request: NextRequest) {
             challenge: {
               include: {
                 participations: true,
+                rewards: true,
               },
             },
           },
@@ -132,6 +135,10 @@ export async function POST(request: NextRequest) {
     (item) => item.challengeProducts[0].challenge.goal
   );
 
+
+  const affectedChallengeRewardsArray = affectedChallenges.map(
+    (item) => item.challengeProducts[0].challenge.rewards
+  );
   await prisma.disposal.create({
     data: {
       binId: binId,
@@ -179,7 +186,10 @@ export async function POST(request: NextRequest) {
     (item) => item.amount
   );
 
-  let completedParticipation: Participation;
+
+  const completedParticipation: Participation[] = [];
+  const rewardsOfCompletedChallenges: Reward[][] = [];
+
   for (
     let index = 0;
     index < affectedChallengeUpdatedParticip.length;
@@ -189,19 +199,35 @@ export async function POST(request: NextRequest) {
       affectedChallengeUpdatedParticip[index] >=
       affectedChallengeGoalArray[index]
     ) {
-      completedParticipation = await prisma.participation.update({
-        where: {
-          participantId_challengeId: {
-            participantId: participantId,
-            challengeId: affectedChallengesIdArray[index],
+
+      completedParticipation.push(
+        await prisma.participation.update({
+          where: {
+            participantId_challengeId: {
+              participantId: participantId,
+              challengeId: affectedChallengesIdArray[index],
+            },
           },
-        },
-        data: {
-          completed: true,
-        },
-      });
+          data: {
+            completed: true,
+          },
+        })
+      );
+      rewardsOfCompletedChallenges.push(affectedChallengeRewardsArray[index]);
     }
   }
+
+  await prisma.participantReward.createMany({
+    data: rewardsOfCompletedChallenges
+      .flatMap((reward) => reward.map((item) => item))
+      .map((item) => {
+        return {
+          participantId,
+          rewardId: item.id,
+        };
+      }),
+  });
+
 
   //return object
   const affectedChallengesWithAmounts = affectedChallengesTitleArray.map(
@@ -211,11 +237,12 @@ export async function POST(request: NextRequest) {
         amount: amountArray[index],
         challengeId: affectedChallengesIdArray[index],
         completed:
-          completedParticipation &&
-          completedParticipation.challengeId ===
-            affectedChallengesIdArray[index]
-            ? true
-            : false,
+
+          completedParticipation.length > 0 &&
+          completedParticipation.some(
+            (participation) =>
+              participation.challengeId === affectedChallengesIdArray[index]
+          ),
       };
     }
   );
