@@ -24,6 +24,7 @@ import {
   Gift,
 } from "lucide-react";
 import Link from "next/link";
+import { ParticipantsDialog } from "@/components/dashboard/participants-dialog";
 
 interface Challenge {
   id: string;
@@ -55,6 +56,11 @@ export function ChallengesContent({
     useState<Challenge[]>(initialChallenges);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("ALL");
+  const [selectedChallenge, setSelectedChallenge] = useState<{
+    id: string;
+    name: string;
+    goal: number;
+  } | null>(null);
 
   const filterChallenges = useCallback(() => {
     let filtered = challenges;
@@ -221,10 +227,19 @@ export function ChallengesContent({
                                 {challenge.label}
                               </p>
                               <div className="flex items-center gap-3 mt-1">
-                                <div className="flex items-center gap-1 text-xs text-gray-500">
+                                <button
+                                  onClick={() =>
+                                    setSelectedChallenge({
+                                      id: challenge.id,
+                                      name: challenge.label,
+                                      goal: challenge.goal,
+                                    })
+                                  }
+                                  className="flex items-center gap-1 text-xs text-blue-600 hover:text-blue-800 hover:underline cursor-pointer"
+                                >
                                   <Users className="w-3 h-3" />
                                   {challenge._count.participations} participants
-                                </div>
+                                </button>
                                 <div className="flex items-center gap-1 text-xs text-gray-500">
                                   <Gift className="w-3 h-3" />
                                   {challenge._count.rewards} rewards
@@ -296,6 +311,16 @@ export function ChallengesContent({
             )}
           </CardContent>
         </Card>
+
+        {selectedChallenge && (
+          <ParticipantsDialog
+            challengeId={selectedChallenge.id}
+            challengeName={selectedChallenge.name}
+            challengeGoal={selectedChallenge.goal}
+            open={!!selectedChallenge}
+            onOpenChange={(open) => !open && setSelectedChallenge(null)}
+          />
+        )}
       </main>
     </>
   );
