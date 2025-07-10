@@ -1,4 +1,3 @@
-
 import { Participation, Prisma, Reward } from "@/generated/prisma";
 
 import { NextRequest, NextResponse } from "next/server";
@@ -45,10 +44,12 @@ export async function POST(request: NextRequest) {
   const {
     participantId,
     binId,
+    binType,
     aiResult,
   }: {
     participantId: string;
     binId: string;
+    binType: string;
     aiResult: AiResultResponse;
   } = await request.json();
 
@@ -66,6 +67,7 @@ export async function POST(request: NextRequest) {
   const affectedChallenges: AffectedChallenge[] = await prisma.product.findMany(
     {
       where: {
+        material: binType,
         challengeProducts: {
           some: {
             challenge: {
@@ -104,9 +106,6 @@ export async function POST(request: NextRequest) {
   );
 
   if (affectedChallenges.length === 0) {
-    console.log(aiResult, "🟥");
-    console.log(affectedChallenges, "🟥");
-
     return NextResponse.json([]);
   }
 
@@ -134,7 +133,6 @@ export async function POST(request: NextRequest) {
   const affectedChallengeGoalArray = affectedChallenges.map(
     (item) => item.challengeProducts[0].challenge.goal
   );
-
 
   const affectedChallengeRewardsArray = affectedChallenges.map(
     (item) => item.challengeProducts[0].challenge.rewards
@@ -186,7 +184,6 @@ export async function POST(request: NextRequest) {
     (item) => item.amount
   );
 
-
   const completedParticipation: Participation[] = [];
   const rewardsOfCompletedChallenges: Reward[][] = [];
 
@@ -199,7 +196,6 @@ export async function POST(request: NextRequest) {
       affectedChallengeUpdatedParticip[index] >=
       affectedChallengeGoalArray[index]
     ) {
-
       completedParticipation.push(
         await prisma.participation.update({
           where: {
@@ -228,7 +224,6 @@ export async function POST(request: NextRequest) {
       }),
   });
 
-
   //return object
   const affectedChallengesWithAmounts = affectedChallengesTitleArray.map(
     (item, index) => {
@@ -237,7 +232,6 @@ export async function POST(request: NextRequest) {
         amount: amountArray[index],
         challengeId: affectedChallengesIdArray[index],
         completed:
-
           completedParticipation.length > 0 &&
           completedParticipation.some(
             (participation) =>

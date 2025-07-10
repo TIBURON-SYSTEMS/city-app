@@ -98,9 +98,13 @@ const api = {
     const data = await res.json();
     return data;
   },
-  async getBinByPositionType(): Promise<Bin | undefined> {
+  async getBinByPositionType(
+    lat: number,
+    lon: number,
+    type: string
+  ): Promise<Bin | undefined> {
     const res = await fetch(
-      `${BASE_URL}/api/bin?lat=41.376409&lon=2.152514&type=plastic`
+      `${BASE_URL}/api/bin?lat=${lat}&lon=${lon}&type=${type}`
     );
     const data = await res.json();
 
@@ -133,6 +137,7 @@ const api = {
   async createDisposal(
     participantId: string | undefined,
     binId: string | undefined,
+    binType: string | undefined,
     aiResult: AiResultResponse
   ): Promise<AffectedChallengeWithAmount[]> {
     const options = {
@@ -140,7 +145,7 @@ const api = {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ participantId, binId, aiResult }),
+      body: JSON.stringify({ participantId, binId, binType, aiResult }),
     };
     const res = await fetch(`${BASE_URL}/api/disposal`, options);
     const data = res.json();

@@ -22,6 +22,8 @@ import CameraActionStepper from "./CameraActionStepper";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import api from "@/api/api";
 import { AiResultResponse } from "@/types/types";
+import { DECODEDBIN } from "@/constants";
+import { Box } from "../ui/box";
 
 const photoConfig = {
   quality: 0.7,
@@ -63,12 +65,14 @@ export default function ScannerCamera() {
 
   const { data: bin, refetch: fetchBin } = useQuery({
     queryKey: ["bin"],
-    queryFn: () => api.getBinByPositionType(),
+    queryFn: () =>
+      api.getBinByPositionType(DECODEDBIN.lat, DECODEDBIN.lon, DECODEDBIN.type),
   });
 
   type DisposalMutationVariables = {
     participantId: string | undefined;
     binId: string | undefined;
+    binType: string | undefined;
     aiResult: AiResultResponse;
   };
 
@@ -77,9 +81,10 @@ export default function ScannerCamera() {
     mutationFn: ({
       participantId,
       binId,
+      binType,
       aiResult,
     }: DisposalMutationVariables) =>
-      api.createDisposal(participantId, binId, aiResult),
+      api.createDisposal(participantId, binId, binType, aiResult),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["progress"],
@@ -103,6 +108,7 @@ export default function ScannerCamera() {
       disposalMutation.mutate({
         participantId: participant?.participantId,
         binId: bin?.id,
+        binType: bin?.type,
         aiResult: data,
       });
 
@@ -237,8 +243,12 @@ export default function ScannerCamera() {
             barcodeTypes: ["qr"],
           }}
         >
-          <View className="h-full flex justify-between items-center pb-10">
-            <CameraActionStepper actionStage={actionStage} />
+          <View className="h-full flex justify-between items-center pb-10 bg-white">
+            <CameraActionStepper
+              binLabel={bin?.label}
+              binType={bin?.type}
+              actionStage={actionStage}
+            />
 
             <ScanCameraButton
               actionStage={actionStage}
