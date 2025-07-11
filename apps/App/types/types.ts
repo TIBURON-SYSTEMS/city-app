@@ -124,3 +124,10 @@ export type EligibleReward = {
   id: string;
   userId: string;
 };
+
+export type ParticipantReward = {
+  rewardId: string;
+  selected: true;
+  participantId: string;
+  reward: Reward;
+};

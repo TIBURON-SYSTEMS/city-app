@@ -4,10 +4,8 @@ import { Button, ButtonText } from "./ui/button";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { Box } from "./ui/box";
 import { Card } from "./ui/card";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Image } from "./ui/image";
-import { BASE_URL } from "../utils/baseUrl";
-import { Reward } from "@/types/types";
 import { useAuth0 } from "react-native-auth0";
 import api from "@/api/api";
 
@@ -15,6 +13,8 @@ export default function RewardSection() {
   const { id } = useLocalSearchParams();
 
   const { user } = useAuth0();
+
+  const queryClient = useQueryClient();
 
   const { data: participant } = useQuery({
     queryKey: ["user"],
@@ -36,10 +36,16 @@ export default function RewardSection() {
   const selectRewardMutation = useMutation({
     mutationFn: () =>
       api.selectReward(participant?.participantId, id as string),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["selectedRewards", participant?.participantId],
+      });
+    },
   });
 
   async function handlePressSelectReward() {
     selectRewardMutation.mutate();
+    router.back();
   }
 
   if (!reward) return;

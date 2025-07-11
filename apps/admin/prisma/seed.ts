@@ -5,7 +5,8 @@ async function main() {
   //CREATE PARTICIPANT
   const userParticipant = await prisma.user.create({
     data: {
-      email: "arnaud.obri@gmail.com",
+      // email: "arnaud.obri@gmail.com",
+      email: "footworkextreme@gmail.com",
       role: UserRole.PARTICIPANT,
     },
   });

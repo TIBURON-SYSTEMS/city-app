@@ -7,6 +7,7 @@ import {
   ChallengeWithRewards,
   EligibleReward,
   Participant,
+  ParticipantReward,
   ParticipationData,
   Reward,
 } from "@/types/types";
@@ -198,6 +199,16 @@ const api = {
       `${BASE_URL}/api/reward/${rewardId}/eligible/${participantId}`
     );
     const data = await res.json();
+    return data;
+  },
+  async getSelectedRewards(
+    participantId: string | undefined
+  ): Promise<ParticipantReward[] | undefined> {
+    const res = await fetch(
+      `${BASE_URL}/api/participant-rewards/${participantId}`
+    );
+    const data = await res.json();
+
     return data;
   },
 };

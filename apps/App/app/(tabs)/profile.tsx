@@ -45,6 +45,13 @@ export default function Tab() {
     enabled: !!participant?.participantId,
   });
 
+  // get selected rewards
+  const { data: selectedRewards } = useQuery({
+    queryKey: ["selectedRewards", participant?.participantId],
+    queryFn: () => api.getSelectedRewards(participant?.participantId),
+    enabled: !!participant?.participantId,
+  });
+
   return (
     <SafeAreaView className="bg-white">
       <Box className="flex flex-col w-full h-full px-7 bg-white">
@@ -57,53 +64,88 @@ export default function Tab() {
               <Text className="text-lg font-semibold">{user.email}</Text>
               <LogoutButton />
             </HStack>
-            <Heading className="text-2xl mb-4 mt-4 text-slate-900">
-              🎁 Your rewards
-            </Heading>
-            {challengesWithRewards?.length === 0 && (
-              <Box>
-                <Text>
-                  You do not have reward now. Go complete some challenge 🏆
-                </Text>
-              </Box>
-            )}
-            <ScrollView showsVerticalScrollIndicator={false}>
-              <Box>
-                {challengesWithRewards?.map((item) => {
-                  return (
-                    <Card
-                      key={item.challengeId}
-                      className="flex flex-col py-[20pt] px-[16pt] w-full border border-slate-300 mb-4"
-                    >
-                      <Heading className="uppercase text-slate-800">
-                        {item.challengeLabel}
-                      </Heading>
+            {/* Your rewards */}
+            <Box>
+              <Heading className="text-2xl mb-4 mt-4 text-slate-900">
+                🎁 Your rewards
+              </Heading>
+              {challengesWithRewards?.length === 0 && (
+                <Box>
+                  <Text>
+                    You do not have reward now. Go complete some challenge 🏆
+                  </Text>
+                </Box>
+              )}
+              <ScrollView showsVerticalScrollIndicator={false}>
+                <Box>
+                  {challengesWithRewards?.map((item) => {
+                    return (
+                      <Card
+                        key={item.challengeId}
+                        className="flex flex-col py-[20pt] px-[16pt] w-full border border-slate-300 mb-4"
+                      >
+                        <Heading className="uppercase text-slate-800">
+                          {item.challengeLabel}
+                        </Heading>
 
-                      <HStack>
-                        <ScrollView horizontal={true}>
-                          {item.rewards.map((reward) => (
-                            <Link
-                              className="mr-4"
-                              href={`/reward/${reward.id}`}
-                              key={reward.id}
-                            >
-                              {reward.imageUrl && (
-                                <Image
-                                  source={{ uri: reward.imageUrl }}
-                                  className="size-20"
-                                  resizeMode="contain"
-                                  alt={reward.label}
-                                />
-                              )}
-                            </Link>
-                          ))}
-                        </ScrollView>
-                      </HStack>
-                    </Card>
-                  );
-                })}
-              </Box>
-            </ScrollView>
+                        <HStack>
+                          <ScrollView horizontal={true}>
+                            {item.rewards.map((reward) => (
+                              <Link
+                                className="mr-4"
+                                href={`/reward/${reward.id}`}
+                                key={reward.id}
+                              >
+                                {reward.imageUrl && (
+                                  <Image
+                                    source={{ uri: reward.imageUrl }}
+                                    className="size-20"
+                                    resizeMode="contain"
+                                    alt={reward.label}
+                                  />
+                                )}
+                              </Link>
+                            ))}
+                          </ScrollView>
+                        </HStack>
+                      </Card>
+                    );
+                  })}
+                </Box>
+              </ScrollView>
+            </Box>
+
+            {/* Selected rewards */}
+            <Box>
+              <Heading className="text-2xl mb-4 mt-4 text-slate-900">
+                🥰 Selected Rewards
+              </Heading>
+              {selectedRewards?.length === 0 && (
+                <Box>
+                  <Text>
+                    You haven&apos;t selected any rewards now. Go select your
+                    reward in your completed challenges 🏆
+                  </Text>
+                </Box>
+              )}
+
+              {selectedRewards?.length !== 0 && (
+                <ScrollView showsVerticalScrollIndicator={false}>
+                  <HStack>
+                    {selectedRewards?.map((selectedReward) => (
+                      <Card key={selectedReward.rewardId}>
+                        <Image
+                          source={{ uri: selectedReward.reward.imageUrl }}
+                          className="size-20"
+                          resizeMode="contain"
+                          alt={selectedReward.reward.label}
+                        />
+                      </Card>
+                    ))}
+                  </HStack>
+                </ScrollView>
+              )}
+            </Box>
           </>
         )}
         {!user && (
