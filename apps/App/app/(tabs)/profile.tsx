@@ -60,6 +60,13 @@ export default function Tab() {
             <Heading className="text-2xl mb-4 mt-4 text-slate-900">
               🎁 Your rewards
             </Heading>
+            {challengesWithRewards?.length === 0 && (
+              <Box>
+                <Text>
+                  You do not have reward now. Go complete some challenge 🏆
+                </Text>
+              </Box>
+            )}
             <ScrollView showsVerticalScrollIndicator={false}>
               <Box>
                 {challengesWithRewards?.map((item) => {

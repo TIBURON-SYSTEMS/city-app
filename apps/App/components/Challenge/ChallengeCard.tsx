@@ -9,6 +9,8 @@ import { Text } from "../ui/text";
 import { Challenge } from "@/types/types";
 import api from "@/api/api";
 import ChallengeProgress from "./ChallengeProgress";
+import { ScrollView } from "react-native";
+import { Badge, BadgeText } from "../ui/badge";
 
 interface ChallengeCardProps {
   challenge: Challenge;
@@ -52,7 +54,17 @@ export default function ChallengeCard({
         </Box>
 
         <Text className="mb-2">by {challenge.brandName}</Text>
-
+        <ScrollView horizontal={true}>
+          {challenge.rewards.map((reward) => (
+            <Badge
+              key={reward.id}
+              variant="outline"
+              className="bg-slate-100/80 rounded-xl mr-3"
+            >
+              <BadgeText>{reward.label}</BadgeText>
+            </Badge>
+          ))}
+        </ScrollView>
         {user && participationData?.isParticipating && ongoing && (
           <ChallengeProgress
             heading={false}

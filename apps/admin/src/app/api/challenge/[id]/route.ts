@@ -63,7 +63,6 @@ export async function PUT(
     const { id } = await params;
     const { email } = await request.json();
 
-    //add logic
     challenges.map((challenge) => {
       if (challenge.id === id) {
         challenge.users.push({ id: "1", email });

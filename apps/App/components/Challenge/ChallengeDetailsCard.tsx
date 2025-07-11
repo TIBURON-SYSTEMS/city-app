@@ -149,7 +149,6 @@ export default function ChallengeDetailsCard() {
                       className="bg-slate-100/80 rounded-xl"
                     >
                       <BadgeText>{reward.label}</BadgeText>
-                      {/* <BadgeText className="mr-1">{reward.amount}</BadgeText> */}
                     </Badge>
                   </Link>
                 ))}
