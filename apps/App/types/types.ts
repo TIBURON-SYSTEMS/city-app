@@ -108,3 +108,14 @@ export type AffectedChallengeWithAmount = {
   challengeId: string;
   completed: boolean;
 };
+
+export type ChallengeWithRewards = {
+  challengeId: string;
+  challengeLabel: string;
+  rewards: {
+    id: string;
+    amount: number;
+    label: string;
+    imageUrl: string | null;
+  }[];
+};

@@ -4,6 +4,7 @@ import {
   Bin,
   Brand,
   Challenge,
+  ChallengeWithRewards,
   Participant,
   ParticipationData,
 } from "@/types/types";
@@ -155,6 +156,13 @@ const api = {
 
   async fetchAllBins(): Promise<Bin[]> {
     const res = await fetch(`${BASE_URL}/api/bins`);
+    const data = await res.json();
+    return data;
+  },
+  async getChallengesWithRewards(
+    participandId: string | undefined
+  ): Promise<ChallengeWithRewards[] | undefined> {
+    const res = await fetch(`${BASE_URL}/api/rewards/${participandId}`);
     const data = await res.json();
     return data;
   },

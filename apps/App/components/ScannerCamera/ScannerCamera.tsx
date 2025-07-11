@@ -90,7 +90,10 @@ export default function ScannerCamera() {
         queryKey: ["progress"],
       });
       queryClient.invalidateQueries({
-        queryKey: ["OnGoingAvailableChallenges", participant?.participantId],
+        queryKey: ["OnGoingAvailableChallenges"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["challengesWithRewards"],
       });
     },
   });

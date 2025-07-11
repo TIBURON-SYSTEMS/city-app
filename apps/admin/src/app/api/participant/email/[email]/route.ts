@@ -32,5 +32,26 @@ export async function GET(
     return NextResponse.json({ participantId: participant.id });
   }
 
-  return NextResponse.json({ participantId: user.participant.id });
+  // const rewardWithChallenges: { [challengeId: string]: Reward[] } = {};
+  // for (let i = 0; i < user.participant.eligibleReward.length; i++) {
+  //   if (
+  //     rewardWithChallenges.hasOwnProperty(
+  //       user.participant.eligibleReward[i].reward.challengeId
+  //     )
+  //   ) {
+  //     rewardWithChallenges[
+  //       user.participant.eligibleReward[i].reward.challengeId
+  //     ].push(user.participant.eligibleReward[i].reward);
+  //   } else {
+  //     rewardWithChallenges[
+  //       user.participant.eligibleReward[i].reward.challengeId
+  //     ] = [user.participant.eligibleReward[i].reward];
+  //   }
+  // }
+
+  // console.log(rewardWithChallenges, "✅");
+
+  return NextResponse.json({
+    participantId: user.participant.id,
+  });
 }
