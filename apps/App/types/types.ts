@@ -119,3 +119,8 @@ export type ChallengeWithRewards = {
     imageUrl: string | null;
   }[];
 };
+
+export type EligibleReward = {
+  id: string;
+  userId: string;
+};

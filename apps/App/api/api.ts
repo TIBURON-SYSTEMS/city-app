@@ -5,8 +5,10 @@ import {
   Brand,
   Challenge,
   ChallengeWithRewards,
+  EligibleReward,
   Participant,
   ParticipationData,
+  Reward,
 } from "@/types/types";
 import { AI_SERVER_URL, BASE_URL } from "@/utils/baseUrl";
 
@@ -160,9 +162,41 @@ const api = {
     return data;
   },
   async getChallengesWithRewards(
-    participandId: string | undefined
+    participantId: string | undefined
   ): Promise<ChallengeWithRewards[] | undefined> {
-    const res = await fetch(`${BASE_URL}/api/rewards/${participandId}`);
+    const res = await fetch(`${BASE_URL}/api/rewards/${participantId}`);
+    const data = await res.json();
+    return data;
+  },
+  async selectReward(
+    participantId: string | undefined,
+    rewardId: string | undefined
+  ) {
+    const options = {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ participantId, rewardId }),
+    };
+    const res = await fetch(`${BASE_URL}/api/participant-reward`, options);
+    const data = res.json();
+
+    return data;
+  },
+  async getRewardById(id: string): Promise<Reward | undefined> {
+    const res = await fetch(`${BASE_URL}/api/reward/${id}`);
+    const data = await res.json();
+
+    return data.reward;
+  },
+  async getEligibleReward(
+    participantId: string | undefined,
+    rewardId: string | undefined
+  ): Promise<EligibleReward | null> {
+    const res = await fetch(
+      `${BASE_URL}/api/reward/${rewardId}/eligible/${participantId}`
+    );
     const data = await res.json();
     return data;
   },

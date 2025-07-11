@@ -84,6 +84,7 @@ model ParticipantReward {
   rewardId      String
   reward        Reward       @relation(fields: [rewardId], references: [id])
   assignedAt    DateTime     @default(now())
+  selected      Boolean      @default(false)
   Participant   Participant? @relation(fields: [participantId], references: [id])
   participantId String
 

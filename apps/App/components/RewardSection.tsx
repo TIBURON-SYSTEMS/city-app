@@ -1,28 +1,46 @@
 import { Link, router, useLocalSearchParams } from "expo-router";
 import { Text } from "./ui/text";
-import { Button } from "./ui/button";
+import { Button, ButtonText } from "./ui/button";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { Box } from "./ui/box";
 import { Card } from "./ui/card";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Image } from "./ui/image";
 import { BASE_URL } from "../utils/baseUrl";
 import { Reward } from "@/types/types";
+import { useAuth0 } from "react-native-auth0";
+import api from "@/api/api";
 
 export default function RewardSection() {
   const { id } = useLocalSearchParams();
 
-  async function getRewardById(id: string): Promise<Reward | undefined> {
-    const res = await fetch(`${BASE_URL}/api/reward/${id}`);
-    const data = await res.json();
+  const { user } = useAuth0();
 
-    return data.reward;
-  }
+  const { data: participant } = useQuery({
+    queryKey: ["user"],
+    queryFn: () => api.getUserByEmail(user?.email),
+    enabled: !!user,
+  });
 
   const { data: reward } = useQuery({
     queryKey: ["reward", id as string],
-    queryFn: () => getRewardById(id as string),
+    queryFn: () => api.getRewardById(id as string),
   });
+
+  const { data: eligibleReward } = useQuery({
+    queryKey: ["eligibleReward", participant?.participantId, id],
+    queryFn: () =>
+      api.getEligibleReward(participant?.participantId, id as string),
+  });
+
+  const selectRewardMutation = useMutation({
+    mutationFn: () =>
+      api.selectReward(participant?.participantId, id as string),
+  });
+
+  async function handlePressSelectReward() {
+    selectRewardMutation.mutate();
+  }
 
   if (!reward) return;
 
@@ -43,7 +61,7 @@ export default function RewardSection() {
 
         <Box className="flex-1 bg-white px-6 pt-10 w-full">
           <Box className="flex gap-8 items-center">
-            <Text className="text-2xl font-semibold text-gray-900">
+            <Text className="text-2xl font-semibold text-gray-900 capitalize">
               {reward.label}
             </Text>
             <Text>Amount: {reward.amount}</Text>
@@ -54,6 +72,14 @@ export default function RewardSection() {
               resizeMode="contain"
               alt={reward.label}
             />
+            {eligibleReward && (
+              <Button
+                onPress={handlePressSelectReward}
+                className="rounded-full"
+              >
+                <ButtonText>Select this reward</ButtonText>
+              </Button>
+            )}
           </Box>
         </Box>
       </Card>
