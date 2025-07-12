@@ -18,7 +18,7 @@ export default function LogoutButton() {
 
   return (
     <Button onPress={onPress} variant="link">
-      <AntDesign name="logout" size={24} color="black" />
+      <AntDesign name="logout" size={24} color="red" />
     </Button>
   );
 }

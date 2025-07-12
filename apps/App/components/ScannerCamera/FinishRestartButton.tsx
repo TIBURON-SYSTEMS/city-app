@@ -17,14 +17,14 @@ export default function FinishRestartButton({
     actionStage === ScannerCameraStage.Finish && (
       <View className="absolute top-1/2 left-1/2 -translate-x-1/2 flex flex-col gap-6">
         <Button
-          className="bg-black rounded-full border border-white"
+          className="rounded-full border border-white"
           onPress={handleSubmit}
         >
           <ButtonText>Start Analysis</ButtonText>
         </Button>
 
         <Button
-          className="bg-black rounded-full border border-white"
+          className="rounded-full border border-white"
           onPress={handleRestart}
         >
           <ButtonText>Restart</ButtonText>

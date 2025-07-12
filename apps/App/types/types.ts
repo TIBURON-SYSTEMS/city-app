@@ -5,6 +5,7 @@ export type User = {
 
 export type Participant = {
   participantId: string;
+  participation: [];
 };
 
 export type Challenge = {

@@ -2,277 +2,342 @@ import { BrandStatus, UserRole } from "@/generated/prisma";
 import prisma from "./db";
 
 async function main() {
-  //CREATE PARTICIPANT
   const userParticipant = await prisma.user.create({
     data: {
-      // email: "arnaud.obri@gmail.com",
-      email: "footworkextreme@gmail.com",
+      email: "arnaud.obri@gmail.com",
       role: UserRole.PARTICIPANT,
     },
   });
   console.log({ userParticipant });
-  const participant = await prisma.participant.create({
+  await prisma.participant.create({
     data: {
       userId: userParticipant.id,
     },
   });
-  console.log({ participant });
-
-  // CREATE BRANDS
-  const userBrand = await prisma.user.create({
+  const userParticipant2 = await prisma.user.create({
     data: {
-      email: "brand@brand.com",
+      email: "participant@tiburon.es",
+      role: UserRole.PARTICIPANT,
+    },
+  });
+  console.log({ userParticipant });
+  await prisma.participant.create({
+    data: {
+      userId: userParticipant2.id,
+    },
+  });
+
+  const mercadona = await prisma.user.create({
+    data: {
+      email: "mercadona@someprovider.com",
       role: UserRole.BRAND,
+      brand: {
+        create: {
+          name: "Mercadona",
+          description:
+            "Mercadona is a leading Spanish supermarket chain known for its 'Always Low Prices' model. It offers a wide range of high-quality food, personal care, and home products, with a strong focus on its popular and trusted private labels like Hacendado.",
+          logoUrl:
+            "https://logos-world.net/wp-content/uploads/2022/04/Mercadona-Logo-700x394.jpg",
+          status: BrandStatus.ACTIVE,
+          challenges: {
+            create: [
+              // Challenge 1
+              {
+                label: "Hacendado Recycling Hero",
+                status: "active",
+                endDate: new Date("2025-12-31T23:59:59Z"),
+                description:
+                  "Don't let your milk bottle go to waste. Join the drive by recycling all your Hacendado milk bottle and pour yourself some great rewards",
+                goal: 50,
+                // Reward for Challenge 1
+                rewards: {
+                  create: [
+                    {
+                      label: "€15 Voucher",
+                      amount: 1,
+                      imageUrl:
+                        "https://www.pngall.com/wp-content/uploads/12/Voucher-PNG-Pic.png",
+                    },
+                  ],
+                },
+                challengeProducts: {
+                  create: [
+                    {
+                      product: {
+                        create: {
+                          label: "hacendado milk",
+                          material: "plastic",
+                          brand: {
+                            connect: {
+                              name: "Mercadona",
+                            },
+                          },
+                        },
+                      },
+                    },
+                  ],
+                },
+              },
+              // Challenge 2
+              {
+                label: "Hacendado Zero Plastic",
+                status: "active",
+                endDate: new Date("2026-03-31T23:59:59Z"),
+                description:
+                  "Help us to have all of our Hacendado yoghurts recycled",
+                goal: 50,
+                // Reward for Challenge 2
+                rewards: {
+                  create: [
+                    {
+                      label: "hacendado tshirt",
+                      amount: 1,
+                      imageUrl:
+                        "https://static.vecteezy.com/system/resources/previews/012/628/220/original/plain-black-t-shirt-on-transparent-background-free-png.png",
+                    },
+                    {
+                      label: "Hacendado canvas tote bag",
+                      amount: 1,
+                      imageUrl:
+                        "https://promomachine.com.au/shared/img/baseProducts/9583c1b1512dfa38006d107b772ad670.jpg",
+                    },
+                  ],
+                },
+                // Product for Challenge 2
+                challengeProducts: {
+                  create: [
+                    {
+                      product: {
+                        create: {
+                          label: "hacendado yoghurt",
+                          material: "plastic",
+                          brand: {
+                            connect: {
+                              name: "Mercadona",
+                            },
+                          },
+                        },
+                      },
+                    },
+                  ],
+                },
+              },
+              // Challenge 3
+              {
+                label: "Hacendado Packaging Blitz",
+                status: "inactive",
+                endDate: new Date("2026-03-31T23:59:59Z"),
+                description:
+                  "Join the ultimate recycling showdown! Scan and drop off any Hacendado carton packaging to earn rewards",
+                goal: 100,
+                // Reward for Challenge 3
+                rewards: {
+                  create: [
+                    {
+                      label: "Hacendado eco water bottle",
+                      amount: 1,
+                      imageUrl:
+                        "https://www.ecowatch.com/wp-content/uploads/2021/11/1291951955-origin.jpg",
+                    },
+                  ],
+                },
+                // Product for Challenge 3
+                challengeProducts: {
+                  create: [
+                    {
+                      product: {
+                        create: {
+                          label: "hacendado packaging",
+                          material: "paper",
+                          brand: {
+                            connect: {
+                              name: "Mercadona",
+                            },
+                          },
+                        },
+                      },
+                    },
+                  ],
+                },
+              },
+            ],
+          },
+        },
+      },
+    },
+    include: {
+      brand: {
+        include: {
+          challenges: {
+            include: {
+              rewards: true,
+              challengeProducts: {
+                include: {
+                  product: true,
+                },
+              },
+            },
+          },
+        },
+      },
     },
   });
-  console.log({ userBrand });
-  const userBrand2 = await prisma.user.create({
+
+  const amazon = await prisma.user.create({
     data: {
-      email: "brand2@brand.com",
+      email: "amazon@someprovider.com",
       role: UserRole.BRAND,
+      brand: {
+        create: {
+          name: "Amazon",
+          description:
+            "Amazon is a global e-commerce and cloud computing leader, offering everything from A to Z, with a strong commitment to sustainability through its ‘Shipment Zero’ initiative and recyclable packaging programs.",
+          logoUrl:
+            "https://logos-world.net/wp-content/uploads/2020/06/Amazon-Logo.jpg",
+          status: BrandStatus.ACTIVE,
+          challenges: {
+            create: [
+              // Challenge 1
+              {
+                label: "Amazon Recycling Sprint",
+                status: "active",
+                endDate: new Date("2025-12-31T23:59:59Z"),
+                description:
+                  "Race to recycle Amazon cardboard mailer envelopes. Scan and drop off 50 envelopes to unlock exclusive voucher rewards.",
+                goal: 200,
+                // Reward for Challenge 1
+                rewards: {
+                  create: [
+                    {
+                      label: "A ride in space with Blue Origin",
+                      amount: 1,
+                      imageUrl:
+                        "https://cdn.mos.cms.futurecdn.net/mVdaknZ6JrvW2s5Dsyx2ET.jpeg",
+                    },
+                    {
+                      label: "AWS Gold jacket",
+                      amount: 1,
+                      imageUrl:
+                        "https://jiripik.com/wp-content/uploads/2022/07/AWSGoldenJacket.jpg",
+                    },
+                  ],
+                },
+                challengeProducts: {
+                  create: [
+                    {
+                      product: {
+                        create: {
+                          label: "amazon packaging",
+                          material: "carton",
+                          brand: {
+                            connect: {
+                              name: "Amazon",
+                            },
+                          },
+                        },
+                      },
+                    },
+                  ],
+                },
+              },
+            ],
+          },
+        },
+      },
+    },
+    include: {
+      brand: {
+        include: {
+          challenges: {
+            include: {
+              rewards: true,
+              challengeProducts: {
+                include: {
+                  product: true,
+                },
+              },
+            },
+          },
+        },
+      },
     },
   });
-  console.log({ userBrand2 });
 
-  const brand = await prisma.brand.create({
+  const carrefour = await prisma.user.create({
     data: {
-      name: "Demo Brand",
-      description: "Description of the brand",
-      logoUrl:
-        "https://static.tildacdn.net/tild6231-3164-4435-b331-396333613165/LOGO_BLACK.png",
-      userId: userBrand.id,
-      status: BrandStatus.ACTIVE,
+      email: "carrefour@someprovider.com",
+      role: UserRole.BRAND,
+      brand: {
+        create: {
+          name: "Carrefour",
+          description:
+            "Carrefour, French retail giant, runs hypermarkets, supermarkets and online shops across Spain, offering groceries, electronics and services, loyalty rewards and competitive prices, and eco moves. Too.",
+          logoUrl:
+            "https://logos-world.net/wp-content/uploads/2020/11/Carrefour-Logo-1982-2010.png",
+          status: BrandStatus.ACTIVE,
+          challenges: {
+            create: [
+              // Challenge 1
+              {
+                label: "Carrefour Shampoo Bottle",
+                status: "active",
+                endDate: new Date("2025-12-31T23:59:59Z"),
+                description:
+                  "Race to recycle as fast as you can: Carrefour-branded shampoo bottle.",
+                goal: 15,
+                // Reward for Challenge 1
+                rewards: {
+                  create: [
+                    {
+                      label: "Custom Mug",
+                      amount: 1,
+                      imageUrl:
+                        "https://www.pngall.com/wp-content/uploads/2/Mug-Transparent.png",
+                    },
+                  ],
+                },
+                challengeProducts: {
+                  create: [
+                    {
+                      product: {
+                        create: {
+                          label: "carrefour shampoo",
+                          material: "plastic",
+                          brand: {
+                            connect: {
+                              name: "Carrefour",
+                            },
+                          },
+                        },
+                      },
+                    },
+                  ],
+                },
+              },
+            ],
+          },
+        },
+      },
+    },
+    include: {
+      brand: {
+        include: {
+          challenges: {
+            include: {
+              rewards: true,
+              challengeProducts: {
+                include: {
+                  product: true,
+                },
+              },
+            },
+          },
+        },
+      },
     },
   });
-  console.log({ brand });
 
-  const brand2 = await prisma.brand.create({
-    data: {
-      name: "Demo Brand2",
-      description: "Description of the brand",
-      logoUrl:
-        "https://static.tildacdn.net/tild6231-3164-4435-b331-396333613165/LOGO_BLACK.png",
-      userId: userBrand2.id,
-      status: BrandStatus.ACTIVE,
-    },
-  });
-  console.log({ brand2 });
-
-  // CREATE PRODUCTS
-
-  const plasticBottle = await prisma.product.create({
-    data: {
-      label: "plastic bottle",
-      material: "plastic",
-      brandId: brand.id,
-    },
-  });
-  console.log(plasticBottle);
-
-  const plasticBottle2 = await prisma.product.create({
-    data: {
-      label: "plastic bottle2",
-      material: "plastic",
-      brandId: brand2.id,
-    },
-  });
-  console.log(plasticBottle2);
-
-  const can = await prisma.product.create({
-    data: {
-      label: "aluminium can",
-      material: "aluminium",
-      brandId: brand.id,
-    },
-  });
-  console.log(can);
-
-  const paper = await prisma.product.create({
-    data: {
-      label: "a4 paper",
-      material: "paper",
-      brandId: brand.id,
-    },
-  });
-  console.log(paper);
-
-  const newspaper = await prisma.product.create({
-    data: {
-      label: "newspaper",
-      material: "paper",
-      brandId: brand.id,
-    },
-  });
-  console.log(newspaper);
-
-  // CREATE CHALLENGES
-
-  const challenge1 = await prisma.challenge.create({
-    data: {
-      label: "Plastic Bottle Blitz",
-      status: "active",
-      endDate: new Date("2025-08-31T23:59:59"),
-      goal: 30,
-      description:
-        "Recycle plastic bottles to earn rewards. Hit 30 bottles and win a 1000 reward points!",
-      brandId: brand.id,
-    },
-  });
-  console.log({ challenge1 });
-
-  const challenge12 = await prisma.challenge.create({
-    data: {
-      label: "Plastic Bottle Blitz2",
-      status: "active",
-      endDate: new Date("2025-08-31T23:59:59"),
-      goal: 30,
-      description:
-        "Recycle plastic bottles to earn rewards. Hit 30 bottles and win a 1000 reward points!",
-      brandId: brand2.id,
-    },
-  });
-  console.log({ challenge12 });
-
-  const challenge2 = await prisma.challenge.create({
-    data: {
-      label: "Can Crusher Challenge",
-      status: "active",
-      endDate: new Date("2025-09-15T23:59:59"),
-      goal: 31,
-      description:
-        "Collect and recycle aluminum cans Reach 50 and get 400 reward points!!",
-      brandId: brand.id,
-    },
-  });
-  console.log({ challenge2 });
-
-  const challenge3 = await prisma.challenge.create({
-    data: {
-      label: "Paper Purge",
-      status: "inactive",
-      endDate: new Date("2025-10-01T23:59:59"),
-      goal: 100,
-      description:
-        "Recycle used paper sheets and earn 1 point per sheet. Reach 100 and receive a plantable notebook!",
-      brandId: brand.id,
-    },
-  });
-  console.log({ challenge3 });
-
-  const challenge4 = await prisma.challenge.create({
-    data: {
-      label: "Paper Purge",
-      status: "active",
-      endDate: new Date("2025-10-01T23:59:59"),
-      goal: 100,
-      description:
-        "Recycle used paper sheets and earn 1 point per sheet. Reach 100 and receive a plantable notebook!",
-      brandId: brand.id,
-    },
-  });
-  console.log({ challenge4 });
-
-  await prisma.challengeProduct.createMany({
-    data: [
-      {
-        challengeId: challenge1.id,
-        productId: plasticBottle.id,
-      },
-      {
-        challengeId: challenge2.id,
-        productId: can.id,
-      },
-      {
-        challengeId: challenge3.id,
-        productId: paper.id,
-      },
-      {
-        challengeId: challenge4.id,
-        productId: newspaper.id,
-      },
-      {
-        challengeId: challenge12.id,
-        productId: plasticBottle2.id,
-      },
-    ],
-  });
-  //add reward
-  await prisma.reward.createMany({
-    data: [
-      // Rewards for Challenge 1
-      {
-        label: "tshirt",
-        amount: 1,
-        challengeId: challenge1.id,
-        imageUrl:
-          "https://static.vecteezy.com/system/resources/previews/012/628/220/original/plain-black-t-shirt-on-transparent-background-free-png.png",
-      },
-      {
-        label: "tshirt2",
-        amount: 1,
-        challengeId: challenge12.id,
-        imageUrl:
-          "https://static.vecteezy.com/system/resources/previews/012/628/220/original/plain-black-t-shirt-on-transparent-background-free-png.png",
-      },
-      {
-        label: "Eco-friendly Water Bottle",
-        amount: 1,
-        challengeId: challenge1.id,
-        imageUrl:
-          "https://themerchlist.com/wp-content/uploads/2023/04/eco-friendly-glass-bottle-with.png",
-      },
-      // Rewards for Challenge 2
-      {
-        label: "Reward Points",
-        amount: 400,
-        challengeId: challenge2.id,
-        imageUrl:
-          "https://as2.ftcdn.net/v2/jpg/03/57/60/25/1000_F_357602510_azcWAt9QPy0zl1OglD1sWMYNrG3WUQIv.jpg",
-      },
-      {
-        label: "15% Off Next Purchase",
-        amount: 1,
-        challengeId: challenge2.id,
-        imageUrl:
-          "https://c8.alamy.com/comp/EMC80G/special-discount-15-off-stamp-EMC80G.jpg",
-      },
-      // Rewards for Challenge 3
-      {
-        label: "Plantable Notebook",
-        amount: 1,
-        challengeId: challenge3.id,
-        imageUrl:
-          "https://trashbackwards.com/wp-content/uploads/2021/12/1-Plantable-Notebook.png",
-      },
-      {
-        label: "Bonus Points",
-        amount: 50,
-        challengeId: challenge3.id,
-        imageUrl:
-          "https://img.freepik.com/premium-vector/bonus-point-editable-text-effect-font_87783-238.jpg?w=2000",
-      },
-      {
-        label: "free newspaper",
-        amount: 1,
-        challengeId: challenge4.id,
-        imageUrl:
-          "https://cdn.britannica.com/25/93825-050-D1300547/collection-newspapers.jpg",
-      },
-    ],
-  });
-
-  //add partiticipation
-  await prisma.participation.createMany({
-    data: [
-      { challengeId: challenge1.id, participantId: participant.id, amount: 29 },
-      { challengeId: challenge2.id, participantId: participant.id, amount: 30 },
-      {
-        challengeId: challenge12.id,
-        participantId: participant.id,
-        amount: 29,
-      },
-    ],
-  });
+  console.log(mercadona, amazon, carrefour);
 
   // CREATE BINS
   const bins = await prisma.bin.createMany({
@@ -435,7 +500,7 @@ async function main() {
       },
       {
         label: "Bin 27",
-        type: "paper",
+        type: "carton",
         latitude: 41.381459,
         longitude: 2.162351,
       },

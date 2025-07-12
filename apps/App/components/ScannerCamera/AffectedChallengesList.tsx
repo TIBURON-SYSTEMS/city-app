@@ -53,7 +53,7 @@ export default function AffectedChallengesList({
                       className={`font-medium text-right ${!affectedChallenge.completed && "text-green-700"} ${affectedChallenge.completed && "text-slate-950"}`}
                     >
                       {affectedChallenge.completed
-                        ? "completed"
+                        ? "completed (check your rewards in profile page)"
                         : `+${affectedChallenge.amount}`}
                     </Text>
                   </Box>

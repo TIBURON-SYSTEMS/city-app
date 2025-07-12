@@ -3,7 +3,8 @@ import { MOCK_PRODUCTS } from "../mock/recycedItems";
 export function mockPhotosPairAnalysis(before: Buffer, after: Buffer) {
   // formular to generate a number between a range -> Math.floor(Math.random() * (max - min + 1)) + min
   // mock to add random 2 ~ 4 trash
-  const numItems = Math.floor(Math.random() * (MOCK_PRODUCTS.length - 1)) + 1;
+  // const numItems = Math.floor(Math.random() * (MOCK_PRODUCTS.length - 1)) + 1;
+  const numItems = 3;
 
   // initilize unusedIndexes pool
   const unusedIndexes = MOCK_PRODUCTS.map((_, i) => i);

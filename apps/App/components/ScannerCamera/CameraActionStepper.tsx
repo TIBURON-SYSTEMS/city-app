@@ -22,7 +22,7 @@ export default function CameraActionStepper({
         : 2;
 
   return (
-    <View className="h-[230px] w-full z-0 blur-3xl bg-slate-700/40">
+    <View className="h-[40%] w-full inset-x-0 top-0 z-0 bg-slate-700/20">
       <ProgressSteps
         key={actionStage}
         activeStep={currentStep}
@@ -32,27 +32,29 @@ export default function CameraActionStepper({
           actionStage === ScannerCameraStage.End
         }
       >
-        <ProgressStep label="Scan QR Code" removeBtnRow>
+        <ProgressStep label="🔍 QR Code" removeBtnRow>
           <View style={{ alignItems: "center" }}>
-            <Text className="text-white">
-              Scan the QR code of the bin you want to use
+            <Text className="text-slate-900 text-lg">
+              Please scan the QR code located on the bin
             </Text>
           </View>
         </ProgressStep>
-        <ProgressStep label="Photo 1" removeBtnRow>
+        <ProgressStep label="First Picture" removeBtnRow>
           <View style={{ alignItems: "center" }}>
-            <Text className="text-slate-800 mb-3">
-              Take a picture before discarding your items
+            <Text className="text-slate-800 mb-3 text-lg text-center">
+              You are in front of 🗑️{" "}
+              <Text className="font-bold text-primary-700">{binLabel}</Text> to
+              recycle {binType}
             </Text>
-            <Text className="text-slate-800">
-              {`You are using 🗑️ ${binLabel} of type ${binType}`}
+            <Text className="text-slate-800 mb-3 text-lg text-center">
+              Take a picture inside the bin, then drop in your waste
             </Text>
           </View>
         </ProgressStep>
         <ProgressStep label="Photo 2" removeBtnRow>
           <View style={{ alignItems: "center" }}>
-            <Text className="text-white">
-              Take a picture after discarding your items
+            <Text className="text-slate-800 mb-3 text-lg text-center">
+              Take a picture inside the bin once your waste is in
             </Text>
           </View>
         </ProgressStep>

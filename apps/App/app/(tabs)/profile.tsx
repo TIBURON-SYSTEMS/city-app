@@ -64,7 +64,6 @@ export default function Tab() {
               <Text className="text-lg font-semibold">{user.email}</Text>
               <LogoutButton />
             </HStack>
-            {/* Your rewards */}
             <Box>
               <Heading className="text-2xl mb-4 mt-4 text-slate-900">
                 🎁 Your rewards

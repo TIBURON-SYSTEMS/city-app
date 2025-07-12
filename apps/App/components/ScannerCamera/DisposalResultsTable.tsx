@@ -23,7 +23,7 @@ export default function DisposalResultsTable({
               <Text className="text-white font-bold">Disposed Product</Text>
             </Box>
             <Box className="flex-1 ml-4">
-              <Text className="text-white font-bold">Brand</Text>
+              <Text className="text-white font-bold">Material</Text>
             </Box>
             <Box className="w-20">
               <Text className="text-white font-bold text-right">Quantity</Text>
@@ -46,7 +46,7 @@ export default function DisposalResultsTable({
                   </Box>
                   <Box className="flex-1 ml-4">
                     <Text className="text-gray-600">
-                      {item.disposedProduct.brandName}
+                      {item.disposedProduct.material}
                     </Text>
                   </Box>
                   <Box className="w-20">

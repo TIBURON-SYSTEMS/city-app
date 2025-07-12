@@ -23,7 +23,6 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import api from "@/api/api";
 import { AiResultResponse } from "@/types/types";
 import { DECODEDBIN } from "@/constants";
-import { Box } from "../ui/box";
 
 const photoConfig = {
   quality: 0.7,
@@ -56,6 +55,7 @@ export default function ScannerCamera() {
       };
     }, [])
   );
+  const decodeIndex = Math.floor(Math.random() * DECODEDBIN.length - 1) + 1;
 
   const { data: participant } = useQuery({
     queryKey: ["user"],
@@ -66,7 +66,11 @@ export default function ScannerCamera() {
   const { data: bin, refetch: fetchBin } = useQuery({
     queryKey: ["bin"],
     queryFn: () =>
-      api.getBinByPositionType(DECODEDBIN.lat, DECODEDBIN.lon, DECODEDBIN.type),
+      api.getBinByPositionType(
+        DECODEDBIN[decodeIndex].lat,
+        DECODEDBIN[decodeIndex].lon,
+        DECODEDBIN[decodeIndex].type
+      ),
   });
 
   type DisposalMutationVariables = {
@@ -94,6 +98,9 @@ export default function ScannerCamera() {
       });
       queryClient.invalidateQueries({
         queryKey: ["challengesWithRewards"],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["bin"],
       });
     },
   });

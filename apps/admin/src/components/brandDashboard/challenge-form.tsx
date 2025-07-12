@@ -306,6 +306,15 @@ export default function ChallengeForm({ brand }: { brand: string }) {
                               </div>
                             </SelectItem>
                             <SelectItem
+                              value="carton"
+                              className="focus:bg-slate-100"
+                            >
+                              <div className="flex items-center gap-2">
+                                <Package className="h-4 w-4 text-slate-500" />
+                                Carton
+                              </div>
+                            </SelectItem>
+                            <SelectItem
                               value="metal"
                               className="focus:bg-slate-100"
                             >
