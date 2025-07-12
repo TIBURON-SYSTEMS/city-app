@@ -1,135 +1,115 @@
-# Turborepo starter
+# 🦈 Tiburón - Recycling Rewards App
 
-This Turborepo starter is maintained by the Turborepo core team.
+Tiburón is a smart recycling platform that turns everyday sorting into measurable impact.
+We reward proper recycling behavior, educate users through gamification, and help build a more sustainable future starting in your neighborhood.
 
-## Using this example
+---
 
-Run the following command:
+## 🚀 Features
 
-```sh
-npx create-turbo@latest
-```
+- ♻️ **Gamified Mobile App** — Users complete recycling challenges by properly sorting waste, earning rewards such as groceries, discounts, and so on.
+- 📦 **Smart Bin Workflow with AI Verification** — Users scan a QR code on the bin, upload two photos of their recycling action, and receive instant AI-powered feedback to verify challenge progress and completion.
+- 📊 **Multi-role Analytics and Management Dashboard** — Admins and partner brands can log in to monitor performance. Brands can create and manage recycling challenges, while admins access large-scale behavioral and environmental data insights.
 
-## What's inside?
+---
 
-This Turborepo includes the following packages/apps:
+## 🧩 Monorepo Structure (Turborepo)
 
-### Apps and Packages
-
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
-
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
+This project is structured as a monorepo using Turborepo, containing multiple apps and shared infrastructure to support scalability and maintainability.
 
 ```
-cd my-turborepo
-
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build
-
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build
-yarn dlx turbo build
-pnpm exec turbo build
+tiburon/
+├── apps/
+│   ├── App/          # User participant mobile app (expo)
+│   ├── admin/        # Admin and Brand dashboard
+│   └── ai-server/    # AI service API for images disposal detection
+├── package.json      # Root dependencies and scripts
+├── turbo.json        # Turborepo configuration
+└── yarn.lock         # Dependency lockfile
 ```
 
-You can build a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
+---
 
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo build --filter=docs
+## 🧠 Database Schema (Prisma)
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo build --filter=docs
-yarn exec turbo build --filter=docs
-pnpm exec turbo build --filter=docs
-```
+Includes models like:
 
-### Develop
+- `User`, `Participant`, `Brand`, `Challenge`, `Reward`, `Bin`, `Product`, `Disposal`, `Participation`, `DisposedProduct`, `ParticipantReward`, `ChallengeProduct`
 
-To develop all apps and packages, run the following command:
+- Role & status enums:  
+  `UserRole` (`PARTICIPANT`, `BRAND`, `ADMIN`),  
+  `BrandStatus` (`PENDING`, `ACTIVE`, `REJECTED`)
 
-```
-cd my-turborepo
+- Rich relational design:  
+  - One-to-one (e.g. `User` → `Participant` or `Brand`)  
+  - Many-to-many (e.g. `ParticipantReward`, `ChallengeProduct`)  
+  - Time-based tracking with `createdAt`, `updatedAt` on all models  
+  - Composite keys and unique constraints to prevent duplicate participation
 
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev
+> Full schema in `apps/admin/prisma/schema.prisma`
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev
-yarn exec turbo dev
-pnpm exec turbo dev
-```
 
-You can develop a specific package by using a [filter](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters):
+---
 
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo dev --filter=web
+## 📱 Figma Prototypes
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo dev --filter=web
-yarn exec turbo dev --filter=web
-pnpm exec turbo dev --filter=web
-```
+- **User Story Mapping**  
+  [View Board](https://embed.figma.com/board/YrhwU0psMhSvlaSai8QiP6/%F0%9F%A6%88-Tibur%C3%B3n-story-mapping?node-id=0-1)
 
-### Remote Caching
+- **UI Wireframes**  
+    This project was developed without a design prototype.  
+    Initial wireframes were considered but later abandoned in favor of direct       implementation and iterative development.
 
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
+---
 
-Turborepo can use a technique known as [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
+## 🛠 Tech Stack
 
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
+- **🧑‍🤝‍🧑 Monorepo Tooling**: Turborepo + Yarn Workspaces  
+- **📱 Participant App** (`apps/App`): Expo (React Native), TypeScript, Nativewind  
+- **🖥️ Admin Brand Dashboard** (`apps/admin`): Next.js, React, TypeScript, Shadcn UI, TailwindCSS
+- **🧠 Mock AI Server** (`apps/ai-server`): Express.js, TypeScript
+- **🗄️ Database**: PostgreSQL + Prisma ORM  
+- **🔐 Authentication**: Auth0  
+- **📧 Notifications**: Courier  
+- **🚀 Deployment**: To be determined
 
-```
-cd my-turborepo
+---
 
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo login
+## 📝 Development Scripts
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo login
-yarn exec turbo login
-pnpm exec turbo login
-```
+Run these commands from the root unless otherwise specified.
 
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
+- `yarn` — Install all dependencies (monorepo)
+- `yarn dev` — Run all dev servers in parallel via Turborepo
 
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
+**Prisma (run from `apps/admin`)**
 
-```
-# With [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation) installed (recommended)
-turbo link
+- `yarn prisma generate` — Generate Prisma client
+- `yarn prisma migrate dev` — Run dev migrations
 
-# Without [global `turbo`](https://turborepo.com/docs/getting-started/installation#global-installation), use your package manager
-npx turbo link
-yarn exec turbo link
-pnpm exec turbo link
-```
+**Mobile App (run from `apps/App`)**
 
-## Useful Links
+- `npx expo prebuild` — Prepare native projects for development
+- `npx expo run:ios` — Run on iOS device or simulator
+- `npx expo run:android` — Run on Android device or emulator
+- `npx expo start` — Start the Expo dev server
 
-Learn more about the power of Turborepo:
+**AI Server (run from `apps/ai-server`)**
 
-- [Tasks](https://turborepo.com/docs/crafting-your-repository/running-tasks)
-- [Caching](https://turborepo.com/docs/crafting-your-repository/caching)
-- [Remote Caching](https://turborepo.com/docs/core-concepts/remote-caching)
-- [Filtering](https://turborepo.com/docs/crafting-your-repository/running-tasks#using-filters)
-- [Configuration Options](https://turborepo.com/docs/reference/configuration)
-- [CLI Usage](https://turborepo.com/docs/reference/command-line-reference)
+- `yarn dev` — Run the AI server in development mode (with `nodemon`)
+- `yarn build` — Build the server to `dist/`
+- `yarn start` — Run the built server from `dist/`
+
+
+---
+
+## 📌 Notes
+
+- Not all features from the original 1-pager or backlog were implemented.
+- The final feature set is reflected in the codebase and Prisma schema.
+
+---
+
+## 📧 Contact
+
+For demo or support, please contact the team.
