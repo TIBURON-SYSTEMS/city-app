@@ -39,7 +39,7 @@ export default function CameraActionStepper({
             </Text>
           </View>
         </ProgressStep>
-        <ProgressStep label="First Picture" removeBtnRow>
+        <ProgressStep label="Pciture 1" removeBtnRow>
           <View style={{ alignItems: "center" }}>
             <Text className="text-slate-800 mb-3 text-lg text-center">
               You are in front of 🗑️{" "}
