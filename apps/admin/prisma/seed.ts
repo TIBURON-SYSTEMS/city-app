@@ -7,6 +7,9 @@ async function main() {
       email: "arnaud.obri@gmail.com",
       role: UserRole.PARTICIPANT,
     },
+    include: {
+      participant: true,
+    },
   });
   console.log({ userParticipant });
   await prisma.participant.create({
@@ -14,16 +17,23 @@ async function main() {
       userId: userParticipant.id,
     },
   });
-  const userParticipant2 = await prisma.user.create({
+
+  const pepsi = await prisma.user.create({
     data: {
-      email: "participant@tiburon.es",
-      role: UserRole.PARTICIPANT,
+      email: "pepsi@someprovider.com",
+      role: UserRole.BRAND,
+      brand: {
+        create: {
+          name: "Pepsi",
+          description: "Pepsi brand description",
+          logoUrl:
+            "https://logos-world.net/wp-content/uploads/2020/09/Pepsi-Symbol.png",
+          status: BrandStatus.ACTIVE,
+        },
+      },
     },
-  });
-  console.log({ userParticipant });
-  await prisma.participant.create({
-    data: {
-      userId: userParticipant2.id,
+    include: {
+      brand: true,
     },
   });
 
@@ -43,11 +53,11 @@ async function main() {
             create: [
               // Challenge 1
               {
-                label: "Hacendado Recycling Hero",
+                label: "Mercadona Recycling Hero",
                 status: "active",
                 endDate: new Date("2025-12-31T23:59:59Z"),
                 description:
-                  "Don't let your milk bottle go to waste. Join the drive by recycling all your Hacendado milk bottle and pour yourself some great rewards",
+                  "Don't let your milk bottle go to waste. Join the drive by recycling all your Mercadona Hacendado milk bottle and pour yourself some great rewards",
                 goal: 50,
                 // Reward for Challenge 1
                 rewards: {
@@ -65,7 +75,7 @@ async function main() {
                     {
                       product: {
                         create: {
-                          label: "hacendado milk",
+                          label: "milk bottle",
                           material: "plastic",
                           brand: {
                             connect: {
@@ -80,11 +90,11 @@ async function main() {
               },
               // Challenge 2
               {
-                label: "Hacendado Zero Plastic",
+                label: "Mercadona Zero Plastic",
                 status: "active",
                 endDate: new Date("2026-03-31T23:59:59Z"),
                 description:
-                  "Help us to have all of our Hacendado yoghurts recycled",
+                  "Help us to have all of our Mercodona Hacendado yoghurts recycled",
                 goal: 50,
                 // Reward for Challenge 2
                 rewards: {
@@ -109,7 +119,7 @@ async function main() {
                     {
                       product: {
                         create: {
-                          label: "hacendado yoghurt",
+                          label: "yoghurt cup",
                           material: "plastic",
                           brand: {
                             connect: {
@@ -124,7 +134,7 @@ async function main() {
               },
               // Challenge 3
               {
-                label: "Hacendado Packaging Blitz",
+                label: "Mercadona Packaging Blitz",
                 status: "inactive",
                 endDate: new Date("2026-03-31T23:59:59Z"),
                 description:
@@ -147,7 +157,7 @@ async function main() {
                     {
                       product: {
                         create: {
-                          label: "hacendado packaging",
+                          label: "packaging",
                           material: "paper",
                           brand: {
                             connect: {
@@ -301,7 +311,7 @@ async function main() {
                     {
                       product: {
                         create: {
-                          label: "carrefour shampoo",
+                          label: "shampoo bottle",
                           material: "plastic",
                           brand: {
                             connect: {
@@ -337,7 +347,7 @@ async function main() {
     },
   });
 
-  console.log(mercadona, amazon, carrefour);
+  console.log(mercadona, amazon, carrefour, pepsi);
 
   // CREATE BINS
   const bins = await prisma.bin.createMany({

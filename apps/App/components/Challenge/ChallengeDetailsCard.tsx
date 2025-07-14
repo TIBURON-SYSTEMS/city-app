@@ -74,10 +74,10 @@ export default function ChallengeDetailsCard() {
   if (!challenge) return;
 
   return (
-    <ScrollView className="h-full" showsVerticalScrollIndicator={false}>
-      <Box className="px-7 bg-white h-full">
-        <Card className="flex flex-col py-5 px-4 mt-4 mb-4 border border-slate-300 h-full items-center">
-          <Box className="flex gap-4">
+    <ScrollView className="h-full " showsVerticalScrollIndicator={false}>
+      <Box className="px-7 bg-white h-ful">
+        <Card className="flex flex-col py-5 px-4 mt-4 mb-4 border border-slate-300 h-full items-center w-full">
+          <Box className="flex gap-4 w-full">
             <Box className="flex flex-row justify-between">
               <Link href="/">
                 <Button

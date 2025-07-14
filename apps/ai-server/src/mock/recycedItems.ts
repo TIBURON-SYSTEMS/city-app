@@ -1,21 +1,21 @@
 export const MOCK_PRODUCTS = [
   {
-    label: "hacendado milk",
+    label: "milk bottle",
     material: "plastic",
     brandName: "Mercadona",
   },
   {
-    label: "hacendado yoghurt",
+    label: "yoghurt cup",
     material: "plastic",
     brandName: "Mercadona",
   },
   {
-    label: "carrefour shampoo",
+    label: "shampoo bottle",
     material: "plastic",
     brandName: "Carrefour",
   },
   {
-    label: "pepsi bottle",
+    label: "soda bottle",
     material: "plastic",
     brandName: "pepsi",
   },

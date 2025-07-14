@@ -19,7 +19,6 @@ import { ChallengeWithProduct } from "@/app/brand-dashboard/challenges/[id]/page
 import {
   deleteChallenge,
   goToRewardForm,
-  publishChallenge,
 } from "@/app/brand-dashboard/challenges/[id]/actions";
 import { toast } from "sonner";
 import { redirect } from "next/navigation";
@@ -29,16 +28,6 @@ interface ChallengeDetailsProps {
 }
 
 export default function ChallengeDetails({ data }: ChallengeDetailsProps) {
-  async function handlePublish() {
-    const action = await publishChallenge(data.id);
-
-    if (action instanceof Error) {
-      toast.error(`An error occurred! Please try again. (${action})`);
-      return;
-    }
-    toast.success("Challenge is now available to users");
-  }
-
   async function handleDelete() {
     const action = await deleteChallenge(data.id);
 
@@ -143,13 +132,6 @@ export default function ChallengeDetails({ data }: ChallengeDetailsProps) {
         <div className="flex gap-4">
           <Button onClick={handleDelete} type="button" variant="destructive">
             Delete
-          </Button>
-          <Button
-            onClick={handlePublish}
-            type="button"
-            disabled={data.status === "active" ? true : false}
-          >
-            Publish
           </Button>
         </div>
       </div>
