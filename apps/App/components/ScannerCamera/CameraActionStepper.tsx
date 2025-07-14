@@ -39,7 +39,7 @@ export default function CameraActionStepper({
             </Text>
           </View>
         </ProgressStep>
-        <ProgressStep label="Pciture 1" removeBtnRow>
+        <ProgressStep label="Picture 1" removeBtnRow>
           <View style={{ alignItems: "center" }}>
             <Text className="text-slate-800 mb-3 text-lg text-center">
               You are in front of 🗑️{" "}
@@ -51,7 +51,7 @@ export default function CameraActionStepper({
             </Text>
           </View>
         </ProgressStep>
-        <ProgressStep label="Photo 2" removeBtnRow>
+        <ProgressStep label="Picture 2" removeBtnRow>
           <View style={{ alignItems: "center" }}>
             <Text className="text-slate-800 mb-3 text-lg text-center">
               Take a picture inside the bin once your waste is in

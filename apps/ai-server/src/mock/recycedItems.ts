@@ -17,6 +17,6 @@ export const MOCK_PRODUCTS = [
   {
     label: "soda bottle",
     material: "plastic",
-    brandName: "pepsi",
+    brandName: "Pepsi",
   },
 ];
