@@ -40,9 +40,9 @@ export default async function BrandDashboard() {
       <p className="text-lg text-gray-600 mb-6">
         You can now start to manage challenges and rewards
       </p>
-      <Button variant="destructive">
-        <Link href="/auth/logout">Logout</Link>
-      </Button>
+      <a href="/auth/logout">
+        <Button variant="destructive">Logout</Button>
+      </a>
     </div>
   );
 }

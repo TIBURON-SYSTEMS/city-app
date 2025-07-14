@@ -80,7 +80,7 @@ export function BrandNavUser({ user }: { user: UserWithBrand }) {
             <DropdownMenuSeparator />
             <DropdownMenuItem>
               <LogOut />
-              <Link href="/auth/logout">Log out</Link>
+              <a href="/auth/logout">Log out</a>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

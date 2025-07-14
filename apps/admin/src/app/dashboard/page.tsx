@@ -14,6 +14,7 @@ export default async function DashboardPage() {
     }
   }
 
+  // TODO: Substitue this with a query to the database
   const response = await fetch(
     `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/api/users`,
     {
