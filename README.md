@@ -77,6 +77,17 @@ Includes models like:
 
 ## 📝 Environment Setup
 
+**Database**
+This project uses PostgreSQL as its local database. To run the admin dashboard and mobile app locally, you need to install and start a local PostgreSQL database.
+
+Download and install Postgres.app from the official website, move the app to your /Applications folder and launch it:\
+https://www.postgresql.org/download/
+
+
+
+Follow this documentation, update your .env in apps/admin with the correct DATABASE_URL:\
+https://www.prisma.io/docs/getting-started/setup-prisma/start-from-scratch/relational-databases/connect-your-database-typescript-postgresql
+
 **Web Application**
 
 To run the web application locally, you need to install Node.js (LTS version) and Yarn.
