@@ -148,3 +148,4 @@ Run these commands from the root unless otherwise specified.
 ## 📧 Contact
 
 For demo or support, please contact the team.
+Denis
