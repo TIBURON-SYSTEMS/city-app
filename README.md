@@ -40,37 +40,36 @@ Includes models like:
   `UserRole` (`PARTICIPANT`, `BRAND`, `ADMIN`),  
   `BrandStatus` (`PENDING`, `ACTIVE`, `REJECTED`)
 
-- Rich relational design:  
-  - One-to-one (e.g. `User` → `Participant` or `Brand`)  
-  - Many-to-many (e.g. `ParticipantReward`, `ChallengeProduct`)  
-  - Time-based tracking with `createdAt`, `updatedAt` on all models  
+- Rich relational design:
+  - One-to-one (e.g. `User` → `Participant` or `Brand`)
+  - Many-to-many (e.g. `ParticipantReward`, `ChallengeProduct`)
+  - Time-based tracking with `createdAt`, `updatedAt` on all models
   - Composite keys and unique constraints to prevent duplicate participation
 
 > Full schema in `apps/admin/prisma/schema.prisma`
-
 
 ---
 
 ## 📱 Figma Prototypes
 
 - **User Story Mapping**  
-    Please refer to our 1-pager.
+   Please refer to our 1-pager.
 
 - **UI Wireframes**  
-    This project was developed without a design prototype.  
-    Initial wireframes were considered but later abandoned in favor of direct implementation and iterative development.
+   This project was developed without a design prototype.  
+   Initial wireframes were considered but later abandoned in favor of direct implementation and iterative development.
 
 ---
 
 ## 🛠 Tech Stack
 
-- **🧑‍🤝‍🧑 Monorepo Tooling**: Turborepo + Yarn Workspaces  
-- **📱 Participant App** (`apps/App`): Expo (React Native), TypeScript, Nativewind  
+- **🧑‍🤝‍🧑 Monorepo Tooling**: Turborepo + Yarn Workspaces
+- **📱 Participant App** (`apps/App`): Expo (React Native), TypeScript, Nativewind
 - **🖥️ Admin Brand Dashboard** (`apps/admin`): Next.js, React, TypeScript, Shadcn UI, TailwindCSS
 - **🧠 Mock AI Server** (`apps/ai-server`): Express.js, TypeScript
-- **🗄️ Database**: PostgreSQL + Prisma ORM  
-- **🔐 Authentication**: Auth0  
-- **📧 Notifications**: Courier  
+- **🗄️ Database**: PostgreSQL + Prisma ORM
+- **🔐 Authentication**: Auth0
+- **📧 Notifications**: Courier
 - **🚀 Deployment**: To be determined
 
 ---
@@ -83,8 +82,6 @@ This project uses PostgreSQL as its local database. To run the admin dashboard a
 Download and install Postgres.app from the official website, move the app to your /Applications folder and launch it:\
 https://www.postgresql.org/download/
 
-
-
 Follow this documentation, update your .env in apps/admin with the correct DATABASE_URL:\
 https://www.prisma.io/docs/getting-started/setup-prisma/start-from-scratch/relational-databases/connect-your-database-typescript-postgresql
 
@@ -93,18 +90,20 @@ https://www.prisma.io/docs/getting-started/setup-prisma/start-from-scratch/relat
 To run the web application locally, you need to install Node.js (LTS version) and Yarn.
 
 Download and install Node.js from the official website:  
-   👉 https://nodejs.org/en/download
+ 👉 https://nodejs.org/en/download
 
 Install Yarn (if not already installed):
-  ```bash
-  npm install -g yarn
-  ```
+
+```bash
+npm install -g yarn
+```
 
 Verify installation:
-  ```bash
-  node -v
-  yarn -v
-  ```
+
+```bash
+node -v
+yarn -v
+```
 
 **Expo Mobile Application**
 
@@ -135,7 +134,6 @@ Run these commands from the root unless otherwise specified.
 - `yarn build` - Build the server to `dist/`
 - `yarn start` - Run the built server from `dist/`
 
-
 ---
 
 ## 📌 Notes
@@ -149,3 +147,4 @@ Run these commands from the root unless otherwise specified.
 
 For demo or support, please contact the team.
 Denis
+https://www.loom.com/share/9830d1868c214aafb11b9caee1d9674b?sid=aaa27b6e-d5a7-4dda-9b69-d1de37f2d428
