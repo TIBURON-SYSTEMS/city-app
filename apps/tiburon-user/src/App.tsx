@@ -1,43 +1,13 @@
-import {
-  Card,
-  CardAction,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import BottomNav from "./components/BottomNav";
+import ChallengesPage from "./components/ChallengesList";
 
 function App() {
   return (
-    <div className="border-red-500">
-      <Card>
-        <CardHeader>
-          <CardTitle>🚀 On Going Challenges</CardTitle>
-          <CardDescription>Card Description</CardDescription>
-          <CardAction>Card Action</CardAction>
-        </CardHeader>
-        <CardContent>
-          <p>Card Content</p>
-        </CardContent>
-        <CardFooter>
-          <p>Card Footer</p>
-        </CardFooter>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>🚀 Available Challenges</CardTitle>
-          <CardDescription>Card Description</CardDescription>
-          <CardAction>Card Action</CardAction>
-        </CardHeader>
-        <CardContent>
-          <p>Card Content</p>
-        </CardContent>
-        <CardFooter>
-          <p>Card Footer</p>
-        </CardFooter>
-      </Card>
+    <div className="flex flex-col min-h-screen">
+      <div className="flex-1">
+        <ChallengesPage />
+      </div>
+      <BottomNav />
     </div>
   );
 }
