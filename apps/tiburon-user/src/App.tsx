@@ -1,12 +1,16 @@
+import { useState } from "react";
 import BottomNav from "./components/BottomNav";
-import ChallengesPage from "./components/ChallengesList";
+import { NavItemType } from "./types/nav";
+import MainContent from "./components/MainContent";
 
 function App() {
+  const [currentPage, setCurrentPage] = useState<NavItemType>(
+    NavItemType.CHALLENGES
+  );
+
   return (
     <div className="flex flex-col min-h-screen">
-      <div className="flex-1">
-        <ChallengesPage />
-      </div>
+      <MainContent status={currentPage} />
       <BottomNav />
     </div>
   );
