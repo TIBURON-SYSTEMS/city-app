@@ -1,4 +1,4 @@
-export enum NavItemType {
+export enum PageContent {
   CHALLENGES = "Challenges",
   CAMERA = "Camera",
   MAP = "Map",

@@ -1,16 +1,17 @@
-import { useState } from "react";
-import BottomNav from "./components/BottomNav";
-import { NavItemType } from "./types/nav";
+import BottomNav from "./components/Nav/BottomNav";
 import MainContent from "./components/MainContent";
+import Header from "./components/Header";
+import Logo from "./components/Logo";
+import { useCurrentContent } from "./hooks/useCurrentContent";
 
 function App() {
-  const [currentPage, setCurrentPage] = useState<NavItemType>(
-    NavItemType.CHALLENGES
-  );
+  const { currentContent } = useCurrentContent();
 
   return (
     <div className="flex flex-col min-h-screen">
-      <MainContent status={currentPage} />
+      <Logo />
+      <Header status={currentContent} />
+      <MainContent status={currentContent} />
       <BottomNav />
     </div>
   );

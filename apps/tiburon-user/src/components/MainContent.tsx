@@ -1,10 +1,16 @@
-import { NavItemType } from "@/types/nav";
-import ChallengesList from "./ChallengesList";
+import { PageContent } from "@/types/nav";
+import ChallengesList from "./Challenges/ChallengesList";
+import Map from "../components/Map/Map";
 
 interface MainContentProps {
-  status: NavItemType;
+  status: PageContent;
 }
 
 export default function MainContent({ status }: MainContentProps) {
-  return <div>{status === NavItemType.CHALLENGES && <ChallengesList />}</div>;
+  return (
+    <div>
+      {status === PageContent.CHALLENGES && <ChallengesList />}
+      {status === PageContent.MAP && <Map />}
+    </div>
+  );
 }

@@ -24,6 +24,7 @@
   "workspaces": [
     "apps/*",
     "!apps/App",
+    "!apps/ai-server",
     "packages/*"
   ]
 }
