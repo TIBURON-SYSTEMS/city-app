@@ -15,7 +15,11 @@ export default function Camera() {
       try {
         // 请求视频流的 constraints
         const constraints: MediaStreamConstraints = {
-          video: true,
+          video: {
+            // "environment" 表示后置摄像头 (对着环境/外面)
+            // "user" 表示前置摄像头 (对着用户/人脸)
+            facingMode: "environment",
+          },
           audio: false,
         };
 
