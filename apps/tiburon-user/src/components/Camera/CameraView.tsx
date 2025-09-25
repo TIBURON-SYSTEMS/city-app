@@ -128,7 +128,7 @@ export default function CameraView() {
         </div>
 
         {/* 拍照按钮 */}
-        <div className="absolute bottom-24 left-1/2 -translate-x-1/2">
+        <div className="absolute bottom-32 left-1/2 -translate-x-1/2">
           <div className="w-20 h-20 bg-white/70 backdrop-blur-md rounded-full shadow-lg flex items-center justify-center active:scale-95 transition">
             <Camera className="w-10 h-10 text-gray-800" />
           </div>
