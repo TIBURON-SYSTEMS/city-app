@@ -102,10 +102,9 @@ export default function CameraView() {
     setIsCameraOpen(false);
     setCurrentContent(PageContent.CHALLENGES);
   }
-
   return (
     isCameraOpen && (
-      <div className="relative w-screen h-screen overflow-hidden z-50">
+      <div className="fixed inset-0 w-screen h-screen overflow-hidden z-50 flex flex-col">
         {error && (
           <p className="absolute top-4 left-1/2 -translate-x-1/2 z-20 text-red-600 bg-white p-2 rounded">
             {error}
@@ -117,19 +116,21 @@ export default function CameraView() {
           autoPlay
           playsInline
           muted
-          className="fixed inset-0 w-full h-full object-cover z-0"
+          className="absolute inset-0 w-full h-full object-cover z-0"
         />
 
+        {/* 返回按钮 */}
         <div
-          className="absolute top-8 left-8 w-8 h-8 bg-white/70 backdrop-blur-md rounded-full shadow-md flex items-center justify-center active:scale-95 transition cursor-pointer"
+          className="absolute top-6 left-6 w-12 h-12 bg-white/70 backdrop-blur-md rounded-full shadow-md flex items-center justify-center active:scale-95 transition cursor-pointer"
           onClick={handleCloseCamera}
         >
           <ChevronLeft className="w-6 h-6 text-gray-800" />
         </div>
 
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2">
-          <div className="w-15 h-15 bg-white/50 rounded-full shadow-md flex items-center justify-center active:scale-95 transition">
-            <Camera className="w-10 h-10 text-gray-700" />
+        {/* 拍照按钮 */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2">
+          <div className="w-20 h-20 bg-white/70 backdrop-blur-md rounded-full shadow-lg flex items-center justify-center active:scale-95 transition">
+            <Camera className="w-10 h-10 text-gray-800" />
           </div>
         </div>
       </div>
