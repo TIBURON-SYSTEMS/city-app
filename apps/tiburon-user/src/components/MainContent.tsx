@@ -1,7 +1,7 @@
 import { PageContent } from "@/types/nav";
 import ChallengesList from "./Challenges/ChallengesList";
 import Map from "../components/Map/Map";
-import Camera from "./Camera/Camera";
+import Camera from "./Camera/CameraView";
 
 interface MainContentProps {
   status: PageContent;

@@ -1,15 +1,36 @@
+import { useCurrentContent } from "@/hooks/useCurrentContent";
+import { PageContent } from "@/types/nav";
+import { Camera, ChevronLeft } from "lucide-react";
 import { useRef, useEffect, useState } from "react";
 
-export default function Camera() {
+export default function CameraView() {
+  const { setCurrentContent } = useCurrentContent();
+
   // 1. **videoRef 的类型定义**:
   // 我们明确告诉 TypeScript，这个 ref 将连接到一个 HTMLVideoElement，
   // 并且初始值是 null。
   const videoRef = useRef<HTMLVideoElement>(null);
 
+  const [isCameraOpen, setIsCameraOpen] = useState(true);
   const [error, setError] = useState<string>("");
 
+  function stopCamera() {
+    const element = videoRef.current;
+
+    // 必须检查 videoRef.current 是否存在，以及 srcObject 是否被设置
+    if (element && element.srcObject) {
+      // 断言 srcObject 是 MediaStream 类型
+      const stream = element.srcObject as MediaStream;
+
+      // 停止所有的 tracks
+      stream.getTracks().forEach((track) => track.stop());
+      element.srcObject = null;
+      console.log("Camera stream stopped.");
+    }
+  }
+
   useEffect(() => {
-    const currentVideoElement = videoRef.current;
+    // const currentVideoElement = videoRef.current;
 
     const getCameraStream = async () => {
       try {
@@ -26,6 +47,8 @@ export default function Camera() {
         // 尝试获取媒体流
         const stream: MediaStream =
           await navigator.mediaDevices.getUserMedia(constraints);
+
+        const currentVideoElement = videoRef.current;
 
         // 2. **Ref 的类型检查**:
         // 在访问 videoRef.current 之前，必须确保它存在且是一个 HTMLVideoElement 实例
@@ -71,31 +94,45 @@ export default function Camera() {
     }
 
     // 清理函数：在组件卸载时停止视频流
-    return () => {
-      // 必须检查 videoRef.current 是否存在，以及 srcObject 是否被设置
-      if (currentVideoElement && currentVideoElement.srcObject) {
-        // 断言 srcObject 是 MediaStream 类型
-        const stream = currentVideoElement.srcObject as MediaStream;
-
-        // 停止所有的 tracks
-        stream.getTracks().forEach((track) => track.stop());
-        console.log("Camera stream stopped.");
-      }
-    };
+    return () => stopCamera();
   }, []);
 
-  return (
-    <div>
-      {error && <p style={{ color: "red" }}>{error}</p>}
+  function handleCloseCamera() {
+    stopCamera();
+    setIsCameraOpen(false);
+    setCurrentContent(PageContent.CHALLENGES);
+  }
 
-      {/* video 标签，和之前一样，使用 playsInline 是移动端关键 */}
-      <video
-        ref={videoRef}
-        autoPlay
-        playsInline
-        muted
-        style={{ width: "100%", maxWidth: "400px", border: "1px solid black" }}
-      />
-    </div>
+  return (
+    isCameraOpen && (
+      <div className="relative w-screen h-screen overflow-hidden z-50">
+        {error && (
+          <p className="absolute top-4 left-1/2 -translate-x-1/2 z-20 text-red-600 bg-white p-2 rounded">
+            {error}
+          </p>
+        )}
+
+        <video
+          ref={videoRef}
+          autoPlay
+          playsInline
+          muted
+          className="fixed inset-0 w-full h-full object-cover z-0"
+        />
+
+        <div
+          className="absolute top-8 left-8 w-8 h-8 bg-white/70 backdrop-blur-md rounded-full shadow-md flex items-center justify-center active:scale-95 transition cursor-pointer"
+          onClick={handleCloseCamera}
+        >
+          <ChevronLeft className="w-6 h-6 text-gray-800" />
+        </div>
+
+        <div className="absolute bottom-10 left-1/2 -translate-x-1/2">
+          <div className="w-15 h-15 bg-white/50 rounded-full shadow-md flex items-center justify-center active:scale-95 transition">
+            <Camera className="w-10 h-10 text-gray-700" />
+          </div>
+        </div>
+      </div>
+    )
   );
 }
