@@ -1,5 +1,6 @@
 import { useCurrentContent } from "@/hooks/useCurrentContent";
 import { PageContent } from "@/types/nav";
+import { PhotoStage } from "@/types/photostage";
 import { Camera, ChevronLeft } from "lucide-react";
 import { useRef, useEffect, useState } from "react";
 
@@ -10,24 +11,15 @@ export default function CameraView() {
   // 我们明确告诉 TypeScript，这个 ref 将连接到一个 HTMLVideoElement，
   // 并且初始值是 null。
   const videoRef = useRef<HTMLVideoElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const [isCameraOpen, setIsCameraOpen] = useState(true);
   const [error, setError] = useState<string>("");
-
-  function stopCamera() {
-    const element = videoRef.current;
-
-    // 必须检查 videoRef.current 是否存在，以及 srcObject 是否被设置
-    if (element && element.srcObject) {
-      // 断言 srcObject 是 MediaStream 类型
-      const stream = element.srcObject as MediaStream;
-
-      // 停止所有的 tracks
-      stream.getTracks().forEach((track) => track.stop());
-      element.srcObject = null;
-      console.log("Camera stream stopped.");
-    }
-  }
+  const [photoStage, setPhotoStage] = useState<PhotoStage>(
+    PhotoStage.BEFORE_FIRST
+  );
+  const [photoFirst, setPhotoFirst] = useState<string | null>(null);
+  const [photoSecond, setPhotoSecond] = useState<string | null>(null);
 
   useEffect(() => {
     // const currentVideoElement = videoRef.current;
@@ -97,11 +89,61 @@ export default function CameraView() {
     return () => stopCamera();
   }, []);
 
+  function stopCamera() {
+    const element = videoRef.current;
+
+    // 必须检查 videoRef.current 是否存在，以及 srcObject 是否被设置
+    if (element && element.srcObject) {
+      // 断言 srcObject 是 MediaStream 类型
+      const stream = element.srcObject as MediaStream;
+
+      // 停止所有的 tracks
+      stream.getTracks().forEach((track) => track.stop());
+      element.srcObject = null;
+      console.log("Camera stream stopped.");
+    }
+  }
+
   function handleCloseCamera() {
     stopCamera();
     setIsCameraOpen(false);
     setCurrentContent(PageContent.CHALLENGES);
   }
+
+  // **拍照功能**
+  function handleTakePhoto() {
+    const video = videoRef.current;
+    const canvas = canvasRef.current;
+
+    if (!video || !canvas) return;
+
+    const context = canvas.getContext("2d");
+    if (!context) return;
+
+    // 設置 canvas 大小與 video 同步
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+
+    // 把 video 當前影像繪製到 canvas
+    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+    // 取得 base64 圖片
+    const imageDataUrl = canvas.toDataURL("image/png");
+    console.log("拍到的照片:", imageDataUrl);
+
+    if (photoStage === PhotoStage.BEFORE_FIRST) {
+      setPhotoFirst(imageDataUrl);
+      setPhotoStage(PhotoStage.AFTER_FIRST);
+    }
+
+    if (photoStage === PhotoStage.AFTER_FIRST) {
+      setPhotoSecond(imageDataUrl);
+      setPhotoStage(PhotoStage.AFTER_SECOND);
+    }
+  }
+
+  function handleSubmit() {}
+
   return (
     isCameraOpen && (
       <div className="fixed inset-0 w-screen h-screen overflow-hidden z-50 flex flex-col">
@@ -119,6 +161,24 @@ export default function CameraView() {
           className="absolute inset-0 w-full h-full object-cover z-0"
         />
 
+        <canvas ref={canvasRef} className="hidden" />
+
+        {photoFirst && (
+          <img
+            src={photoFirst}
+            alt="Captured"
+            className="absolute top-6 right-32 w-24 h-36 object-cover rounded-sm shadow-lg"
+          />
+        )}
+
+        {photoSecond && (
+          <img
+            src={photoSecond}
+            alt="Captured"
+            className="absolute top-6 right-6 w-24 h-36 object-cover rounded-sm shadow-lg"
+          />
+        )}
+
         {/* 返回按钮 */}
         <div
           className="absolute top-6 left-6 w-12 h-12 bg-white/70 backdrop-blur-md rounded-full shadow-md flex items-center justify-center active:scale-95 transition cursor-pointer"
@@ -127,11 +187,25 @@ export default function CameraView() {
           <ChevronLeft className="w-6 h-6 text-gray-800" />
         </div>
 
-        {/* 拍照按钮 */}
         <div className="absolute bottom-32 left-1/2 -translate-x-1/2">
-          <div className="w-20 h-20 bg-white/70 backdrop-blur-md rounded-full shadow-lg flex items-center justify-center active:scale-95 transition">
-            <Camera className="w-10 h-10 text-gray-800" />
-          </div>
+          {photoStage !== PhotoStage.AFTER_SECOND && (
+            <div
+              className="w-20 h-20 bg-white/70 backdrop-blur-md rounded-full shadow-lg flex items-center justify-center active:scale-95 transition"
+              onClick={handleTakePhoto}
+            >
+              <Camera className="w-10 h-10 text-gray-800" />
+            </div>
+          )}
+
+          {photoStage === PhotoStage.AFTER_SECOND && (
+            <button
+              onClick={handleSubmit}
+              className="px-8 py-3 bg-white/70 rounded-full shadow-lg 
+               active:scale-95 transition font-medium tracking-wide"
+            >
+              SUBMIT
+            </button>
+          )}
         </div>
       </div>
     )
