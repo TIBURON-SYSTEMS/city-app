@@ -1,7 +1,8 @@
 import { useCurrentContent } from "@/hooks/useCurrentContent";
+import { compareImages } from "@/lib/compareImages";
 import { PageContent } from "@/types/nav";
 import { PhotoStage } from "@/types/photostage";
-import { Camera, ChevronLeft } from "lucide-react";
+import { Camera, ChevronLeft, Loader2 } from "lucide-react";
 import { useRef, useEffect, useState } from "react";
 
 export default function CameraView() {
@@ -20,6 +21,7 @@ export default function CameraView() {
   );
   const [photoFirst, setPhotoFirst] = useState<string | null>(null);
   const [photoSecond, setPhotoSecond] = useState<string | null>(null);
+  const [resultText, setResultText] = useState<string>("");
 
   useEffect(() => {
     // const currentVideoElement = videoRef.current;
@@ -129,7 +131,7 @@ export default function CameraView() {
 
     // 取得 base64 圖片
     const imageDataUrl = canvas.toDataURL("image/png");
-    console.log("拍到的照片:", imageDataUrl);
+    // console.log("拍到的照片:", imageDataUrl);
 
     if (photoStage === PhotoStage.BEFORE_FIRST) {
       setPhotoFirst(imageDataUrl);
@@ -142,72 +144,117 @@ export default function CameraView() {
     }
   }
 
-  function handleSubmit() {}
+  async function handleSubmit() {
+    if (!photoFirst || !photoSecond) return;
+
+    setPhotoStage(PhotoStage.SUBMITTING);
+    const data = await compareImages(photoFirst, photoSecond);
+    console.log(data);
+
+    setResultText(data);
+    setPhotoStage(PhotoStage.FINISHED);
+    stopCamera();
+    setIsCameraOpen(false);
+  }
+
+  function handleFinishCompare() {
+    setCurrentContent(PageContent.CHALLENGES);
+  }
 
   return (
-    isCameraOpen && (
-      <div className="fixed inset-0 w-screen h-screen overflow-hidden z-50 flex flex-col">
-        {error && (
-          <p className="absolute top-4 left-1/2 -translate-x-1/2 z-20 text-red-600 bg-white p-2 rounded">
-            {error}
-          </p>
-        )}
+    <>
+      {isCameraOpen && (
+        <div className="fixed inset-0 w-screen h-screen overflow-hidden z-50 flex flex-col">
+          {error && (
+            <p className="absolute top-4 left-1/2 -translate-x-1/2 z-20 text-red-600 bg-white p-2 rounded">
+              {error}
+            </p>
+          )}
 
-        <video
-          ref={videoRef}
-          autoPlay
-          playsInline
-          muted
-          className="absolute inset-0 w-full h-full object-cover z-0"
-        />
-
-        <canvas ref={canvasRef} className="hidden" />
-
-        {photoFirst && (
-          <img
-            src={photoFirst}
-            alt="Captured"
-            className="absolute top-6 right-32 w-24 h-36 object-cover rounded-sm shadow-lg"
+          <video
+            ref={videoRef}
+            autoPlay
+            playsInline
+            muted
+            className="absolute inset-0 w-full h-full object-cover z-0"
           />
-        )}
 
-        {photoSecond && (
-          <img
-            src={photoSecond}
-            alt="Captured"
-            className="absolute top-6 right-6 w-24 h-36 object-cover rounded-sm shadow-lg"
-          />
-        )}
+          <canvas ref={canvasRef} className="hidden" />
 
-        {/* 返回按钮 */}
-        <div
-          className="absolute top-6 left-6 w-12 h-12 bg-white/70 backdrop-blur-md rounded-full shadow-md flex items-center justify-center active:scale-95 transition cursor-pointer"
-          onClick={handleCloseCamera}
-        >
-          <ChevronLeft className="w-6 h-6 text-gray-800" />
-        </div>
+          {photoFirst && (
+            <img
+              src={photoFirst}
+              alt="Captured"
+              className="absolute top-6 right-32 w-24 h-36 object-cover rounded-sm shadow-lg"
+            />
+          )}
 
-        <div className="absolute bottom-32 left-1/2 -translate-x-1/2">
-          {photoStage !== PhotoStage.AFTER_SECOND && (
-            <div
-              className="w-20 h-20 bg-white/70 backdrop-blur-md rounded-full shadow-lg flex items-center justify-center active:scale-95 transition"
-              onClick={handleTakePhoto}
-            >
-              <Camera className="w-10 h-10 text-gray-800" />
+          {photoSecond && (
+            <img
+              src={photoSecond}
+              alt="Captured"
+              className="absolute top-6 right-6 w-24 h-36 object-cover rounded-sm shadow-lg"
+            />
+          )}
+
+          {photoStage === PhotoStage.SUBMITTING && (
+            <div className="fixed inset-0 flex items-center justify-center bg-black/30 z-50">
+              <div className="w-16 h-16 flex items-center justify-center rounded-full bg-white/70">
+                <Loader2 className="h-8 w-8 animate-spin text-black" />
+              </div>
             </div>
           )}
 
-          {photoStage === PhotoStage.AFTER_SECOND && (
-            <button
-              onClick={handleSubmit}
-              className="px-8 py-3 bg-white/70 rounded-full shadow-lg 
-               active:scale-95 transition font-medium tracking-wide"
-            >
-              SUBMIT
-            </button>
-          )}
+          {/* 返回按钮 */}
+          <div
+            className="absolute top-6 left-6 w-12 h-12 bg-white/70 backdrop-blur-md rounded-full shadow-md flex items-center justify-center active:scale-95 transition cursor-pointer"
+            onClick={handleCloseCamera}
+          >
+            <ChevronLeft className="w-6 h-6 text-gray-800" />
+          </div>
+
+          <div className="absolute bottom-32 left-1/2 -translate-x-1/2">
+            {(photoStage === PhotoStage.BEFORE_FIRST ||
+              photoStage === PhotoStage.AFTER_FIRST) && (
+              <div
+                className="w-20 h-20 bg-white/70 backdrop-blur-md rounded-full shadow-lg flex items-center justify-center active:scale-95 transition"
+                onClick={handleTakePhoto}
+              >
+                <Camera className="w-10 h-10 text-gray-800" />
+              </div>
+            )}
+
+            {photoStage === PhotoStage.AFTER_SECOND && (
+              <button
+                onClick={handleSubmit}
+                className="px-8 py-3 bg-white/70 rounded-full shadow-lg 
+             active:scale-95 transition font-medium tracking-wide 
+             relative -translate-y-1/2"
+              >
+                SUBMIT
+              </button>
+            )}
+          </div>
         </div>
-      </div>
-    )
+      )}
+
+      {!isCameraOpen &&
+        photoStage === PhotoStage.FINISHED &&
+        resultText !== "" && (
+          <div className="fixed inset-0 flex flex-col items-center justify-center bg-white z-50">
+            <div className="max-w-lg p-6 text-center">
+              <h2 className="text-xl font-bold mb-4">Compare Result</h2>
+              <p className="text-gray-800 whitespace-pre-line">{resultText}</p>
+            </div>
+
+            <button
+              className="mt-6 px-6 py-2 bg-black text-white rounded-full shadow-md active:scale-95 transition"
+              onClick={handleFinishCompare}
+            >
+              OK
+            </button>
+          </div>
+        )}
+    </>
   );
 }
