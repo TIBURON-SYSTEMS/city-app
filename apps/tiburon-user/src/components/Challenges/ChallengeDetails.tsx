@@ -1,62 +1,63 @@
 import api from "@/api/api";
-import { useAuth0 } from "@auth0/auth0-react";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+// import { useAuth0 } from "@auth0/auth0-react";
+// import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { Link, useParams, useRouter } from "@tanstack/react-router";
 import { CircleArrowLeft } from "lucide-react";
 // import { challenges } from "@/mocks/challenges";
 
 export default function ChallengeDetails() {
-  const { user, isAuthenticated } = useAuth0();
+  // const { user, isAuthenticated } = useAuth0();
   const router = useRouter();
   const { challengeId } = useParams({ from: "/challenge/$challengeId" });
-  const queryClient = useQueryClient();
+  // const queryClient = useQueryClient();
   // const currentChallenge = challenges.find(
   //   (challenge) => challenge.id === challengeId
   // );
 
-  const { data: participant } = useQuery({
-    queryKey: ["user"],
-    queryFn: () => api.getUserByEmail(user?.email),
-    enabled: isAuthenticated,
-  });
+  // const { data: participant } = useQuery({
+  //   queryKey: ["user"],
+  //   queryFn: () => api.getUserByEmail(user?.email),
+  //   enabled: isAuthenticated,
+  // });
 
   const { data: currentChallenge } = useQuery({
     queryKey: ["challenge", challengeId],
     queryFn: () => api.getChallengeById(challengeId as string),
   });
 
-  const { data: participationData } = useQuery({
-    queryKey: ["progress", participant?.participantId, challengeId as string],
-    queryFn: () =>
-      api.getChallengeProgress(
-        participant?.participantId,
-        challengeId as string
-      ),
-  });
+  // const { data: participationData } = useQuery({
+  //   queryKey: ["progress", participant?.participantId, challengeId as string],
+  //   queryFn: () =>
+  //     api.getChallengeProgress(
+  //       participant?.participantId,
+  //       challengeId as string
+  //     ),
+  // });
 
-  const participationMutation = useMutation({
-    mutationFn: () =>
-      api.createParticipation(
-        participant?.participantId,
-        challengeId as string
-      ),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["OnGoingAvailableChallenges", participant?.participantId],
-      });
-      queryClient.invalidateQueries({
-        queryKey: [
-          "progress",
-          participant?.participantId,
-          challengeId as string,
-        ],
-      });
-    },
-  });
+  // const participationMutation = useMutation({
+  //   mutationFn: () =>
+  //     api.createParticipation(
+  //       participant?.participantId,
+  //       challengeId as string
+  //     ),
+  //   onSuccess: () => {
+  //     queryClient.invalidateQueries({
+  //       queryKey: ["OnGoingAvailableChallenges", participant?.participantId],
+  //     });
+  //     queryClient.invalidateQueries({
+  //       queryKey: [
+  //         "progress",
+  //         participant?.participantId,
+  //         challengeId as string,
+  //       ],
+  //     });
+  //   },
+  // });
 
-  async function handleParticipatePress() {
-    participationMutation.mutate();
-  }
+  // async function handleParticipatePress() {
+  //   participationMutation.mutate();
+  // }
 
   if (!currentChallenge) return;
 
