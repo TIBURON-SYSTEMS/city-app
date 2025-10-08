@@ -62,9 +62,9 @@ export default function ChallengesList() {
               {loadingParticipant || loadingOAC ? (
                 <LoadingBlock title="" />
               ) : errorParticipant ? (
-                <ErrorBlock text="無法取得使用者資料，請稍後再試。" />
+                <ErrorBlock text="Can not access to user data, please try it later." />
               ) : errorOAC ? (
-                <ErrorBlock text="載入進行中挑戰失敗，請稍後再試。" />
+                <ErrorBlock text="Loading ongoing challenges failed, please try it later." />
               ) : onGoingAvailable?.ongoingChallengesRes?.length ? (
                 <div className="space-y-3">
                   {onGoingAvailable.ongoingChallengesRes.map((challenge) => (
@@ -76,7 +76,7 @@ export default function ChallengesList() {
                   ))}
                 </div>
               ) : (
-                <EmptyBlock text="目前沒有進行中的挑戰" />
+                <EmptyBlock text="No ongoing challenges now." />
               )}
             </section>
 
@@ -90,7 +90,7 @@ export default function ChallengesList() {
                   <h2 className="text-2xl mb-4 mt-2 text-slate-900">
                     ✅ Completed Challenges
                   </h2>
-                  <div className="space-y-3">
+                  <div className="flex flex-col space-y-3 gap-2">
                     {list.map((challenge) => (
                       <ChallengeCard key={challenge.id} challenge={challenge} />
                     ))}
@@ -107,17 +107,17 @@ export default function ChallengesList() {
               {loadingParticipant || loadingOAC ? (
                 <LoadingBlock title="" />
               ) : errorParticipant ? (
-                <ErrorBlock text="無法取得使用者資料，請稍後再試。" />
+                <ErrorBlock text="Can not access to user data, please try it later." />
               ) : errorOAC ? (
-                <ErrorBlock text="載入可參與挑戰失敗，請稍後再試。" />
+                <ErrorBlock text="Loading available challenges failed, please try it later." />
               ) : onGoingAvailable?.availableChallengesRes?.length ? (
-                <div className="space-y-3">
+                <div className="flex flex-col space-y-3 gap-2">
                   {onGoingAvailable.availableChallengesRes.map((challenge) => (
                     <ChallengeCard key={challenge.id} challenge={challenge} />
                   ))}
                 </div>
               ) : (
-                <EmptyBlock text="目前沒有可參與的挑戰" />
+                <EmptyBlock text="No available challenges now." />
               )}
             </section>
           </>
@@ -125,7 +125,7 @@ export default function ChallengesList() {
           // 未登入，顯示所有挑戰
           <section>
             {loadingAll ? (
-              <LoadingBlock title="" />
+              <LoadingBlock title="Loading..." />
             ) : errorAll ? (
               <ErrorBlock text="Loading challenges failed, please try it later." />
             ) : allChallenges?.length ? (
@@ -135,7 +135,7 @@ export default function ChallengesList() {
                 ))}
               </div>
             ) : (
-              <EmptyBlock text="No challenges available now." />
+              <EmptyBlock text="No available challenges now." />
             )}
           </section>
         )}
@@ -143,74 +143,3 @@ export default function ChallengesList() {
     </div>
   );
 }
-
-// import { ChevronRight } from "lucide-react";
-// // import { challenges } from "../../mocks/challenges";
-// import { Link } from "@tanstack/react-router";
-// import { useAuth0 } from "@auth0/auth0-react";
-// import { useQuery } from "@tanstack/react-query";
-// import api from "@/api/api";
-
-// export default function ChallengesList() {
-//   const { user, isAuthenticated } = useAuth0();
-
-//   //get participant id
-//   const { data: participant } = useQuery({
-//     queryKey: ["user"],
-//     queryFn: () => api.getUserByEmail(user?.email),
-//     enabled: !!user,
-//   });
-
-//   //get ongoing and available challenges
-//   const { data: onGoingAvailableChallenges } = useQuery({
-//     queryKey: ["OnGoingAvailableChallenges", participant?.participantId],
-//     queryFn: () =>
-//       api.getOnGoingAvailableChallenges(participant?.participantId),
-//     enabled: !!participant,
-//   });
-
-//   //get all challenges
-//   const { data: challenges } = useQuery({
-//     queryKey: ["challenges"],
-//     queryFn: api.getChallenges,
-//   });
-
-//   if (!challenges) return;
-
-//   return (
-//     <div className="h-full bg-gray-50 flex flex-col gap-4">
-//       <main className="flex flex-col gap-4 flex-1 px-5 py-2 space-y-3">
-//         {challenges.map((challenge) => (
-//           <Link
-//             to="/challenge/$challengeId"
-//             params={{ challengeId: challenge.id.toString() }}
-//             key={challenge.id}
-//           >
-//             <div className="border border-gray-200 rounded-xl p-5 bg-white flex items-center justify-between cursor-pointer hover:bg-gray-50 transition-all duration-200 shadow-sm hover:shadow-md">
-//               <div className="flex-1">
-//                 <h2 className="text-lg font-bold text-gray-900 mb-1 leading-tight">
-//                   {challenge.label}
-//                 </h2>
-//                 <p className="text-gray-500 text-sm mb-3 font-medium">
-//                   by {challenge.brandName}
-//                 </p>
-//                 <div className="flex flex-wrap gap-2">
-//                   {challenge.rewards.map((reward, index) => (
-//                     <span
-//                       key={index}
-//                       className="px-3 py-1.5 bg-gray-100 text-gray-600 rounded-full text-xs font-medium border border-gray-200 tracking-wide"
-//                     >
-//                       {reward.label}
-//                     </span>
-//                   ))}
-//                 </div>
-//               </div>
-
-//               <ChevronRight className="w-5 h-5 text-gray-400 ml-4 flex-shrink-0" />
-//             </div>
-//           </Link>
-//         ))}
-//       </main>
-//     </div>
-//   );
-// }

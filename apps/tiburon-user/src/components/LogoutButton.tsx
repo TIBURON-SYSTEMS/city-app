@@ -5,6 +5,7 @@ const LogoutButton = () => {
 
   return (
     <button
+      className="border border-black text-black bg-white px-5 py-1 rounded-md hover:bg-black hover:text-white transition-colors"
       onClick={() =>
         logout({ logoutParams: { returnTo: window.location.origin } })
       }
