@@ -2,7 +2,7 @@ import api from "@/api/api";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useParams, useRouter } from "@tanstack/react-router";
-import BackButton from "../BackButton";
+import BackButton from "../Buttons/BackButton";
 
 export default function RewardDetails() {
   const { rewardId } = useParams({ from: "/reward/$rewardId" });

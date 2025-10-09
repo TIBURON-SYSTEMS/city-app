@@ -1,7 +1,7 @@
 import api from "@/api/api";
 import { useQuery } from "@tanstack/react-query";
 import { useParams } from "@tanstack/react-router";
-import BackButton from "../BackButton";
+import BackButton from "../Buttons/BackButton";
 
 export default function BrandDetails() {
   const { brandId } = useParams({ from: "/brand/$brandId" });

@@ -165,13 +165,7 @@ export default function CameraView() {
     setCurrentContent(PageContent.CHALLENGES);
   }
 
-  if (!isAuthenticated)
-    return (
-      <div className="w-full h-dvh flex flex-col gap-4 justify-center items-center">
-        <p className="text-xl">Please login in first.</p>
-        <LoginButton />
-      </div>
-    );
+  if (!isAuthenticated) return <LoginButton />;
 
   return (
     <>

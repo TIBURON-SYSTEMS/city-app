@@ -1,6 +1,6 @@
 import BottomNav from "./components/Nav/BottomNav";
 import MainContent from "./components/MainContent";
-import Header from "./components/Header";
+import Header from "./components/Header/Header";
 import { useCurrentContent } from "./hooks/useCurrentContent";
 
 function App() {

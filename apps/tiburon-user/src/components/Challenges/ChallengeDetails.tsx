@@ -2,9 +2,11 @@ import api from "@/api/api";
 import { useAuth0 } from "@auth0/auth0-react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link, useParams } from "@tanstack/react-router";
-import LoginButton from "../LoginButton";
-import ParticipateButton from "../ParticipateButton";
-import BackButton from "../BackButton";
+import LoginButton from "../Buttons/LoginButton";
+import ParticipateButton from "../Buttons/ParticipateButton";
+import BackButton from "../Buttons/BackButton";
+import ChallengeProgress from "./ChallengeProgess";
+import moment from "moment";
 
 export default function ChallengeDetails() {
   const { user, isAuthenticated } = useAuth0();
@@ -69,7 +71,7 @@ export default function ChallengeDetails() {
           {isAuthenticated &&
             participant &&
             !participationData?.isParticipating && (
-              <ParticipateButton onClick={() => handleParticipatePress} />
+              <ParticipateButton onClick={handleParticipatePress} />
             )}
         </div>
 
@@ -112,6 +114,34 @@ export default function ChallengeDetails() {
               </Link>
             ))}
           </div>
+        </div>
+
+        <div className="flex flex-col items-start w-full">
+          <div>
+            <div className="text-slate-900 text-base font-semibold">
+              Completion Goal
+            </div>
+            <p>{`Recycle ${currentChallenge.goal} ${currentChallenge.productName}s`}</p>
+          </div>
+
+          {participationData && participationData?.participation?.completed && (
+            <p>
+              Completed on{" "}
+              {moment(participationData.participation.updatedAt).format(
+                "MMMM Do YY"
+              )}
+            </p>
+          )}
+
+          {participationData &&
+            !participationData?.participation?.completed && (
+              <ChallengeProgress
+                heading={true}
+                amount={participationData.participation?.amount}
+                goal={currentChallenge.goal}
+                productName={currentChallenge.productName}
+              />
+            )}
         </div>
       </div>
     </div>

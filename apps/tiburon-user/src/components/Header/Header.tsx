@@ -1,8 +1,7 @@
 import { PageContent } from "@/types/nav";
 import Logo from "./Logo";
 import { useAuth0 } from "@auth0/auth0-react";
-import LoginButton from "./LoginButton";
-import LogoutButton from "./LogoutButton";
+import LoginButton from "../Buttons/LoginButton";
 
 interface HeaderProps {
   status: PageContent;
@@ -24,12 +23,14 @@ export default function Header({ status }: HeaderProps) {
           </h1>
         </div>
 
-        <div className="flex flex-col">
+        <div className="flex flex-col justify-center">
           {!isAuthenticated && <LoginButton />}
           {isAuthenticated && (
             <div className="flex flex-col items-end gap-1">
-              <p>Hello, {user?.name}</p>
-              <LogoutButton />
+              <p>
+                Welcome back, <b>{user?.name}</b>
+              </p>
+              {/* <LogoutButton /> */}
             </div>
           )}
         </div>

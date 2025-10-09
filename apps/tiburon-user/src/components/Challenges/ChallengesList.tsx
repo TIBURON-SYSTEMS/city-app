@@ -66,7 +66,7 @@ export default function ChallengesList() {
               ) : errorOAC ? (
                 <ErrorBlock text="Loading ongoing challenges failed, please try it later." />
               ) : onGoingAvailable?.ongoingChallengesRes?.length ? (
-                <div className="space-y-3">
+                <div className="flex flex-col space-y-3 gap-2">
                   {onGoingAvailable.ongoingChallengesRes.map((challenge) => (
                     <ChallengeCard
                       key={challenge.id}
